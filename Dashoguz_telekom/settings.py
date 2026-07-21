@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 
+from decouple import config
+
 import datetime
 
 now = datetime.datetime.now()
@@ -29,6 +31,8 @@ SECRET_KEY = 'django-insecure-_c3t-%y6ikxb)x5(r6g!w$fj!s3^@ve+2z(+c&$xthnb4t85ne
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = ['*']
 
@@ -90,21 +94,39 @@ WSGI_APPLICATION = 'Dashoguz_telekom.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'proddb',
+#         'USER': 'produser',
+#         'PASSWORD': 'sgncerkg',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
 #     }
 # }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'proddb',
+#         'USER': 'produser',
+#         'PASSWORD': 'sgncerkg',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'proddb',
-        'USER': 'produser',
-        'PASSWORD': 'sgncerkg',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
