@@ -1,0 +1,291 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Perekidka{% endblock %}
+{% block content %}
+{% load addFloat %}
+
+
+<div class="p-3">
+    <div class="text-end">
+        <form method="GET" id="intPerSearchForm">
+            <div class="d-flex my_column_gap10 my_block_center my_width500 mt-3">
+                <input type="date" name="start" class="form-control my_width200" value="{% if start %}{{start}}{% else %}{{current_date}}{% endif %}">
+                <input type="date" name="end" class="form-control my_width200" value="{% if end %}{{end}}{% else %}{{current_date}}{% endif %}">
+                <button class="btn btn-success">Поиск</button>
+            </div>
+        </form>
+        <button class="btn btn-danger" form="billingSaveForm">Сохранить</button>
+    </div>
+
+    <form method="POST" id="billingSaveForm">{% csrf_token %}
+        <input type="hidden" name="billingSaveForm">
+    </form>
+
+    <div class="mt-3" style="overflow-y: auto; max-height: 700px;">
+        <table class="table" style="background-color: white;">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Кто и когда перекинул</th>
+                    <th>С абонента</th>
+                    <th class="col7">Абонплата1</th>
+                    <th class="col8">Интернет1</th>
+                    <th class="col10">Alem1</th>
+
+                    <th>На абонент</th>
+                    <th class="col7">Абонплата2</th>
+                    <th class="col8">Интернет2</th>
+                    <th class="col10">Alem2</th>
+
+                    <th>Дата</th>
+                    <th>Оператор</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objs %}
+                    {% if obj.telefon1 != 0 or obj.slr1 != 0  or obj.kod1 != 0  or obj.zakaz1 != 0  or obj.prochee1 != 0  or obj.dop_uslugi1 != 0  or obj.internet1 != 0  or obj.alem1 != 0 or obj.telefon2 != 0 or obj.slr2 != 0  or obj.kod2 != 0  or obj.zakaz2 != 0  or obj.prochee2 != 0  or obj.dop_uslugi2 != 0  or obj.internet2 != 0  or obj.alem2 != 0 %}
+                    <tr {% if obj.telefon1|add:obj.slr1|add:obj.kod1|add:obj.zakaz1|add:obj.prochee1|add:obj.dop_uslugi1 != 0 and obj.is_checked_abonplata1 == False or obj.telefon2|add:obj.slr2|add:obj.kod2|add:obj.zakaz2|add:obj.prochee2|add:obj.dop_uslugi2 != 0 and obj.is_checked_abonplata2 == False or obj.internet1 != 0 and obj.is_checked_internet1 == False or obj.alem1 != 0 and obj.is_checked_alem1 == False or obj.internet2 != 0 and obj.is_checked_internet2 == False or obj.alem2 != 0 and obj.is_checked_alem2 == False %}
+                    {% else %}
+                    class="billing-bg-grey"
+                    {% endif %}>
+
+                   
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{forloop.counter}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.mtbUsername}} {{obj.date}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.number1}} {{obj.etrap1}} {{obj.surname1}} {{obj.name1}}</td>
+                        <td class="{{forloop.counter}} col7" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.telefon1 != 0 or obj.slr1 != 0 or obj.kod1 != 0 or obj.zakaz1 != 0 or obj.prochee1 != 0 or obj.dop_uslugi1 != 0 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{% add obj.telefon1 obj.slr1 obj.kod1 obj.zakaz1 obj.prochee1 obj.dop_uslugi1 %}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="abonplata1" value="{{obj.pk}}" {% if obj.is_checked_abonplata1 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}} col8" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.internet1 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{{obj.internet1}}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="internet1" value="{{obj.pk}}" {% if obj.is_checked_internet1 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}} col10" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.alem1 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{{obj.alem1}}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="alem1" value="{{obj.pk}}" {% if obj.is_checked_alem1 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.number2}} {{obj.etrap2}} {{obj.surname2}} {{obj.name2}}</td>
+
+                        <td class="{{forloop.counter}} col7" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.telefon2 != 0 or obj.slr2 != 0 or obj.kod2 != 0 or obj.zakaz2 != 0 or obj.prochee2 != 0 or obj.dop_uslugi2 != 0 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{% add obj.telefon2 obj.slr2 obj.kod2 obj.zakaz2 obj.prochee2 obj.dop_uslugi2 %}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="abonplata2" value="{{obj.pk}}" {% if obj.is_checked_abonplata2 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}} col8" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.internet2 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{{obj.internet2}}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="internet2" value="{{obj.pk}}" {% if obj.is_checked_internet2 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}} col10" onclick="interpayChangeBg({{forloop.counter}})" role="button">
+                            {% if obj.alem2 %}
+                            <div class="d-flex my_column_gap10">
+                                <span>{{obj.alem2}}</span>
+                                <span><input type="checkbox" class="form-check-input" form="billingSaveForm" name="alem2" value="{{obj.pk}}" {% if obj.is_checked_alem2 %} checked disabled {% else %} style="background-color: #FA8072;" {% endif %}></span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{% if obj.perekidka_date %}{{obj.perekidka_date}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{% if obj.operator %}{{obj.operator}}{% endif %}</td>
+                    </tr>
+
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    
+
+    <div class="mt-2 d-flex flex-column my_row_gap10">
+        <!-- для Dashoguz -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Dashoguz</div>
+            {% for user in dzUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Dashoguz' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedDz %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedDz %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Akdepe -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Akdepe</div>
+            {% for user in akUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Akdepe' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedAk %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedAk %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Gorogly -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Gorogly</div>
+            {% for user in gorUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Gorogly' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedGor %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedGor %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Ruhubelent -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Ruhubelent</div>
+            {% for user in ruhUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Ruhubelent' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %} 
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedRuh %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedRuh %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для S.A.Nyyazow -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">S.A.Nyyazow</div>
+            {% for user in nyUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'S.A.Nyyazow' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedNy %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedNy %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Turkmenbashy -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">S.Turkmenbashy</div>
+            {% for user in tuUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Turkmenbashy' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedTu %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedTu %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Boldumsaz -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Boldumsaz</div>
+            {% for user in bolUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Boldumsaz' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedBol %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedBol %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- для Koneurgench -->
+        <div class="d-flex my_column_gap10 my-bg-fiol">
+            <div class="text-light mt-2 my_width150">Koneurgench</div>
+            {% for user in koUsers %}
+                {% if checkedDz == None and checkedAk == None and checkedGor == None and checkedRuh == None and checkedNy == None and checkedTu == None and checkedBol == None and checkedKo == None and log == 'Koneurgench' %}
+                    <button class="btn btn-secondary d-flex my_column_gap10 my-bg-orange" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                        <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" checked>
+                    </button>
+                {% else %}
+                        <button class="btn btn-secondary d-flex my_column_gap10 {% if user.pk in checkedKo %} my-bg-orange {% endif %}" id="{{user.id}}" onclick="changeCheckboxIntPer(this.id)">
+                            <span>{{user.username}}</span><input type="checkbox" class="form-check-input" form="intPerSearchForm" name="{{user.id}}" {% if user.pk in checkedKo %} checked {% endif %}>
+                        </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    
+    </div>
+
+</div>
+
+
+<style>
+.my-bg-orange {
+    background-color: #FFA500 !important;
+}
+
+.my-bg-fiol {background-color: #2F4F4F;}
+
+.billing-bg-grey {background-color: #A9A9A9 !important;}
+
+td, th {
+    padding: 0 !important;
+}
+</style>
+
+
+<script>
+    function changeCheckboxIntPer (id) {
+        if(document.getElementById(id).childNodes[2].checked == true) {
+            document.getElementById(id).childNodes[2].checked = false
+            document.getElementById(id).classList.remove('my-bg-orange')
+        } else {
+            document.getElementById(id).childNodes[2].checked = true
+            document.getElementById(id).classList.add('my-bg-orange')
+        }
+
+    //     if (user.checked == true) {
+    //         console.log('tut1')
+    //         user.checked = false
+            
+    //     } else {
+    //         user.checked = true
+    //         console.log('tut2')
+            
+    //     }
+
+    }
+</script>
+
+{% endblock %}
+

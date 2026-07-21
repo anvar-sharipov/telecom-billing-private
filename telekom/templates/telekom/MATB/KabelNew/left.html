@@ -1,0 +1,59 @@
+{% load static %}
+<!-- Search and filter form -->
+<div class="left">
+
+    <div class="d-flex" style="flex-direction: column; row-gap: 10px;">
+        <button class="my_btn" style="display: flex;align-items: center; justify-content: center; column-gap: 5px; width:fit-content;" id="myButton" form="search_form"><img src="{% static 'telekom/jpg/lupa.png' %}" width="18"><span>Найти</span></button>
+        <div>
+            <div>Номер (id):</div>
+            <input type="text" class="my_input form-control" id="number" form="search_form" name="number" autocomplete="off" {% if number %} value="{{number}}" {% endif %} onkeyup="SearchNumberKeyDown(this.id)">
+        </div>
+    </div>
+    <br>
+
+    <div class="d-flex" style="flex-direction: column;">
+        <div class="search-container">
+            <input type="checkbox" id="advancedSearch">
+            <label for="advancedSearch" style="padding-top: 1px;">Расширенный поиск</label>
+        </div>
+
+        <div class="filter-inputs" id="filterInputs">
+            <div>Фамилия:</div>
+            <input type="text" class="my_input form-control" form="search_form" name="surname" autocomplete="off" {% if surname %} value="{{surname}}" {% endif %} id="newKabelSurName">
+            <br>
+            <div>Имя:</div>
+            <input type="text" class="my_input form-control" form="search_form" name="name" autocomplete="off" {% if name %} value="{{name}}" {% endif %} id="newKabelName">
+            <br>
+            <div>Улица:</div>
+            <input type="text" class="my_input form-control" form="search_form" name="street" autocomplete="off" {% if street %} value="{{street}}" {% endif %} id="newKabelStreet">
+            <br>
+            <div>Дом:</div>
+            <input type="text" class="my_input form-control" form="search_form" name="home" autocomplete="off" {% if home %} value="{{home}}" {% endif %} id="newKabelHome">
+            <br>
+            <div>Квартира:</div>
+            <input type="text" class="my_input form-control" form="search_form" name="flat" autocomplete="off" {% if flat %} value="{{flat}}" {% endif %} id="newKabelFlat">
+            <br>
+            <label for="edara_or_not_left">Предприятие:</label>
+            <input type="checkbox" id="edara_or_not_left" form="search_form" name="edara_or_not_left" {% if edara_or_not_left %}checked{% endif %}>
+            <br>
+        </div>
+    </div>
+    <!-- Вставка последних комментариев -->
+    <div class="container">
+        <div>Последние комментарии</div>
+        <div class="row">
+            {% for comment in latest_comments %}
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comment.worker }}</h5>
+                            <h6 class="card-subtitle text-muted">{{ comment.comment_add_date }}</h6>
+                            <p class="card-text">{{ comment.comment }}</p>
+                            <span class="badge badge-primary">{{ comment.action }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

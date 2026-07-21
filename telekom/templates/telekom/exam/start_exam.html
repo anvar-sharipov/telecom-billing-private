@@ -1,0 +1,155 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Старт экзамена{% endblock %}
+
+{% block content %}
+
+<!-- <div id="countdown" class="text-dark" style="position: fixed; top: 100px; left: 20px; padding: 5px; background-color:#fabdbd; border-radius:5px;"></div> -->
+<form method="POST">{% csrf_token %}
+{% for q in questions %}
+<div class="quiz-container">
+      <div class="question">
+        <h3>{{forloop.counter}}. {{ q.question }}</h3>
+        <ol>
+            <li class="option">
+                <input type="radio" id="1{{ q.answer1 }}" value="1{{ q.answer1 }}" name="answer{{forloop.counter}}">
+                <label for="1{{ q.answer1 }}">{{ q.answer1 }}</label>
+            </li>
+
+            <li class="option">
+                <input type="radio" id="2{{ q.answer2 }}" value="2{{ q.answer2 }}" name="answer{{forloop.counter}}">
+                <label for="2{{ q.answer2 }}">{{ q.answer2 }}</label>
+            </li>
+            <li class="option">
+                <input type="radio" id="3{{ q.answer3 }}" value="3{{ q.answer3 }}" name="answer{{forloop.counter}}">
+                <label for="3{{ q.answer3 }}">{{ q.answer3 }}</label>
+            </li>
+        </ol>
+      </div>
+  </div>
+  {% endfor %}
+  <input type="hidden" name="bolum" value="{{bolum}}">
+  <input type="hidden" name="done">
+  <input type="hidden" name="new_score_pk" value="{{new_score_pk}}">
+  <input type="hidden" name="start_time_exam" value="{{start_time_exam}}">
+  <input type="hidden" name="done_name" value="{{done_name}}">
+  <input type="hidden" name="done_surname" value="{{done_surname}}">
+  <button class="btn btn-success">Готово</button>
+</form>
+
+
+
+
+
+<style>
+
+  .yellow-bg {background-color:yellow;}
+
+  body{background-color:rgb(231, 231, 231) ;}
+
+  .quiz-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color:white;
+  }
+
+  .question {
+    margin-bottom: 20px;
+  }
+
+  .option {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .option:hover {
+    background-color: #dd974d;
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+
+
+<script>
+
+
+
+// // Обратный отчет
+// var timeLeftCountdown = 30; // 10 минут в секундах
+
+// function updateCountdown() {
+//     var minutesCountdown = Math.floor(timeLeftCountdown / 60);
+//     var secondsCountdown = timeLeftCountdown % 60;
+
+//     // Дополнить нулем, если минуты или секунды меньше 10
+//     minutesCountdown = minutesCountdown < 10 ? '0' + minutesCountdown : minutesCountdown;
+//     secondsCountdown = secondsCountdown < 10 ? '0' + secondsCountdown : secondsCountdown;
+
+//     var timeStringCountdown = minutesCountdown + ':' + secondsCountdown;
+//     document.getElementById('countdown').textContent = timeStringCountdown;
+
+//     if (timeLeftCountdown > 0) {
+//         timeLeftCountdown--; // Уменьшаем время на одну секунду
+//     } else {
+//         clearInterval(countdownInterval); // Останавливаем обновление таймера
+//         document.getElementById('countdown').textContent = "Время вышло!";
+        
+//         // Находим кнопку "Готово" и вызываем событие клика
+//         var submitButton = document.querySelector('.btn.btn-success');
+//         submitButton.click();
+//     }
+// }
+
+// // Обновляем таймер каждую секунду
+// var countdownInterval = setInterval(updateCountdown, 1000);
+
+// // Запускаем функцию в первый раз, чтобы таймер отобразился сразу
+// updateCountdown();
+
+
+// const options = document.querySelectorAll('.option');
+// const submitButton = document.getElementById('submit-btn');
+
+// let score = 0;
+
+// options.forEach(option => {
+//     option.addEventListener('click', () => {
+//         options.forEach(o => o.classList.remove('selected'));
+//         option.classList.add('selected');
+//     });
+// });
+
+// submitButton.addEventListener('click', () => {
+//     const selectedOption = document.querySelector('.selected');
+
+//     if (!selectedOption) {
+//         alert('Пожалуйста, выберите ответ.');
+//         return;
+//     }
+
+//     // Здесь вы можете выполнить проверку правильности ответа и обновить score
+// });
+
+
+
+</script>
+
+{% endblock %}

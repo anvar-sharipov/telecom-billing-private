@@ -1,0 +1,353 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Alem Add {% endblock %}
+{% block content %}
+{% load humanize %}
+<div class="container-fluid mt-4 text-light d-flex justify-content-between" style="column-gap: 20px;">
+  <div style="width: 50%;">
+  <div class="alert alert-dark border-start border-5 border-warning shadow-sm p-4 bg-dark">
+    <h4 class="text-uppercase text-warning fw-bold mb-3">Alem TV IMPORT</h4>
+
+    <h5 class="mb-3 fw-semibold text-light border-start border-4 border-primary ps-3">
+      Имя файла должно содержать либо 
+      <span class="text-success fw-bold">"ON."</span>, 
+      либо <span class="text-danger fw-bold">"OFF."</span>,<br>
+      а также месяц и год в формате: 
+      <span class="text-info">"05&nbsp;2025"</span>.<br>
+      Нумерация пользователей должна начинаться со второй строки.<br>
+      В конце необходимо удалить строку <span class="text-warning fw-bold">"Итого"</span>.
+    </h5>
+  </div>
+
+
+  {% if test_count %}
+<div class="mt-4">
+  <div class="card bg-dark text-light border border-secondary shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title mb-3">
+        <i class="bi bi-calculator-fill text-warning"></i> Итоги начислений
+      </h5>
+      <p class="mb-1">
+        <span class="text-info fw-bold">Всего начислений:</span> {{ test_count|intcomma }}
+      </p>
+      <p class="mb-0">
+        <span class="text-success fw-bold">Общая сумма начислений:</span> {{ test_total_price|floatformat:2|intcomma }}
+      </p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if info_ %}
+<div class="mt-4">
+  {% for etr, data in info_.items %}
+  <div class="card bg-dark text-light border border-secondary shadow-sm mb-3">
+    <div class="card-body">
+      <h5 class="card-title text-warning fw-bold mb-3">
+        <i class="bi bi-bar-chart-fill text-warning"></i> {{ etr }}
+      </h5>
+      {% for d in data %}
+        {% if forloop.counter == 1 %}
+          <p class="mb-1">
+            <span class="text-info fw-bold">Всего начислений:</span> {{ d|intcomma }}
+          </p>
+        {% endif %}
+        {% if forloop.counter == 2 %}
+          <p class="mb-0">
+            <span class="text-success fw-bold">Общая сумма начислений:</span> {{ d|floatformat:2|intcomma }}
+          </p>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+  <form method="POST" class="row g-3 mt-5 p-4 bg-dark text-light border rounded shadow-lg" enctype="multipart/form-data">{% csrf_token %}
+
+    <!-- Год -->
+    <div class="col-md-4">
+    <label for="year" class="form-label text-warning fw-bold">Год</label>
+    <select class="form-select" id="year" name="year" required>
+        {% if selected_year %}
+        <option value="2025" {% if selected_year == '2025' %}selected{% endif %}>2025</option>
+        <option value="2026" {% if selected_year == '2026' %}selected{% endif %}>2026</option>
+        <option value="2027" {% if selected_year == '2027' %}selected{% endif %}>2027</option>
+        <option value="2028" {% if selected_year == '2028' %}selected{% endif %}>2028</option>
+        <option value="2029" {% if selected_year == '2029' %}selected{% endif %}>2029</option>
+        <option value="2030" {% if selected_year == '2030' %}selected{% endif %}>2030</option>
+        <option value="2031" {% if selected_year == '2031' %}selected{% endif %}>2031</option>
+        <option value="2032" {% if selected_year == '2032' %}selected{% endif %}>2032</option>
+        <option value="2033" {% if selected_year == '2033' %}selected{% endif %}>2033</option>
+        <option value="2034" {% if selected_year == '2034' %}selected{% endif %}>2034</option>
+        <option value="2035" {% if selected_year == '2035' %}selected{% endif %}>2035</option>
+        <option value="2036" {% if selected_year == '2036' %}selected{% endif %}>2036</option>
+        <option value="2037" {% if selected_year == '2037' %}selected{% endif %}>2037</option>
+        <option value="2038" {% if selected_year == '2038' %}selected{% endif %}>2038</option>
+        <option value="2039" {% if selected_year == '2039' %}selected{% endif %}>2039</option>
+        <option value="2040" {% if selected_year == '2040' %}selected{% endif %}>2040</option>
+        {% else %}
+        <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+        <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+        <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+        <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+        <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+        <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+        <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+        <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+        <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+        <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+        <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+        <option value="2036" {% if current_year == '2036' %}selected{% endif %}>2036</option>
+        <option value="2037" {% if current_year == '2037' %}selected{% endif %}>2037</option>
+        <option value="2038" {% if current_year == '2038' %}selected{% endif %}>2038</option>
+        <option value="2039" {% if current_year == '2039' %}selected{% endif %}>2039</option>
+        <option value="2040" {% if current_year == '2040' %}selected{% endif %}>2040</option>
+        {% endif %}
+    </select>
+    </div>
+
+    <!-- Месяц -->
+    <div class="col-md-4">
+      <label for="month" class="form-label text-warning fw-bold">Месяц</label>
+      <select class="form-select" id="month" name="month" required>
+        {% for num, name in month_choices %}
+            {% if selected_month %}
+                <option value="{{ num }}" {% if num == selected_month %}selected{% endif %}>{{ name }}</option>  
+            {% else %}
+                <option value="{{ num }}" {% if num == current_month %}selected{% endif %}>{{ name }}</option>  
+            {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Этрап -->
+    <div class="col-md-4">
+      <label for="etrap" class="form-label text-warning fw-bold">Этрап</label>
+      <select class="form-select" id="etrap" name="etrap" required>
+        {% for e in etraps %}
+        <option value="{{ e }}" {% if selected_etrap == e %}selected{% endif %}>{{ e }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Загрузка файла -->
+    <div class="col-md-6">
+        <label for="fileInput" class="form-label text-warning fw-bold">Выберите файл</label>
+        <input class="form-control" type="file" id="fileInput" name="file" >
+        <!-- required -->
+    </div>
+
+    
+
+    <!-- ON/OFF -->
+    <div class="col-md-12 mt-4">
+        <span class="fw-bold text-info d-block mb-2">Режим</span>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="on_or_off" id="on" value="ON" checked>
+            <label class="form-check-label" for="on">ON</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="on_or_off" id="off" value="OFF">
+            <label class="form-check-label" for="off">OFF</label>
+        </div>
+    </div>
+
+    <!-- Проверка поля "Цена" с учётом возможного преобразования в дату -->
+    <div class="col-md-12 mt-4">
+        <span class="fw-bold text-info d-block mb-2">Проверка поля "Итого"</span>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="priceCheck" id="checkWithDate" value="checkWithDate" checked>
+            <label class="form-check-label" for="checkWithDate">С учётом возможного преобразования в дату</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="priceCheck" id="checkWithoutDate" value="checkWithoutDate">
+            <label class="form-check-label" for="checkWithoutDate">Без проверки преобразования в дату</label>
+        </div>
+    </div>
+    
+    <!-- Радио кнопки -->
+    <div class="col-md-12 mt-4">
+        <span class="fw-bold text-info d-block mb-2">Действие</span>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="action_type" id="checkRadio" value="check" checked>
+            <label class="form-check-label" for="checkRadio">Проверить</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="action_type" id="importRadio" value="import">
+            <label class="form-check-label" for="importRadio">Импортировать</label>
+        </div>
+    </div>
+
+    
+
+    <!-- Кнопка отправки -->
+    <div class="col-12 mt-4 d-flex justify-content-end">
+        <button type="submit" class="btn btn-warning fw-bold px-4 shadow-sm" onclick="this.form.submit(); this.disabled=true;" id="submitButton">
+            Проверить
+        </button>
+    </div>
+  </form>
+</div>
+
+  <div style="width: 50%;">
+    
+    <form method="get" class="alert alert-dark border-start border-5 border-warning shadow-sm p-4 bg-dark">
+      <h4 class="text-uppercase text-warning fw-bold mb-3">Alem TV Просмотр историй</h4>
+      <br>
+
+      <div class="d-flex" style="align-items: end; column-gap: 5px; margin-top: 18px;">
+         <!-- Год -->
+        <div class="col-md-4">
+        <label for="history_year" class="form-label text-warning fw-bold">Год</label>
+        <select class="form-select" id="history_year" name="history_year" required>
+            <option value="2025" {% if year_str == '2025' %}selected{% endif %}>2025</option>
+            <option value="2026" {% if year_str == '2026' %}selected{% endif %}>2026</option>
+            <option value="2027" {% if year_str == '2027' %}selected{% endif %}>2027</option>
+            <option value="2028" {% if year_str == '2028' %}selected{% endif %}>2028</option>
+            <option value="2029" {% if year_str == '2029' %}selected{% endif %}>2029</option>
+            <option value="2030" {% if year_str == '2030' %}selected{% endif %}>2030</option>
+            <option value="2031" {% if year_str == '2031' %}selected{% endif %}>2031</option>
+            <option value="2032" {% if year_str == '2032' %}selected{% endif %}>2032</option>
+            <option value="2033" {% if year_str == '2033' %}selected{% endif %}>2033</option>
+            <option value="2034" {% if year_str == '2034' %}selected{% endif %}>2034</option>
+            <option value="2035" {% if year_str == '2035' %}selected{% endif %}>2035</option>
+            <option value="2036" {% if year_str == '2036' %}selected{% endif %}>2036</option>
+            <option value="2037" {% if year_str == '2037' %}selected{% endif %}>2037</option>
+            <option value="2038" {% if year_str == '2038' %}selected{% endif %}>2038</option>
+            <option value="2039" {% if year_str == '2039' %}selected{% endif %}>2039</option>
+            <option value="2040" {% if year_str == '2040' %}selected{% endif %}>2040</option>
+        </select>
+        </div>
+
+        <!-- Месяц -->
+        <div class="col-md-4">
+          <label for="history_month" class="form-label text-warning fw-bold">Месяц</label>
+          <select class="form-select" id="history_month" name="history_month" required>
+            {% for num, name in month_choices %}
+                <option value="{{ num }}" {% if num == month_str %}selected{% endif %}>{{ name }}</option> 
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Кнопка отправки -->
+        <div>
+            <button type="submit" class="btn btn-warning fw-bold px-4 shadow-sm" onclick="this.form.submit(); this.disabled=true;" id="getButton">
+                Просмотреть
+            </button>
+        </div>
+
+      </div>
+     
+    </form>
+    
+    <div class="row g-3 mt-5 p-4 bg-dark text-light border rounded shadow-lg">
+      <!-- istoriya ON -->
+      {% if last_added_info %}
+      <div class="table-responsive mt-4">
+        <h5 class="text-warning fw-bold mb-3">ON история</h5>
+        <table class="table table-dark table-bordered align-middle text-center shadow-sm">
+          <thead class="table-primary">
+            <tr>
+              <th>Этрап ON</th>
+              <th>Добавлено ON</th>
+              <th>Начислено ON</th>
+              <th>Файл ON</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for etr, data in last_added_info.items %}
+            <tr>
+              <td class="fw-bold text-warning">{{ etr }}</td>
+              {% for d in data %}
+                {% for i in d %}
+                  {% if forloop.counter == 1 or forloop.counter == 2 %}
+                    <td class="text-center align-middle {% if i %}bg-success bg-opacity-25{% else %}bg-danger bg-opacity-25{% endif %}">
+                      <input type="checkbox" disabled {% if i %}checked{% endif %} class="form-check-input">
+                    </td>
+                  {% elif forloop.counter == 3 %}
+                    <td class="text-center align-middle text-truncate" style="max-width:150px;">{{ i }}</td>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="alert alert-warning text-center mt-4 shadow-sm">
+        Нет добавлений и начислений ON
+      </div>
+      {% endif %}
+
+      <!-- istoriya OFF -->
+      {% if last_added_info_off %}
+      <div class="table-responsive mt-4">
+        <h5 class="text-warning fw-bold mb-3">OFF история</h5>
+        <table class="table table-dark table-bordered align-middle text-center shadow-sm">
+          <thead class="table-primary">
+            <tr>
+              <th>Файл OFF</th>
+              <th>Добавлено OFF</th>
+              <th>Начислено OFF</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in last_added_info_off %}
+            <tr>
+              {% for i in d %}
+                {% if forloop.counter == 1 %}
+                  <td class="text-center align-middle text-truncate" style="max-width:150px;">{{ i }}</td>  
+                {% elif forloop.counter == 2 or forloop.counter == 3 %}
+                  <td class="text-center align-middle {% if i %}bg-success bg-opacity-25{% else %}bg-danger bg-opacity-25{% endif %}">
+                    <input type="checkbox" disabled {% if i %}checked{% endif %} class="form-check-input">
+                  </td>   
+                {% endif %}
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="alert alert-warning text-center mt-4 shadow-sm">
+        Нет добавлений и начислений OFF
+      </div>
+      {% endif %}
+    </div>
+    
+
+
+    
+  </div>
+</div>
+
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const importRadio = document.getElementById('importRadio');
+    const checkRadio = document.getElementById('checkRadio');
+    const submitButton = document.getElementById('submitButton');
+
+    function updateButton() {
+      if (importRadio.checked) {
+        submitButton.className = 'btn btn-danger';  // красная кнопка
+        submitButton.textContent = 'Импортировать';
+      } else if (checkRadio.checked) {
+        submitButton.className = 'btn btn-primary';  // синяя кнопка
+        submitButton.textContent = 'Проверить';
+      }
+    }
+
+    importRadio.addEventListener('change', updateButton);
+    checkRadio.addEventListener('change', updateButton);
+
+    // инициализация при загрузке страницы
+    updateButton();
+  });
+</script>
+
+{% endblock %}

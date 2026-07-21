@@ -1,0 +1,104 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}История платежей с комментариями{% endblock %}
+{% block content %}
+
+
+<h1 class="text-light text-center mt-3">История платежей с комментариями</h1>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="justify-content: space-around; align-items: center;">
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap">
+                {% if request.user.is_superuser %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Номер</label>
+            <input type="text" class="form-control" id="number" placeholder="Поиск по номеру абонента" autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Поиск по коментариям" autocomplete="off" name="comment" {% if comment %} value="{{comment}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_from" class="form-label">Дата От</label>
+            <input type="date" class="form-control" id="date_from" name="date_from" {% if date_from %} value="{{date_from}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_to" class="form-label">Дата До</label>
+            <input type="date" class="form-control" id="date_to" name="date_to" {% if date_to %} value="{{date_to}}"{% endif %}>
+        </div>
+
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+   
+{% if pays %}
+
+<table class="table table-bordered table-striped table-hover align-middle table-secondary">
+    <thead class="table-dark">
+      <tr>
+        <th>Номер</th>
+        <th>Этрап</th>
+        <th>Оператор</th>
+        <th>Комментарий</th>
+        <th>Интернет</th>
+        <th>Кабель</th>
+        <th>Alem TV</th>
+        <th>Телефон</th>
+        <th>Дата платежа</th>
+        <th>Когда сделали</th>
+        <th>Отменили?</th>
+        <th>Кто отменил</th>
+        <th>Когда отменили</th>
+        <th>Причина отмены</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pay in pays %}
+        <tr class="{% if pay.changed %}table-danger{% endif %}">
+          <td>{{ pay.number }}</td>
+          <td>{{ pay.etrap }}</td>
+          <td>{{ pay.operator }}</td>
+          <td>{{ pay.comment|linebreaksbr }}</td>
+          <td>{{ pay.internet }}</td>
+          <td>{{ pay.kabel }}</td>
+          <td>{{ pay.alem }}</td>
+          <td>{{ pay.prochee }}</td>
+          <td>{{ pay.date_pay|date:"Y-m-d H:i" }}</td>
+          <td>{{ pay.date|date:"Y-m-d H:i" }}</td>
+          <td>
+            {% if pay.changed %}
+              <span class="badge bg-danger">Да</span>
+            {% else %}
+              <span class="badge bg-success">Нет</span>
+            {% endif %}
+          </td>
+          <td>{{ pay.who_changed }}</td>
+          <td>
+            {% if pay.when_changed %}
+              {{ pay.when_changed|date:"Y-m-d H:i" }}
+            {% endif %}
+          </td>
+          <td>{{ pay.changed_comment|linebreaksbr }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="14" class="text-center">Нет данных</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% endif %}
+
+</div>
+
+{% endblock content %}
+

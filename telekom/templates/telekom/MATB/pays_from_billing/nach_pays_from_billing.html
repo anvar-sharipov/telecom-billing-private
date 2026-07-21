@@ -1,0 +1,206 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Начисления платежей{% endblock %}
+{% block content %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div>
+        <div style="margin-top: 80px; padding: 0 5px; background-color:#ffffff; border-radius:10px;" class="my_width500 my_block_center main_block">
+            <form method="GET" id="nameForm">
+                <div class="d-flex my_row_gap10 p-2" style="flex-direction: column;">
+                    {% for f, is_nach in file_names_list.items %}
+                        <label class="d-flex p-2 {% if is_nach %}my_bg2{% endif %}{% if f in need_to_nach_files %}my_bg{% endif %}" id="{{f}}" onclick="{label_clicked(this.id)}" style="border-radius: 5px;">
+                            <div class="my_width400">{{f}}</div>
+                            <input type="checkbox" {% if is_nach %}checked disabled {% endif %} id="input_{{f}}" name="{{f}}" {% if f in need_to_nach_files %}checked{% endif %} class="form-check-input">
+                        </label>
+                    {% endfor %}
+                    <input type="hidden" name="checkBoxNames">
+                    
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="text-center">
+        <button class="btn btn-success btn-sm" form="nameForm">Просмотр</button>
+        </div>
+    </div>
+
+
+
+    <div style="margin-top: 50px;" class="my_width500">
+        <div>
+            {% if total_price %}
+                <div class="my_block_center mt-4 p-2" style="background-color:#ffe1b4; border-radius:8px;">
+                    <div class="d-flex"><div class="my_width200">TYPE</div><div class="my_width150">PRICE</div><div class="my_width80">COUNT</div></div>
+                    <hr>
+                    <div class="text-center">Касса</div>
+                    <hr>
+                    {% if price_int %}
+                        <div class="d-flex"><div class="my_width200">Интернет:</div><div class="my_width150">{{price_int}}</div><div class="my_width80">{{count_int}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_abon %}
+                        <div class="d-flex"><div class="my_width200">Абонплата:</div><div class="my_width150">{{price_abon}}</div><div class="my_width80">{{count_abon}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_alem %}
+                        <div class="d-flex"><div class="my_width200">Alem TV:</div><div class="my_width150">{{price_alem}}</div><div class="my_width80">{{count_alem}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if price_kabel %}
+                        <div class="d-flex"><div class="my_width200">Кабель TV:</div><div class="my_width150">{{price_kabel}}</div><div class="my_width80">{{count_kabel}}</div></div>
+                        <hr>
+                    {% endif %}
+                    <div class="d-flex"><div class="my_width200">Всего платежей:</div><div class="my_width150">{{total_price}}</div><div class="my_width80">{{total_count}}</div></div>
+                </div>
+            {% endif %}
+            {% if total_price %}
+                <div class="my_block_center mt-4 p-2" style="background-color:#b4ffc1; border-radius:8px;">
+                    <div class="text-center">Внешние платежи</div>
+                    <hr>
+                    {% if price_int_wn %}
+                        <div class="d-flex"><div class="my_width200">Интернет:</div><div class="my_width150">{{price_int_wn}}</div><div class="my_width80">{{count_int_wn}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_abon_wn %}
+                        <div class="d-flex"><div class="my_width200">Абонплата:</div><div class="my_width150">{{price_abon_wn}}</div><div class="my_width80">{{count_abon_wn}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_alem_wn %}
+                        <div class="d-flex"><div class="my_width200">Alem TV:</div><div class="my_width150">{{price_alem_wn}}</div><div class="my_width80">{{count_alem_wn}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if price_kabel_wn %}
+                        <div class="d-flex"><div class="my_width200">Кабель TV:</div><div class="my_width150">{{price_kabel_wn}}</div><div class="my_width80">{{count_kabel_wn}}</div></div>
+                        <hr>
+                    {% endif %}
+                    <div class="d-flex"><div class="my_width200">Всего платежей:</div><div class="my_width150">{{total_price_wn}}</div><div class="my_width80">{{total_count_wn}}</div></div>
+                </div>
+            {% endif %}
+            {% if total_price_total %}
+                <div class="my_block_center mt-4 p-2" style="background-color:#b4d5ff; border-radius:8px;">
+                    <div class="text-center">Всего</div>
+                    <hr>
+                    {% if price_int_total %}
+                        <div class="d-flex"><div class="my_width200">Интернет:</div><div class="my_width150">{{price_int_total}}</div><div class="my_width80">{{count_int_total}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_abon_total %}
+                        <div class="d-flex"><div class="my_width200">Абонплата:</div><div class="my_width150">{{price_abon_total}}</div><div class="my_width80">{{count_abon_total}}</div></div>
+                        <hr>
+                    {% endif %}
+
+                    {% if price_alem_total %}
+                        <div class="d-flex"><div class="my_width200">Alem TV:</div><div class="my_width150">{{price_alem_total}}</div><div class="my_width80">{{count_alem_total}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if price_kabel_total %}
+                        <div class="d-flex"><div class="my_width200">Кабель TV:</div><div class="my_width150">{{price_kabel_total}}</div><div class="my_width80">{{count_kabel_total}}</div></div>
+                        <hr>
+                    {% endif %}
+                    <div class="d-flex"><div class="my_width200">Всего платежей:</div><div class="my_width150">{{total_price_total}}</div><div class="my_width80">{{total_count_total}}</div></div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if need_to_nach_files %}
+        <br>
+        <!-- <form method="POST">{% csrf_token %}
+            <input type="hidden" name="nachislit"> -->
+            <div class="text-end">
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#nachislitBtnModal" style="margin-left: 20px;">Начислить</button>
+                <!-- <button class="btn btn-danger" style="margin-left: 20px;">Начислить</button> -->
+            </div>
+        <!-- </form> -->
+        {% endif %}
+
+        <!-- Modal -->
+        <div class="modal fade" id="nachislitBtnModal" tabindex="-1" aria-labelledby="nachislitBtnModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <form method="POST">{% csrf_token %}
+                            <div>Комментарий</div>
+                            <textarea name="comment" id="comment" cols="55" rows="5" placeholder="Оставьте комментарий" class="p-2"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" name="nachislit">
+                                <div class="pt-2 fw-bold text-danger">Вы уверены?</div>
+                                <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Начислить</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    .my_bg {
+        background-color:#f1f696;
+    }
+
+    .my_bg2 {
+        background-color:#96f6b9;
+    }
+
+    .main_block {
+        height: 50vh;
+        overflow-y: auto;
+    }
+</style>
+
+<script>
+
+    function label_clicked(id) {
+        if (document.getElementById(`input_${id}`).checked == true) {
+            document.getElementById(id).classList.add('my_bg')
+        } else {
+            document.getElementById(id).classList.remove('my_bg')
+        }
+        
+    }
+
+</script>
+
+{% endblock %}

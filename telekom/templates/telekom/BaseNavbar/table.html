@@ -1,0 +1,158 @@
+<div class="showUserConteiner">
+    <div class="item1">
+        <div class="rowContainer">
+            <div class="headRow topLeftBorder">Фамилия:</div>
+            <div class="bodyRow">{{abonent.surname}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Имя:</div>
+            <div class="bodyRow">{{abonent.name}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Этрап:</div>
+            <div class="bodyRow">{{abonent.etrap}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Номер:</div>
+            <div class="bodyRow">{{abonent.number}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Улица:</div>
+            <div class="bodyRow">{{abonent.street}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Дом:</div>
+            <div class="bodyRow">{{abonent.home}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Квартира:</div>
+            <div class="bodyRow">{{abonent.flat}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Логин:</div>
+            <div class="bodyRow">{{abonent.login}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Договор №:</div>
+            <div class="bodyRow">{{abonent.dogowor}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Счет №:</div>
+            <div class="bodyRow">{{abonent.account}}</div>
+        </div>
+        <div class="d-flex">
+            <div class="bottomLeftBorder">Предприятия:</div>
+            <div class="lastItemBodyRow">
+                {% if abonent.is_enterprises %}
+                <input type="checkbox" class="form-check-input" disabled checked>
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="item2">
+        <div class="rowContainer">
+            <div class="headRow topLeftBorder">Х/Б:</div>
+            <div class="bodyRow">{{abonent.hb.name}}</div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Интернет:</div>
+            <div class="bodyRow">
+                {% if abonent.internet_tarif %}
+                {{abonent.internet_tarif.tarif}} m/s; {{abonent.internet_tarif.price}} TMT
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Метры:</div>
+            <div class="bodyRow">
+                {% if abonent.abon_length %}
+                {{abonent.abon_length.metr}} метров; {{abonent.abon_length.price}} TMT
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Абонплата:</div>
+            <div class="bodyRow">
+                {% if abonent.count_of_numbers %}
+                Номер: {{abonent.count_of_numbers.count_of_numbers}} шт; {{abonent.count_of_numbers.price}} TMT
+                {% else %}
+                
+            {% endif %}
+            </div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Льготник:</div>
+            <div class="bodyRow">
+                {% if abonent.beneficiary %}
+                {{abonent.beneficiary.beneficiary}}: {{abonent.beneficiary.percent}} %
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Кабель TV Подсоединен:</div>
+            <div class="bodyRow">
+                {% if abonent.kabel_connected %}
+                <input type="checkbox" class="form-check-input" disabled checked>
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div>
+        <div class="rowContainer">
+            <div class="headRow">Кабель активен</div>
+            <div class="bodyRow">
+                {% if abonent.kabel_count %}
+                Кабель TV: {{abonent.kabel_count.kabel_count}} шт.; {{abonent.kabel_count.price}} TMT
+                {% else %}
+                
+                {% endif %}
+            </div>
+        </div> 
+        <div class="rowContainer">
+            <div class="headRow">?</div>
+            <div class="bodyRow">?</div>
+        </div> 
+        <div class="rowContainer">
+            <div class="headRow">?</div>
+            <div class="bodyRow">?</div>
+        </div> 
+        <div class="rowContainer">
+            <div class="headRow">?</div>
+            <div class="bodyRow">?</div>
+        </div> 
+        <div class="d-flex">
+            <div class="bottomLeftBorder">?</div>
+            <div class="lastItemBodyRow">?</div>
+        </div> 
+    </div>
+
+</div>
+
+<style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</style>

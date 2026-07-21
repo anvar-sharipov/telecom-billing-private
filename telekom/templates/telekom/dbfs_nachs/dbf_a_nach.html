@@ -1,0 +1,71 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}dbf_txt_nach{% endblock %}
+{% block content %}
+<h1 style="color: white;">dbf_txt_nach</h1>
+
+<div class="container mt-5">
+    <form method="POST">{% csrf_token %}
+        <div class="mb-3 text-light">
+            <input type="checkbox" id="nachislit" name="nachislit" class="form-check-input">
+            <label for="nachislit" class="form-label" id="nachislitLabel">Начислить</label>
+        </div>
+        <div class="mb-3 text-light">
+            <input type="checkbox" id="alcatel" name="alcatel" class="form-check-input">
+            <label for="alcatel" class="form-label" id="alcatelLabel">Alcatel звонки</label>
+        </div>
+        <button type="submit" class="btn btn-primary" id="nachislitBtn" onclick = "this.form.submit(); this.disabled=true;">Проверить</button>
+    </form>
+</div>
+
+{% if alcatelCount %}
+<h1 class="text-light">
+    {{alcatelCount}}
+</h1>
+{% endif %}
+
+<script>
+    const nachislit = document.getElementById('nachislit')
+    const nachislitLabel = document.getElementById('nachislitLabel')
+    const nachislitBtn = document.getElementById('nachislitBtn')
+    const alcatel = document.getElementById('alcatel')
+
+      // Обработчик события изменения состояния чекбокса
+      nachislit.addEventListener('change', function() {
+        if (this.checked) {
+            alcatel.checked = false
+            nachislitBtn.innerText = 'Начислить'
+            if (nachislitBtn.classList.contains('btn-primary')) {nachislitBtn.classList.remove('btn-primary')}
+            if (!nachislitBtn.classList.contains('btn-danger')) {nachislitBtn.classList.add('btn-danger')}
+            if (nachislitBtn.classList.contains('btn-secondary')) {nachislitBtn.classList.remove('btn-secondary')}
+        } else {
+            alcatel.checked = false
+            nachislitBtn.innerText = 'Проверить'
+            if (!nachislitBtn.classList.contains('btn-primary')) {nachislitBtn.classList.add('btn-primary')}
+            if (nachislitBtn.classList.contains('btn-danger')) {nachislitBtn.classList.remove('btn-danger')}
+            if (nachislitBtn.classList.contains('btn-secondary')) {nachislitBtn.classList.remove('btn-secondary')}
+        }
+    });
+
+    // Обработчик события изменения состояния чекбокса
+    alcatel.addEventListener('change', function() {
+        if (this.checked) {
+            nachislit.checked = false
+            nachislitBtn.innerText = 'Проверить alcatel'
+            if (nachislitBtn.classList.contains('btn-primary')) {nachislitBtn.classList.remove('btn-primary')}
+            if (nachislitBtn.classList.contains('btn-danger')) {nachislitBtn.classList.remove('btn-danger')}
+            if (!nachislitBtn.classList.contains('btn-secondary')) {nachislitBtn.classList.add('btn-secondary')}
+        } else {
+            nachislit.checked = false
+            nachislitBtn.innerText = 'Проверить'
+            if (!nachislitBtn.classList.contains('btn-primary')) {nachislitBtn.classList.add('btn-primary')}
+            if (nachislitBtn.classList.contains('btn-danger')) {nachislitBtn.classList.remove('btn-danger')}
+            if (nachislitBtn.classList.contains('btn-secondary')) {nachislitBtn.classList.remove('btn-secondary')}
+    
+            nachislitBtn.classList.remove('btn-danger')
+        }
+    });
+
+
+</script>
+
+{% endblock content %}

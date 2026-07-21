@@ -1,0 +1,393 @@
+
+<!-- Рабочий код -->
+{% load static %}
+<!-- Modal add new user -->
+<div class="modal fade changeModal" id="changeModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" {% if u.is_active %} style="background-color: #f4ffee;" {% else %} style="background-color: #ffeeee;" {% endif %}>
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Изменить пользователя {{u.surname}} {{u.name}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="change_user_form_{{u.pk}}">{% csrf_token %}
+                    <input type="hidden" name="change_user_form_pk" value="{{u.pk}}">
+
+                    <div class="d-flex" style="flex-direction: column; row-gap: 10px;">
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                                Номер ( свободный id: {{smallest_empty_id}}) -- {{u.number}}
+                                {% if errorEnteredNumber %} 
+                                    {% if errorNumberIsEmpty %}
+                                        <div style="color: red;">
+                                            Номер не может быть пустым
+                                        </div> 
+                                    {% elif errorNumberIsAlreadyExist %}
+                                        <div style="color: red;">
+                                            Номер {{errorNumberIsAlreadyExist}} занят
+                                        </div> 
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div>
+ 
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    name="number"
+                                    {% if errorEnteredNumber %}
+                                        value="{{change_user_number}}"
+                                    {% else %}
+                                        {% if change_user_number and change_user_number != u.number|stringformat:"s" %}
+                                            style="background-color:rgb(241, 255, 170);"
+                                            value="{{change_user_number}}"
+                                        {% else %}
+                                            value="{{u.number}}"
+                                        {% endif %}
+                                    {% endif %}
+                                    id="number_input_in_change_user_modal{{u.pk}}" 
+                                    autocomplete="off"
+                                    onkeydown="changeDBInChangeInput(this.id, {{u.number}}, {{u.pk}}, event)"
+                                    oninput="changeDBInChangeInput2(this.id, {{u.number}}, {{u.pk}}, event)"
+                                    >
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Фамилия {% if errorEnteredNameSurname %}<div style="color: red;">Фамилия не может буть пустым</div>{% endif %}</div>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="surname" 
+                                value="{% if change_user_surname %}{{change_user_surname}}{% else %}{{u.surname}}{% endif %}" 
+                                autocomplete="off"
+                                id="surname_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_surname and change_user_surname != u.surname and not errorEnteredNameSurname %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.surname}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.surname}}`, {{u.pk}}, event)"                                
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Имя {% if errorEnteredNameSurname %}<div style="color: red;">Имя не может буть пустым</div>{% endif %}</div>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="name" 
+                                value="{% if change_user_name %}{{change_user_name}}{% else %}{{u.name}}{% endif %}" 
+                                autocomplete="off" 
+                                id="name_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_name and change_user_name != u.name and not errorEnteredNameSurname %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.name}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.name}}`, {{u.pk}}, event)"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Улица</div>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="street" 
+                                value="{% if change_user_street %}{{change_user_street}}{% else %}{{u.street}}{% endif %}" 
+                                autocomplete="off"
+                                id="street_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_street and change_user_street != u.street %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.street}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.street}}`, {{u.pk}}, event)"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Дом</div>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="home" 
+                                value="{% if change_user_home %}{{change_user_home}}{% else %}{{u.home}}{% endif %}"
+                                autocomplete="off"
+                                id="home_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_home and change_user_home != u.home %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.home}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.home}}`, {{u.pk}}, event)"     
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Квартира</div>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="flat" 
+                                value="{% if change_user_flat %}{{change_user_flat}}{% else %}{{u.flat}}{% endif %}" 
+                                autocomplete="off"
+                                id="flat_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_flat and change_user_flat != u.flat %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.flat}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.flat}}`, {{u.pk}}, event)"   
+                                >
+                            </div>
+                        </div>
+                        <div class="text-start">
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Сотовый {% if errorEnteredSotowyy %}<div style="color: red;">Введите корретный номер сотового</div>{% endif %}</div>
+                            <div class="input-with-image">
+                                <img src="{% static 'telekom/jpg/+993.png' %}" width="30">
+                                <input 
+                                type="text" 
+                                placeholder="XX XX XX XX" 
+                                class="form-control" 
+                                autocomplete="off" 
+                                name="sotowyy"
+                                id="change_sotowy{{u.pk}}" 
+                                maxlength="11" 
+                                {% if errorEnteredSotowyy %}
+                                    {% if change_user_sotowyy and change_user_sotowyy != u.sotowyy %}
+                                        value="{{change_user_sotowyy}}"
+                                        style="background-color:rgb(241, 255, 170);"
+                                    {% else %}
+                                        value="{{u.sotowyy}}"
+                                    {% endif %}
+                                {% else %}
+                                    {% if change_user_sotowyy and change_user_sotowyy != u.sotowyy %}
+                                        value="{{change_user_sotowyy}}"
+                                        style="background-color:rgb(241, 255, 170);"
+                                    {% else %}
+                                        value="{{u.sotowyy}}"
+                                    {% endif %}
+                                {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.sotowyy}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.sotowyy}}`, {{u.pk}}, event)"   
+                                >
+                            </div>
+                        </div>
+                        <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                            <label for="is_enterprises_in_change_user{{u.pk}}">Предприятие</label>
+                            <div>
+                                <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                name="is_enterprises" 
+                                id="is_enterprises_in_change_user{{u.pk}}" 
+                                {% if u.is_enterprises %} checked {% endif %}
+                                >
+                            </div>
+                        </div>
+                        <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                            <div>
+                                Точек
+                                {% if errorEnteredCount %} 
+                                    {% if errorCountMoreThan50 %}
+                                        <div style="color: red;">
+                                            Точек не может быть больше 50
+                                        </div>
+                                    {% elif errorCountEmpty %}
+                                        <div style="color: red;">
+                                            Точки не могут быть пустыми
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div>
+                                <input 
+                                type="number" 
+                                name="count" 
+                                class="form-control my_width100" 
+                                {% if change_user_count %}
+                                    value="{{change_user_count}}" 
+                                {% else %}
+                                    value="{{u.count}}" 
+                                {% endif %}
+                                id="change_count{{u.pk}}"
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.count}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.count}}`, {{u.pk}}, event)"  
+                                >
+                            </div>
+                        </div>
+                        <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                            <label for="comment_in_cheked_user{{u.pk}}">Комментарий {% if errorEnteredComment %}<div style="color: red;">Оставьте комментарий</div>{% endif %}</label>
+                            <div>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                name="comment" 
+                                id="comment_in_cheked_user{{u.pk}}" 
+                                autocomplete="off" 
+                                {% if errorEnteredComment %} 
+                                    value="{{change_user_comment}}"
+                                {% else %}
+                                    {% if change_user_comment and change_user_comment != reversed_date_str %}
+                                        style="background-color:rgb(241, 255, 170);"
+                                        value="{{change_user_comment}}"
+                                    {% else %}
+                                        value="{{reversed_date_str}} "
+                                    {% endif %}
+                                {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{reversed_date_str}} `, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{reversed_date_str}} `, {{u.pk}}, event)" 
+                                >
+                            </div>
+                        </div>
+               
+                        <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                            <label for="is_active_in_cheked_user{{u.pk}}">Включить</label>
+                            <div><input type="checkbox" class="form-check-input" name="is_active" id="is_active_in_cheked_user{{u.pk}}" {% if u.is_active %} checked {% endif %}></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" form="change_user_form_{{u.pk}}">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+//     // Добавляем событие на все модальные окна change user
+//     document.querySelectorAll('.changeModal').forEach(modal => {
+//         modal.addEventListener('shown.bs.modal', function (event) {
+//             const modalId = modal.getAttribute('id');
+//             const numberInput = modal.querySelector(`[id^='number_input_in_change_user_modal']`);
+//             if (numberInput) {
+//                 numberInput.select();
+//             }
+//         });
+//     });
+
+
+//    // Добавляем слушатель изменения состояния чекбокса
+//    document.addEventListener('DOMContentLoaded', function () {
+//         document.querySelectorAll('input[name="is_active"]').forEach(function(checkbox) {
+//             checkbox.addEventListener('change', function() {
+//                 // Получаем родительский .modal-content
+//                 var modalContent = this.closest('.modal-content');
+//                 // Если чекбокс отмечен, меняем цвет фона на #f4ffee, иначе на #ffeeee
+//                 modalContent.style.backgroundColor = this.checked ? '#f4ffee' : '#ffeeee';
+//             });
+//         });
+//     });
+
+
+//     // Обработчик события при нажатие на escape
+//     function changeDBInChangeInput(id, cur, user_pk, event) {
+//         let myInput = document.getElementById(id)
+//         if (event.key === 'Escape') {
+//             myInput.value = cur;
+//             myInput.style.backgroundColor = 'white';
+//             setTimeout(() => {
+//             myInput.select();
+//         }, 0);
+//         }
+//     }
+//     // Обработчик события при вводе данных
+//     function changeDBInChangeInput2(id, cur, user_pk, event) {
+//         let myInput = document.getElementById(id)
+
+//         let getSotowyIdChange = document.getElementById(id);
+//         // Узнаем какую клавишу нажал пользователь
+//         let key = event.inputType;
+
+//         // события для сотового
+//         if (id.includes('sotowy')) {
+//             // если при нажатии на Backspace перед символом которая удаяется есть пробел то убрать и пробел
+//             if (key === 'deleteContentBackward') {
+//             let currentValue = getSotowyIdChange.value;
+//             if (currentValue.length > 0 && currentValue.charAt(currentValue.length - 1) === ' ') {
+//                 getSotowyIdChange.value = currentValue.slice(0, -1);  
+//                 } 
+//             }
+//             // Автоматически ставить пробелы через каждые 2 цыфры
+//             if (getSotowyIdChange.value.length == 2 && key !== 'deleteContentBackward') {
+//                 getSotowyIdChange.value += " ";
+//             }
+//             if (getSotowyIdChange.value.length == 5 && key !== 'deleteContentBackward') {
+//                 getSotowyIdChange.value += " ";
+//             }
+//             if (getSotowyIdChange.value.length == 8 && key !== 'deleteContentBackward') {
+//                 getSotowyIdChange.value += " ";
+//             }
+//         }
+        
+
+
+//         if (myInput.value != cur && event.key !== 'Escape') {
+//             myInput.style.backgroundColor = 'rgb(241, 255, 170)';
+//         } else {
+//             myInput.style.backgroundColor = 'white'; 
+//         }
+
+//     }
+
+
+
+
+document.querySelectorAll('.changeModal').forEach(modal => {
+    modal.addEventListener('shown.bs.modal', function (event) {
+        const modalId = modal.getAttribute('id');
+        const numberInput = modal.querySelector(`[id^='number_input_in_change_user_modal']`);
+        if (numberInput) {
+            numberInput.select();
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('input[name="is_active"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var modalContent = this.closest('.modal-content');
+            modalContent.style.backgroundColor = this.checked ? '#f4ffee' : '#ffeeee';
+        });
+    });
+});
+
+function changeDBInChangeInput(id, cur, user_pk, event) {
+    let myInput = document.getElementById(id);
+    if (event.key === 'Escape') {
+        myInput.value = cur;
+        myInput.style.backgroundColor = 'white';
+        setTimeout(() => {
+            myInput.select();
+        }, 0);
+    }
+}
+
+function changeDBInChangeInput2(id, cur, user_pk, event) {
+    let myInput = document.getElementById(id);
+
+    let getSotowyIdChange = document.getElementById(id);
+    let key = event.inputType;
+
+    if (id.includes('sotowy')) {
+        if (key === 'deleteContentBackward') {
+            let currentValue = getSotowyIdChange.value;
+            if (currentValue.length > 0 && currentValue.charAt(currentValue.length - 1) === ' ') {
+                getSotowyIdChange.value = currentValue.slice(0, -1);
+            }
+        }
+        if (getSotowyIdChange.value.length == 2 && key !== 'deleteContentBackward') {
+            getSotowyIdChange.value += " ";
+        }
+        if (getSotowyIdChange.value.length == 5 && key !== 'deleteContentBackward') {
+            getSotowyIdChange.value += " ";
+        }
+        if (getSotowyIdChange.value.length == 8 && key !== 'deleteContentBackward') {
+            getSotowyIdChange.value += " ";
+        }
+    }
+
+    if (myInput.value != cur && event.key !== 'Escape') {
+        myInput.style.backgroundColor = 'rgb(241, 255, 170)';
+    } else {
+        myInput.style.backgroundColor = 'white';
+    }
+}
+
+
+</script>
+

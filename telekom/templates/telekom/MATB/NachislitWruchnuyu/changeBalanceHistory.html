@@ -1,0 +1,71 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}История изменений Баланса{% endblock %}
+{% block content %}
+
+<div class="container mt-4 text-white" style="background-color:#121212; padding:20px; border-radius:8px;">
+    <h1 class="mb-4 text-white">История изменений Баланса</h1>
+
+    <!-- Фильтры -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <select class="form-select bg-dark text-white border-secondary" name="etrap">
+                <option value="">Выберите этрап</option>
+                {% for e in etraps %}
+                <option value="{{ e }}" {% if etrap_filter == e %}selected{% endif %}>{{ e }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="number" class="form-control bg-dark text-white border-secondary" placeholder="Номер" value="{{ number_filter }}">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select bg-dark text-white border-secondary" name="type">
+                <option value="">Выберите тип</option>
+                <option value="telefoniya" {% if type_filter == 'telefoniya' %}selected{% endif %}>Телефония</option>
+                <option value="internet" {% if type_filter == 'internet' %}selected{% endif %}>Интернет</option>
+                <option value="alem" {% if type_filter == 'alem' %}selected{% endif %}>Alem TV</option>
+                <option value="kabel" {% if type_filter == 'kabel' %}selected{% endif %}>Kabel</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Применить</button>
+            <button type="submit" name="export" value="1" class="btn btn-success">Скачать Excel</button>
+        </div>
+    </form>
+
+    <!-- Таблица истории -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-white" style="background-color:#1e1e1e;">
+            <thead style="background-color:#2c2c2c;">
+                <tr>
+                    <th>Номер</th>
+                    <th>Этрап</th>
+                    <th>Старый баланс</th>
+                    <th>Новый баланс</th>
+                    <th>Тип</th>
+                    <th>Комментарий</th>
+                    <th>Дата</th>
+                    <th>Оператор</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in history %}
+                <tr>
+                    <td>{{ h.number }}</td>
+                    <td>{{ h.etrap }}</td>
+                    <td>{{ h.old_balance|floatformat:2 }}</td>
+                    <td>{{ h.new_balance|floatformat:2 }}</td>
+                    <td>{{ h.change_type }}</td>
+                    <td><pre class="text-white">{{ h.comment }}</pre></td>
+                    <td>{{ h.date|date:"Y-m-d H:i:s" }}</td>
+                    <td>{{ h.operator }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-white">Записей нет</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

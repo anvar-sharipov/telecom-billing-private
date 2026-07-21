@@ -1,0 +1,133 @@
+{% load static %}
+<!-- Начало Добавить нового пользователя -->
+    <!-- trigger modal add new user -->
+    <!-- <button class="btn btn-light m-2" data-bs-toggle="modal" data-bs-target="#add_new_user" {% if not request.user.is_superuser  and request.user.username != 'subadmin1' %} disabled {% endif %}><img src="{% static 'telekom/jpg/add3.webp' %}" width="30"></button> -->
+    <button class="btn btn-light m-2 btn-hover" data-bs-toggle="modal" data-bs-target="#add_new_user" {% if not request.user.is_superuser and request.user.username != 'Gayyp' %} disabled {% endif %}>
+        <img src="{% static 'telekom/jpg/add3.webp' %}" width="30">
+      </button>
+    <!-- Modal add new user -->
+    <div class="modal fade" id="add_new_user" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="add_user_modal_content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Добавить нового пользователя</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="add_new_user_form">{% csrf_token %}
+                        <div class="d-flex" style="flex-direction: column; row-gap: 10px;">
+                            <input type="hidden" name="add_user_form">
+                            <div>
+                                <div style="color: #949494;">
+                                    Номер ( свободный id: {{smallest_empty_id}})
+                                    {% if errorNumberIsEmpty %}
+                                    <div style="color: red;">
+                                        Номер не может быть пустым
+                                    </div>
+                                    {% endif %}
+                                    {% if errorNumberIsAlreadyExist %}
+                                    <div style="color: red;">
+                                        Номер {{errorNumberIsAlreadyExist}} занят
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <input type="text" 
+                                    class="form-control" 
+                                    name="number"
+                                    value="{% if add_user_number %}{{add_user_number}}{% else %}{{smallest_empty_id}}{% endif %}" 
+                                    id="number_input_in_add_user_modal" 
+                                    autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Фамилия {% if errorEnteredNameSurname %}<div style="color: red;">Фамили не может буть пустым</div>{% endif %}</div>
+                                <div><input type="text" class="form-control" name="surname" {% if add_user_surname %} value="{{add_user_surname}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Имя {% if errorEnteredNameSurname %}<div style="color: red;">Имя не может буть пустым</div>{% endif %}</div>
+                                <div><input type="text" class="form-control" name="name" {% if add_user_name %} value="{{add_user_name}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Улица</div>
+                                <div><input type="text" class="form-control" name="street" {% if add_user_street %} value="{{add_user_street}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Дом</div>
+                                <div><input type="text" class="form-control" name="home" {% if add_user_home %} value="{{add_user_home}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Квартира</div>
+                                <div><input type="text" class="form-control" name="flat" {% if add_user_flat %} value="{{add_user_flat}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">Сотовый {% if errorEnteredSotowyy %}<div style="color: red;">Введите корретный номер сотового</div>{% endif %}</div>
+                                <div class="input-with-image">
+                                    <img src="{% static 'telekom/jpg/+993.png' %}" width="30">
+                                    <input type="text" 
+                                    placeholder="XX XX XX XX" 
+                                    class="form-control" 
+                                    id="sotowyy_id_in_add_user_input" 
+                                    autocomplete="off"
+                                    name="sotowyy" 
+                                    {% if add_user_sotowyy %} value="{{add_user_sotowyy}}" {% endif %} 
+                                    maxlength="11" 
+                                    >
+                                </div>
+                            </div>
+                            <div>
+                                <label for="is_enterprises_in_add_user" style="color: #949494;">Предприятие</label>
+                                <div><input type="checkbox" class="form-check-input" name="is_enterprises" id="is_enterprises_in_add_user" {% if add_user_is_enterprises %} checked {% endif %}></div>
+                            </div>
+                            <div>
+                                <div style="color: #949494;">
+                                    Точек 
+                                    {% if errorEnteredCount %} 
+                                    {% if errorCountMoreThan50 %}
+                                        <div style="color: red;">
+                                            Точек не может быть больше 50
+                                        </div>
+                                    {% elif errorCountEmpty %}
+                                        <div style="color: red;">
+                                            Точки не могут быть пустыми
+                                        </div>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div><input type="number" name="count" class="form-control my_width100" {% if add_user_count %} value="{{add_user_count}}" {% endif %}></div>
+                            </div>
+                            <div>
+                                <label for="comment_in_add_user" style="color: #949494;">Комментарий {% if errorEnteredComment %}<div style="color: red;">Оставьте комментарий</div>{% endif %}</label>
+                                <div><input type="text" class="form-control" name="comment" id="comment_in_add_user" {% if add_user_comment %} value="{{add_user_comment}}" {% else %} value="{{reversed_date_str}} " {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
+                                <label for="is_active_in_add_user" style="color: #949494;">Включить</label>
+                                <div><input type="checkbox" class="form-check-input" name="is_active" id="is_active_in_add_user" {% if add_user_is_active %} checked {% endif %}></div>
+                            </div>
+                            
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="input" class="btn btn-primary" form="add_new_user_form">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Конец Добавить нового пользователя -->
+
+
+    <style>
+        .btn-hover img {
+    transition: transform 0.3s ease;
+  }
+  .btn-hover:hover img {
+    transform: scale(1.1);
+  }
+  .btn-hover:disabled:hover img {
+    transform: none;
+  }
+    </style>

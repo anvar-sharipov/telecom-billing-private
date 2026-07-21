@@ -1,0 +1,162 @@
+{% load static %}
+{% load addFloat %}
+{% for u in users %}
+    <div class="container mb-4 pt-2 {% if new_user_added or user_changed %}last_pay_row{% endif %}" style="border:rgba(0, 0, 0, 0.1) solid 3px; box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.1); {% if u.is_active %} background-color:#d6ffc0; {% else %} background-color:#ff8e8e; {% endif %}">
+        <h5 class="text-center" style="display: flex; align-items: center; margin: 0;">
+            <div style="font-size: 14px; padding:5px; border-radius:5px; color: rgba(0, 0, 0, 0.3);">
+                {{u.count}} т : {{u.kabel_price}} ман
+                <span style="margin-left: 10px;" class="fw-bold">{% if u.is_enterprises %}Edara{% else %}Ilat{% endif %}</span>
+             </div>
+            <div style="flex: 1;"> <!-- Этот div будет занимать доступное пространство d6ffc0  ffeeee -->
+                {{u.surname}} {{u.name}} ( {{u.number}} )
+            </div>
+
+            <!-- trigger modal Pay -->
+            <span style="padding: 4px 2px; margin: 5px; border-radius:5px;" class="payImg hover-effect" {% if is_allow_to_pay %} data-bs-toggle="modal" data-bs-target="#payModalKabel{{u.pk}}" {% endif %}>
+                <img src="{% static 'telekom/jpg/pay3.png' %}" width="40">
+            </span>
+            <!-- modal pay -->
+            {% include 'telekom/MATB/KabelNew/right/separateRight/payModal.html' %}
+            
+            <!-- trigger modal change user -->
+            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect" {% if is_allow_to_change_base or request.user.username == 'Gayyp' %} data-bs-toggle="modal" data-bs-target="#changeModalKabel{{u.pk}}" {% endif %}>
+                <img src="{% static 'telekom/jpg/change5.png' %}" width="25">
+            </span>
+            <!-- modal change user -->
+            {% include 'telekom/MATB/KabelNew/right/separateRight/ChangeModal.html' %}
+            
+            <!-- trigger modal delete -->
+            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect" {% if is_allow_to_change_base %} data-bs-toggle="modal" data-bs-target="#deleteModalKabel{{u.pk}}" {% endif %}>
+                <img src="{% static 'telekom/jpg/delete.png' %}" width="20">
+            </span>
+            <!-- modal delete user -->
+            {% include 'telekom/MATB/KabelNew/right/separateRight/deleteUserModal.html' %}
+            
+            <!-- trigger modal comments -->
+            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect" data-bs-toggle="modal" data-bs-target="#commentsModalKabel{{u.pk}}">
+                <img src="{% static 'telekom/jpg/comment.webp' %}" width="25">
+            </span>
+            <!-- modal comments user -->
+            {% include 'telekom/MATB/KabelNew/right/separateRight/commentsUserModal.html' %}
+
+            <!-- trigger modal perekidka -->
+            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect d-none" data-bs-toggle="modal" data-bs-target="#perekidkaModalKabel{{u.pk}}">
+                <img src="{% static 'telekom/jpg/perekidka.webp' %}" width="25">
+            </span>
+            <!-- modal perekidka -->
+            {% include 'telekom/MATB/KabelNew/right/separateRight/perekidkaBalance.html' %}
+
+        </h5>
+        {% if u.kabelnach_set.all %}
+        <div class="d-flex justify-content-around" style="color: rgba(0, 0, 0, 0.5);">
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '01' and nach.year == year %}
+                    <div class="d-flex"><div>Январь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '02' and nach.year == year %}
+                    <div class="d-flex"><div>Февраль:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '03' and nach.year == year %}
+                    <div class="d-flex"><div>Март:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '04' and nach.year == year %}
+                    <div class="d-flex"><div>Апрель:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '05' and nach.year == year %}
+                    <div class="d-flex"><div>Май:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '06' and nach.year == year %}
+                    <div class="d-flex"><div>Июнь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '07' and nach.year == year %}
+                    <div class="d-flex"><div>Июль:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '08' and nach.year == year %}
+                    <div class="d-flex"><div>Август:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '09' and nach.year == year %}
+                    <div class="d-flex"><div>Сентябрь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '10' and nach.year == year %}
+                    <div class="d-flex"><div>Октябрь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '11' and nach.year == year %}
+                    <div class="d-flex"><div>Ноябрь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+            {% for nach in u.kabelnach_set.all %}
+                {% if nach.month == '12' and nach.year == year %}
+                    <div class="d-flex"><div>Декабрь:</div><div style="margin-left: 5px;">{{nach.nach}}</div></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        {% endif %}
+
+        
+        <div class="container">
+            <!-- Начало пользователи -->
+            <div class="row">
+                <div class="col-md-6" style="padding-bottom: 5px;">
+                    <div class="card" style="border: none;">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><span style="color: #afaeae;">Улица:</span> <span class="fw-bold">{{u.street}}</span></li>
+                                <li class="list-group-item"><span style="color: #afaeae;">Дом:</span> <span class="fw-bold">{{u.home}}</span></li>
+                                <li class="list-group-item"><span style="color: #afaeae;">Квартира:</span> <span class="fw-bold">{{u.flat}}</span></li>
+                                {% if u.balance < 0 %}
+                                    <li class="list-group-item" style="color: red;">
+                                        Кабель баланс: 
+                                        <span style="font-size: 20px;" class="fw-bold">
+                                            ( {{u.balance|floatformat:2}} )
+                                        </span>
+                                    </li>
+                                {% else %}
+                                    <li class="list-group-item" style="color: green;">Кабель баланс: <span style="font-size: 20px;" class="fw-bold">( {{u.balance|floatformat:2}} )</span></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Конец пользователи -->
+
+                <!-- История платежей -->
+                {% include 'telekom/MATB/KabelNew/right/separateRight/payHistory.html' %}
+                
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+<style>
+     .hover-effect img {
+    transition: transform 0.3s ease;
+  }
+  .hover-effect:hover img {
+    transform: scale(1.2);
+  }
+  .hover-effect[disabled]:hover img {
+    transform: none;
+  }
+</style>

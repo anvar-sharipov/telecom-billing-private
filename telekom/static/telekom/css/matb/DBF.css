@@ -1,0 +1,300 @@
+/* ###############
+    local-calls ##
+   ###############
+*/
+.myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+   }
+.localCallsContainer {
+    color: white;
+    margin: 20px 40px;
+}
+.localCallsSearchEtrap, #localCallsSerachNumber, localCallsDateInput {
+    width: 150px;
+    background-color: #FFD700;
+}
+.localCallsForm {
+    display: flex;
+    column-gap: 10px;
+    align-items: flex-end;
+    margin-left: auto;
+    margin-right: auto;
+    width: 750px;
+}
+.localCallsSearchSubmit {
+    height: fit-content;
+    background-color: #FFD700;
+    color: black;
+}
+.localCallsTable{
+    background-color: white;
+    color: black;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1100px;
+
+}
+.localCallsTable th, .localCallsTable td {
+    padding-left: 5px;
+}
+.localCallsTable th:nth-of-type(1), .localCallsTable td:nth-of-type(1){width: 50px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(2), .localCallsTable td:nth-of-type(2){width: 50px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(3), .localCallsTable td:nth-of-type(3){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(4), .localCallsTable td:nth-of-type(4){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(5), .localCallsTable td:nth-of-type(5){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(6), .localCallsTable td:nth-of-type(6){width: 150px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(7), .localCallsTable td:nth-of-type(7){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(8), .localCallsTable td:nth-of-type(8){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(9), .localCallsTable td:nth-of-type(9){width: 100px; border: 1px black solid;}
+.localCallsTable th:nth-of-type(10), .localCallsTable td:nth-of-type(10){width: 50px; border: 1px black solid;}
+
+/* ###################
+    local-calls END ##
+   ###################
+*/
+
+
+/* ####################
+    none-local-calls ##
+   ####################
+*/
+.myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+}
+.nonLocalCallsContainer {
+    color: white;
+    margin: 20px 40px;
+}
+.nonLocalCallsSearchEtrap, #nonLocalCallsSerachNumber, .nonLocalCallsDateInput {
+    width: 150px;
+    background-color: #FFD700;
+}
+.nonLocalCallsForm {
+    display: flex;
+    column-gap: 10px;
+    align-items: flex-end;
+    margin-left: auto;
+    margin-right: auto;
+    width: 750px;
+}
+.nonLocalCallsSearchSubmit {
+    height: fit-content;
+    background-color: #FFD700;
+    color: black;
+}
+.nonLocalCallsTable{
+    background-color: white;
+    color: black;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1100px;
+}
+.nonLocalCallsTable th, .nonLocalCallsTable td {
+    padding-left: 5px;
+}
+.nonLocalCallsTable th:nth-of-type(1), .nonLocalCallsTable td:nth-of-type(1){width: 80px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(2), .nonLocalCallsTable td:nth-of-type(2){width: 160px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(3), .nonLocalCallsTable td:nth-of-type(3){width: 160px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(4), .nonLocalCallsTable td:nth-of-type(4){width: 150px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(5), .nonLocalCallsTable td:nth-of-type(5){width: 80px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(6), .nonLocalCallsTable td:nth-of-type(6){width: 80px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(7), .nonLocalCallsTable td:nth-of-type(7){width: 80px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(8), .nonLocalCallsTable td:nth-of-type(8){width: 40px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(9), .nonLocalCallsTable td:nth-of-type(9){width: 50px; border: 1px black solid;}
+.nonLocalCallsTable th:nth-of-type(10), .nonLocalCallsTable td:nth-of-type(10){width: 50px; border: 1px black solid;}
+
+/* ########################
+    none-local-calls END ##
+   ########################
+*/
+
+
+/* ##########################
+    slr-nachisleniya index ##
+   ##########################
+*/
+.slr_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+.slrInfoRowContainerErr {
+    background-color: #FF6347;
+    width: 450px;
+    height: 50px;
+    border-radius: 5px;
+    color: black;
+    margin-top: 150px;
+}
+.slrNachisleniyaInfo .errorRow {
+    margin-top: 250px;
+}
+.slrNachisleniyaInfo .item2slr {
+    padding-top: 15px;
+    padding-left: 10px;
+    border-radius: 5px;  
+}
+.slrInfoRowContainers {
+    width: 450px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #20B2AA;
+    color: black;
+    border: 1px black solid;
+}
+.slrNachisleniyaInfo {
+    width: 500px;
+    height: 700px;
+    background-color: #6495ED;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 20px ;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.slrNachisleniyaInfo .item1slr {
+    padding-top: 15px;
+    padding-left: 10px;
+    width: 350px;
+    border-radius: 5px;
+    background-color: white;
+}
+.myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+}
+
+.bg-gold {
+   background-color: #FFD700;
+}
+
+.slrNachisleniyaContainer {
+   color: white;
+   margin: 20px 40px;
+}
+.slrNachisleniyaSearchEtrap, .slrNachisleniyaSearchMonth, .slrNachisleniyaSearchYear {
+   width: 160px;
+   background-color: #FFD700;
+}
+.slrNachisleniyaForm {
+   display: flex;
+   column-gap: 10px;
+   align-items: flex-end;
+   margin-left: auto;
+   margin-right: auto;
+   width: 430px;
+}
+.slrNachisleniyaSearchSubmit {
+   height: fit-content;
+   background-color: #FFD700;
+   color: black;
+}
+/* ##############################
+    slr-nachisleniya index END ##
+   ##############################
+*/
+
+/* ##########################
+    kod-nachisleniya index ##
+   ##########################
+*/
+.kod_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+.kodInfoRowContainerErr {
+    background-color: #FF6347;
+    width: 500px;
+    height: 50px;
+    border-radius: 5px;
+    color: black;
+    margin-top: 50;
+}
+.kodNachisleniyaInfo .errorRow {
+    margin-top: 250px;
+}
+.kodNachisleniyaInfo .item2kod {
+    padding-top: 12px;
+    padding-left: 10px;
+    border-radius: 5px;
+    
+}
+.kodInfoRowContainers {
+    width: 500px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #20B2AA;
+    color: black;
+    border: 1px black solid;
+}
+.kodNachisleniyaInfo {
+    width: 550px;
+    height: 700px;
+    background-color: #6495ED;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 20px ;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.kodNachisleniyaInfo .item1kod {
+    padding-top: 12px;
+    padding-left: 10px;
+    width: 400px;
+    border-radius: 5px;
+    background-color: white;
+}
+.myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+}
+.bg-gold {
+   background-color: #FFD700;
+}
+
+.kodNachisleniyaContainer {
+   color: white;
+   margin: 20px 40px;
+}
+.kodNachisleniyaSearchEtrap, .kodNachisleniyaSearchMonth, .kodNachisleniyaSearchYear {
+   width: 160px;
+   background-color: #FFD700;
+}
+.kodNachisleniyaForm {
+   display: flex;
+   column-gap: 10px;
+   align-items: flex-end;
+   margin-left: auto;
+   margin-right: auto;
+   width: 430px;
+}
+.kodNachisleniyaSearchSubmit {
+   height: fit-content;
+   background-color: #FFD700;
+   color: black;
+}
+/* ##############################
+    kod-nachisleniya index END ##
+   ##############################
+*/
+ 
+ 

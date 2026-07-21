@@ -1,0 +1,48 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Ошибка в файле Платежи с биллинга{% endblock %}
+{% block content %}
+
+<h1 class="text-light">Ошибка в файле Платежи с биллинга</h1>
+
+
+<div style="margin: 100px;">
+    <table class="table table-success">
+        <thead>
+            <tr>
+                <th>row</th>
+                <th>manager</th>
+                <th>date</th>
+                <th>dogowor</th>
+                <th>name</th>
+                <th>price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row, val in errorDict.items %}
+            <tr>
+                <td>{{row}}</td>
+                {% for v in val %}
+                    {% if forloop.counter == 1 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 4 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 5 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

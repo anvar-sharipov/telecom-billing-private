@@ -1,0 +1,54 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Ошибка в файле {{xlsx_data}}{% endblock %}
+{% block content %}
+
+<div class="mt-2" style="padding: 0 200px;">
+    <table class="table table-hover table-primary">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Ф.И.О</th>
+                <th>Договор</th>
+                <th>Цена</th>
+                <th>Менеджер</th>
+                <th>Дата платежа</th>
+                <th>Карт</th>
+                <th style="background-color: #fcb0b0;">Тип Ошибки</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in errorList %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                {% for r in v %}
+                    {% if forloop.counter == 1 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 4 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 5 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 6 %}
+                        <td>{{r}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 7 %}
+                        <td style="background-color: #fcb0b0;">{{r}}</td>
+                    {% endif %}
+        
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

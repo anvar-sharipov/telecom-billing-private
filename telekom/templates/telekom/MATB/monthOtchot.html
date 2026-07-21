@@ -1,0 +1,636 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Отчет за {{get_month}}{% endblock %}
+{% block content %}
+
+
+<form method="GET" class="d-flex my_column_gap10 mt-3 my_width700 my_block_center">
+    <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrap">
+        {% for etr in etraps %}
+            {% if etrap in etraps or etrap == 'all' %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% else %}
+                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% endif %}
+        {% endfor %}
+        <option value="all" {% if etrap == 'all' %} selected {% endif %}>Все</option>
+    </select>
+
+    <select class="form-select my_width200 bg-gold" name="year">
+        {% for year in years %}
+            <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+        {% endfor %}         
+    </select>
+
+    <select class="form-select my_width200 bg-gold" name="month">
+        {% for month in months %}
+            <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+        {% endfor %}         
+    </select>
+
+    <button class="btn btn-success">Показать</button>
+
+</form>
+
+<div class="my_width500 my_block_center mt-3">
+    <table class="table table-light table-hover">
+        <tbody>
+
+<!-- ###################################
+#   Платежи (карт) за выбранный месяц ##
+#################################### -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">Платежи через кассу карт за {{get_month}} {{get_year}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">{{abonplataPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Слр</td>
+    <td class="my_bg_gray">{{slrPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Код</td>
+    <td class="my_bg_gray">{{kodPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Заказ</td>
+    <td class="my_bg_gray">{{zakazPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Прочее</td>
+    <td class="my_bg_gray">{{procheePayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги</td>
+    <td class="my_bg_gray">{{dop_uslugiPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">{{internetPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Кабель TV</td>
+    <td class="my_bg_gray">{{kabelPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">{{alemPayCard|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">{{totalPayCard|floatformat:2}}</td>
+</tr>
+<!-- #######################################
+#   Платежи (карт) за выбранный месяц END ##
+######################################## -->
+<!-- ########################################
+#   Платежи (наличными) за выбранный месяц ##
+######################################### -->
+<tr>
+    <td class="text-center" colspan="2">Платежи через кассу наличными за {{get_month}} {{get_year}}</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{abonplataPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{slrPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{kodPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{zakazPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{procheePay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{dop_uslugiPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{internetPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{kabelPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{alemPay|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalPay|floatformat:2}}</td>
+</tr>
+<!-- ############################################
+#   Платежи (наличными) за выбранный месяц END ##
+############################################# -->
+<!-- ############################################ 
+#   Текущий (положительный) баланс с UserTable ##
+############################################# -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">Текущий положительный баланс</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">{{totalAbonplataPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Слр</td>
+    <td class="my_bg_gray">{{totalSlrPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Код</td>
+    <td class="my_bg_gray">{{totalKodPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Заказ</td>
+    <td class="my_bg_gray">{{totalZakazPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Прочее</td>
+    <td class="my_bg_gray">{{totalProcheePlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги</td>
+    <td class="my_bg_gray">{{totalDop_uslugiPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">{{totalInternetPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Кабель TV</td>
+    <td class="my_bg_gray">{{totalKabelPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">{{totalAlemPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">{{totalBalancePlus|floatformat:2}}</td>
+</tr>
+<!-- ################################################ 
+#   Текущий (положительный) баланс с UserTable END ##
+################################################# -->
+<!-- ############################################# 
+#   Текущий (отрицательный) баланс с UserTable  ##
+############################################## -->
+<tr>
+    <td class="text-center" colspan="2">Текущий отрицательный баланс</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{totalAbonplataMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{totalSlrMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{totalKodMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{totalZakazMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{totalProcheeMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{totalDop_uslugiMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{totalInternetMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{totalKabelMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{totalAlemMinus|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalBalanceMinus|floatformat:2}}</td>
+</tr>
+<!-- ################################################ 
+#   Текущий (отрицательный) баланс с UserTable END ##
+################################################# -->
+<!-- #################################### 
+#   Внешние платежи за выбранный месяц ##
+##################################### -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">Внешние платежи за {{get_month}} {{get_year}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">{{internetPlateji|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">{{AbonplataPlateji|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">{{AlemPlateji|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">{{totalWneshniePlateji|floatformat:2}}</td>
+</tr>
+<!-- ######################################## 
+#   Внешние платежи за выбранный месяц END ##
+######################################### -->
+<!-- ######################################### 
+#   Начисления за выбранный месяц через MTB ##
+########################################## -->
+<tr>
+    <td class="text-center" colspan="2">Начисления через MTB за {{get_month}} {{get_year}}</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{abonplataMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{slrMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{kodMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{zakazMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{procheeMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{serviceMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{internetMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{kabelMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{alemMonthNachMTB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalMTBNachisleniya|floatformat:2}}</td>
+</tr>
+<!-- ############################################# 
+#   Начисления за выбранный месяц через MTB END ##
+############################################## -->
+<!-- ###################
+#   Другие Начисления ##
+######################## -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">Другие начисления за {{get_month}} {{get_year}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Метры</td>
+    <td class="my_bg_gray">{{mss|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги (абон-отдел)</td>
+    <td class="my_bg_gray">{{serviceMonthNachMB|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">{{totalMss_seviceNach|floatformat:2}}</td>
+</tr>
+<!-- #######################
+#   Другие Начисления END ##
+############################ -->
+<!-- ############################################ 
+#   за Предыдущий месяц (положительный) баланс ##
+############################################# -->
+<tr>
+    <td class="text-center" colspan="2">положительный баланс за {{lastYear}} {{lastMonth}}</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{lastBalanceAbonplataPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{lastBalanceSlrPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{lastBalanceKodPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{lastBalanceZakazPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{lastBalanceProcheePlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{lastBalanceDop_uslugiPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{lastBalanceInternetPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{lastBalanceKabelPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{lastBalanceAlemPlus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalBalanceLastMonthPlus|floatformat:2}}</td>
+</tr>
+<!-- ################################################ 
+#   за Предыдущий месяц (положительный) баланс END ##
+################################################# -->
+<!-- ############################################# 
+#   за Предыдущий месяц (отрицательный) баланс  ##
+############################################## -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">Отрицательный баланс за {{lastYear}} {{lastMonth}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">{{lastBalanceAbonplataMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Слр</td>
+    <td class="my_bg_gray">{{lastBalanceSlrMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Код</td>
+    <td class="my_bg_gray">{{lastBalanceKodMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Заказ</td>
+    <td class="my_bg_gray">{{lastBalanceZakazMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Прочее</td>
+    <td class="my_bg_gray">{{lastBalanceProcheeMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги</td>
+    <td class="my_bg_gray">{{lastBalanceDop_uslugiMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">{{lastBalanceInternetMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Кабель TV</td>
+    <td class="my_bg_gray">{{lastBalanceKabelMinus|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">{{lastBalanceAlemMinus|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">{{totalBalanceLastMonthMinus|floatformat:2}}</td>
+</tr>
+<!-- ################################################ 
+#   за Предыдущий месяц (отрицательный) баланс END ##
+################################################# -->
+
+<!-- ###################################### 
+#   Инфа о перекидках за выбранный месяц ##
+########################################### -->
+<!-- Плюс -->
+<tr>
+    <td class="text-center" colspan="2">За {{get_month}} {{get_year}} перекинута (плюс)</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{telefonP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{slrP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{kodP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{zakazP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{procheeP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{dop_uslugiP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{internetP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{kabelP|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{alemP|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalPPerekidka|floatformat:2}}</td>
+</tr>
+
+<!-- Минус -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">За {{get_month}} {{get_year}} перекинута (минус)</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">-{{telefonM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Слр</td>
+    <td class="my_bg_gray">-{{slrM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Код</td>
+    <td class="my_bg_gray">-{{kodM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Заказ</td>
+    <td class="my_bg_gray">-{{zakazM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Прочее</td>
+    <td class="my_bg_gray">-{{procheeM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги</td>
+    <td class="my_bg_gray">-{{dop_uslugiM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">-{{internetM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Кабель TV</td>
+    <td class="my_bg_gray">-{{kabelM|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">-{{alemM|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">-{{totalMPerekidka|floatformat:2}}</td>
+</tr>
+
+<!-- ########################################## 
+#   Инфа о перекидках за выбранный месяц END ##
+############################################### -->
+
+
+<!-- ###################################### 
+#   Инфа о перекидках за предыдущий месяц ##
+########################################### -->
+<!-- Плюс -->
+<tr>
+    <td class="text-center" colspan="2">За {{lastMonth}} {{lastYear}} перекинута (плюс)</td>
+</tr>
+<tr>
+    <td>Абонплата</td>
+    <td>{{telefonPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Слр</td>
+    <td>{{slrPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Код</td>
+    <td>{{kodPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Заказ</td>
+    <td>{{zakazPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Прочее</td>
+    <td>{{procheePLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Доп. услуги</td>
+    <td>{{dop_uslugiPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Интернет</td>
+    <td>{{internetPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Кабель TV</td>
+    <td>{{kabelPLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td>Alem TV</td>
+    <td>{{alemPLast|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end">Итого:</td>
+    <td>{{totalPPerekidkaLast|floatformat:2}}</td>
+</tr>
+
+<!-- Минус -->
+<tr>
+    <td class="text-center my_bg_gray" colspan="2">За {{lastMonth}} {{lastYear}} перекинута (минус)</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Абонплата</td>
+    <td class="my_bg_gray">-{{telefonMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Слр</td>
+    <td class="my_bg_gray">-{{slrMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Код</td>
+    <td class="my_bg_gray">-{{kodMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Заказ</td>
+    <td class="my_bg_gray">-{{zakazMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Прочее</td>
+    <td class="my_bg_gray">-{{procheeMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Доп. услуги</td>
+    <td class="my_bg_gray">-{{dop_uslugiMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Интернет</td>
+    <td class="my_bg_gray">-{{internetMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Кабель TV</td>
+    <td class="my_bg_gray">-{{kabelMLast|floatformat:2}}</td>
+</tr>
+<tr>
+    <td class="my_bg_gray">Alem TV</td>
+    <td class="my_bg_gray">-{{alemMLast|floatformat:2}}</td>
+</tr>
+
+<tr>
+    <td class="text-end my_bg_gray">Итого:</td>
+    <td class="my_bg_gray">-{{totalMPerekidkaLast|floatformat:2}}</td>
+</tr>
+
+<!-- ########################################## 
+#   Инфа о перекидках за предыдущий месяц END ##
+############################################### -->
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .my_bg_gray {background-color: #DCDCDC !important;}
+</style>
+
+{% endblock %}

@@ -1,0 +1,1412 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Перекидка начисления{% endblock %}
+{% block content %}
+
+<h1 class="text-light text-center mt-3">Перекидка начисления</h1>
+
+<!-- form search -->
+<form method="GET" id="formSearch">
+</form>
+
+<div class="text-center container mt-5">
+    <div class="d-flex" style="width: 500px; column-gap:10px; margin-left: auto; margin-right: auto;">
+
+        <!-- year 1 -->
+        <div class="col mb-3">
+            <!-- <label for="year1" class="form-label text-start">Год</label> -->
+            <select class="form-select text-center" id="year1" required name="year1" form="formSearch">
+                <option value="" disabled selected>Год</option>
+                <option 
+                    value="2024" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2024' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2024' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2024
+                </option>
+    
+                <option 
+                    value="2025" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2025' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2025' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2025
+                </option>
+    
+                <option 
+                    value="2026" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2026' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2026' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2026
+                </option>
+    
+                <option 
+                    value="2027" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2027' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2027' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2027
+                </option>
+    
+                <option 
+                    value="2028" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2028' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2028' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2028
+                </option>
+    
+                <option 
+                    value="2029" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2029' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2029' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2029
+                </option>
+    
+                <option 
+                    value="2030" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2030' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2030' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                        2030
+                </option>
+    
+                <option 
+                    value="2031" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2031' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2031' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                    2031
+                </option>
+    
+                <option 
+                    value="2032" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2032' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2032' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                    2032
+                </option>
+    
+                <option 
+                    value="2033" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2033' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2033' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                    2033
+                </option>
+    
+                <option 
+                    value="2033" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2033' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2033' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                    2033
+                </option>
+    
+                <option 
+                    value="2034" 
+                    {% if selected_year1 %}
+                        {% if selected_year1 == '2034' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_year == '2034' %}
+                            selected
+                        {% endif %}
+                    {% endif %}
+                    >
+                    2034
+                </option>
+    
+            </select>
+        </div>
+    
+        <!-- month 1 -->
+        <div class="col mb-3">
+            <!-- <label for="month1" class="form-label">Месяц</label> -->
+            <select class="form-select" id="month1" required name="month1" form="formSearch">
+                <option value="" disabled selected>Выберите месяц начисления</option>
+                <option 
+                    value="01" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '01' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '01' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Январь
+                </option>
+    
+                <option 
+                    value="02" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '02' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '02' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Февраль
+                </option>
+    
+                <option 
+                    value="03" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '03' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '03' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Март
+                </option>
+    
+                <option 
+                    value="04" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '04' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '04' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Апрель
+                </option>
+    
+                <option 
+                    value="05" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '05' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '05' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Май
+                </option>
+    
+                <option 
+                    value="06" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '06' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '06' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Июнь
+                </option>
+    
+                <option 
+                    value="07" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '07' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '07' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Июль
+                </option>
+    
+                <option 
+                    value="08" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '08' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '08' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Август
+                </option>
+    
+                <option 
+                    value="09" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '09' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '09' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Сентябрь
+                </option>
+    
+                <option 
+                    value="10" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '10' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '10' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Октябрь
+                </option>
+    
+                <option 
+                    value="11" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '11' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '11' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Ноябрь
+                </option>
+    
+                <option 
+                    value="12" 
+                    {% if selected_month1 %}
+                        {% if selected_month1 == '12' %}
+                            selected
+                        {% endif %}
+                    {% else %}
+                        {% if current_month == '12' %}
+                            selected
+                        {% endif %}
+                    {% endif %}>
+                    Декабрь
+                </option>
+    
+            </select>
+        </div>
+    
+        <div>
+            <button class="btn btn-success" form="formSearch">Поиск</button>
+        </div>
+    
+    </div>
+
+</div>
+
+<div class="container-fluid text-light text-center mt-5">
+    <div class="row">
+        
+
+        <!-- column left -->
+        <div class="col-6 left-column">
+            <h1>Абонент 1</h1>
+
+            <!-- form search user1 -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-3">
+                    <label for="etrap1" class="form-label">Этрап</label>
+                    <select class="form-select" id="etrap1" name="etrap1" form="formSearch">
+                        {% if request.user.is_superuser %}
+                            {% for etrap in etraps %}
+                                <option value="{{ etrap }}" {% if selected_etrap1 == etrap %}selected{% endif %}>{{ etrap }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="number1" class="form-label">Номер</label>
+                    <input type="number" class="form-control" id="number1" placeholder="Номер абонента" 
+                        autocomplete="off" name="number1" {% if number1 %} value="{{number1}}"{% endif %} form="formSearch" 
+                        onkeydown="return event.key !== '-'">
+                </div>
+
+                
+
+                
+            
+            </div>
+            <!-- form search user1 END -->
+
+            <!-- user1 info -->
+            {% if user1 or user1k %}
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6 left-column">
+                        {% if user1k %}
+                            <h5 class="text-center">Кабельное</h5>
+
+                            <div class="container">
+                                <div class="card text-dark" {% if user1k.is_active %} style="background-color: rgb(155, 212, 155);" {% else %}  {% endif %} style="background-color: rgb(212, 182, 155);">
+                                    <div class="card-header text-dark">
+                                        {{ user1k.name }} {{ user1k.surname }}
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            <div style="border-bottom: 1px black solid; padding-bottom: 10px;" >
+                                                <div class="d-flex" style="justify-content: space-between;"><div>{{ user1k.street }}</div><div>{{ user1k.home }}</div><div>{{ user1k.flat }}</div></div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс: </div>
+                                                <div>{{ user1k.balance|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Точек: </div>
+                                                <div>{{ user1k.count }}</div>
+                                            </div>
+                                        </p>              
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">нет кабельного</div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="col-md-6 right-column" style="border-left: 1px rgb(53, 72, 212) solid;">
+                        {% if user1 %}
+                            <h5 class="text-center">Телефония</h5>
+
+                            <div class="container">
+                                <div class="card text-dark">
+                                    <div class="card-header text-dark">
+                                        {{ user1.name }} {{ user1.surname }}
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            <div style="border-bottom: 1px black solid; padding-bottom: 10px;" >
+                                                <div class="d-flex" style="justify-content: space-between;"><div>Адрес: </div><div>{{ user1.street }}</div><div>{{ user1.home }}</div><div>{{ user1.flat }}</div></div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс телефония: </div>
+                                                <div>{{ total_telefoniya_balance1|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс интернет: </div>
+                                                <div>{{ user1.b_internet|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс alem: </div>
+                                                <div>{{ user1.b_alem|floatformat:2 }}</div>
+                                            </div>
+                                        </p>              
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">нет абонента</div>
+                        {% endif %}
+
+                    </div>    
+                </div>
+            {% else %}
+                <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">нет абонента</div>
+            {% endif %}
+            <!-- user1 info END -->
+
+
+            <!-- user1 and user1k nach info -->
+            {% if user1k_n or user1_n %}
+                <form method="POST" id="perekidkaNachForm">{% csrf_token %}
+                    {% if user1_n and user2 %}
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="telefon1" class="form-label text-end" style="width: 100px;">Абонплата</label>
+                                    <input type="text" class="form-control digitsInput" id="telefon1" placeholder="Абонплата" autocomplete="off" name="telefon1" value="{{user1_n.telefon}}" readonly style="width: 200px;" onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="telefon1CheckBox" id="telefon1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="telefon1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px;">
+                                    <label for="slr1" class="form-label text-end" style="width: 100px;">Слр</label>
+                                    <input type="text" class="form-control digitsInput" id="slr1" placeholder="слр" required autocomplete="off" name="slr1" value="{{user1_n.slr}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="slr1CheckBox" id="slr1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="slr1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="kod1" class="form-label text-end" style="width: 100px;">Код</label>
+                                    <input type="text" class="form-control digitsInput" id="kod1" placeholder="Код" required autocomplete="off" name="kod1" value="{{user1_n.kod}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="kod1CheckBox" id="kod1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="kod1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="zakaz1" class="form-label text-end" style="width: 100px;">Заказ</label>
+                                    <input type="text" class="form-control digitsInput" id="zakaz1" placeholder="Заказ" required autocomplete="off" name="zakaz1" value="{{user1_n.zakaz}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="zakaz1CheckBox" id="zakaz1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="zakaz1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="prochee1" class="form-label text-end" style="width: 100px;">Прочее</label>
+                                    <input type="text" class="form-control digitsInput" id="prochee1" placeholder="Прочее" required autocomplete="off" name="prochee1" value="{{user1_n.prochee}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="prochee1CheckBox" id="prochee1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="prochee1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="dop_uslugi1" class="form-label text-end" style="width: 100px;">Доп. услуги</label>
+                                    <input type="text" class="form-control digitsInput" id="dop_uslugi1" placeholder="Доп. услуги" required autocomplete="off" name="dop_uslugi1" value="{{user1_n.dop_uslugi}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="dop_uslugi1CheckBox" id="dop_uslugi1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="dop_uslugi1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="internet1" class="form-label text-end" style="width: 100px;">Интернет</label>
+                                    <input type="text" class="form-control digitsInput" id="internet1" placeholder="Интернет" required autocomplete="off" name="internet1" value="{{user1_n.internet}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="internet1CheckBox" id="internet1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="internet1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="alem1" class="form-label text-end" style="width: 100px;">Alem TV</label>
+                                    <input type="text" class="form-control digitsInput" id="alem1" placeholder="Alem TV" required autocomplete="off" name="alem1" value="{{user1_n.alem}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="alem1CheckBox" id="alem1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="alem1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+            
+           
+
+                    {% endif %}
+
+                    {% if user1k_n and user2k %}
+                        <div class="mt-3 mb-3">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                    <label for="kabel1" class="form-label text-end" style="width: 100px;">Kabel TV</label>
+                                    <input type="text" class="form-control digitsInput" id="kabel1" placeholder="Kabel TV" required autocomplete="off" name="kabel1" value="{{user1k_n.nach}}" style="width: 200px;" readonly onkeydown="return event.key !== 'Enter';">
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input checkboxes" type="checkbox" name="kabel1CheckBox" id="kabel1CheckBox" onkeydown="return event.key !== 'Enter';" {% if number1 == number2 %}disabled{% endif %}>
+                                    <label class="form-check-label" for="kabel1CheckBox">
+                                        Перекинуть
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    
+                </form>
+                {% if number1 != number2 %}
+                <div class="mt-5">
+                    <button class="btn btn-secondary btn-sm" onclick="selectAll()">Выделить все</button>
+                    <button class="btn btn-secondary btn-sm" onclick="notSelectAll()">Снять все</button>
+                </div>
+                {% endif %}
+                
+             
+            {% else %}
+                {% if user1 or user1_n or user1k or user1k_n %}
+                <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">Нет начислений</div>
+                {% endif %}
+            {% endif %}
+            <!-- user1 and user1k nach info END -->
+            
+
+        </div>
+        <!-- column left END-->
+
+
+
+
+
+        <!-- column right -->
+        <div class="col-6 right-column" style="border-left: 2px white solid;">
+            <h1>Абонента 2</h1>
+            
+            <!-- form search user2 -->
+            <div class="row g-3 mt-3">
+                <div class="col-md-3">
+                    <label for="etrap2" class="form-label">Этрап</label>
+                    <select class="form-select" id="etrap2" name="etrap2" form="formSearch">
+                        {% if request.user.is_superuser %}
+                            {% for etrap in etraps %}
+                                <option value="{{ etrap }}" {% if selected_etrap2 == etrap %}selected{% endif %}>{{ etrap }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                        {% endif %}
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="number2" class="form-label">Номер</label>
+                    <input type="number" class="form-control" id="number2" placeholder="Номер абонента" 
+                        autocomplete="off" name="number2" {% if number2 %} value="{{number2}}"{% endif %} form="formSearch" 
+                        onkeydown="return event.key !== '-'">
+                </div>
+
+                {% comment %}
+                <!-- year 2 -->
+                <div class="col mb-3">
+                    <label for="year2" class="form-label">Год</label>
+                    <select class="form-select" id="year2" required name="year2" form="formSearch">
+                        <option value="" disabled selected>Год</option>
+                        <option 
+                            value="2024" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2024' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2024' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2024
+                        </option>
+
+                        <option 
+                            value="2025" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2025' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2025' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2025
+                        </option>
+
+                        <option 
+                            value="2026" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2026' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2026' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2026
+                        </option>
+
+                        <option 
+                            value="2027" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2027' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2027' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2027
+                        </option>
+
+                        <option 
+                            value="2028" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2028' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2028' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2028
+                        </option>
+
+                        <option 
+                            value="2029" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2029' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2029' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2029
+                        </option>
+
+                        <option 
+                            value="2030" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2030' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2030' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                                2030
+                        </option>
+
+                        <option 
+                            value="2031" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2031' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2031' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                            2031
+                        </option>
+
+                        <option 
+                            value="2032" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2032' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2032' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                            2032
+                        </option>
+
+                        <option 
+                            value="2033" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2033' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2033' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                            2033
+                        </option>
+
+                        <option 
+                            value="2033" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2033' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2033' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                            2033
+                        </option>
+
+                        <option 
+                            value="2034" 
+                            {% if selected_year2 %}
+                                {% if selected_year2 == '2034' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_year == '2034' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}
+                            >
+                            2034
+                        </option>
+
+                    </select>
+                </div>
+
+                <!-- month 2 -->
+                <div class="col mb-3">
+                    <label for="month2" class="form-label">Месяц</label>
+                    <select class="form-select" id="month2" required name="month2" form="formSearch">
+                        <option value="" disabled selected>Выберите месяц начисления</option>
+                        <option 
+                            value="01" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '01' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '01' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Январь
+                        </option>
+
+                        <option 
+                            value="02" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '02' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '02' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Февраль
+                        </option>
+
+                        <option 
+                            value="03" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '03' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '03' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Март
+                        </option>
+
+                        <option 
+                            value="04" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '04' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '04' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Апрель
+                        </option>
+
+                        <option 
+                            value="05" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '05' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '05' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Май
+                        </option>
+
+                        <option 
+                            value="06" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '06' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '06' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Июнь
+                        </option>
+
+                        <option 
+                            value="07" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '07' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '07' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Июль
+                        </option>
+
+                        <option 
+                            value="08" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '08' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '08' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Август
+                        </option>
+
+                        <option 
+                            value="09" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '09' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '09' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Сентябрь
+                        </option>
+
+                        <option 
+                            value="10" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '10' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '10' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Октябрь
+                        </option>
+
+                        <option 
+                            value="11" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '11' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '11' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Ноябрь
+                        </option>
+
+                        <option 
+                            value="12" 
+                            {% if selected_month2 %}
+                                {% if selected_month2 == '12' %}
+                                    selected
+                                {% endif %}
+                            {% else %}
+                                {% if current_month == '12' %}
+                                    selected
+                                {% endif %}
+                            {% endif %}>
+                            Декабрь
+                        </option>
+
+                    </select>
+                </div>
+                {% endcomment %}
+            
+            </div>
+            <!-- form search user2 END -->
+
+            <!-- user2 info -->
+            {% if user2 or user2k %}
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6 left-column">
+                        {% if user2 %}
+                            <h5 class="text-center">Телефония</h5>
+
+                            <div class="container">
+                                <div class="card text-dark">
+                                    <div class="card-header text-dark">
+                                        {{ user2.name }} {{ user2.surname }}
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            <div style="border-bottom: 1px black solid; padding-bottom: 10px;" >
+                                                <div class="d-flex" style="justify-content: space-between;"><div>Адрес: </div><div>{{ user2.street }}</div><div>{{ user2.home }}</div><div>{{ user2.flat }}</div></div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс телефония: </div>
+                                                <div>{{ total_telefoniya_balance2|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс интернет: </div>
+                                                <div>{{ user2.b_internet|floatformat:2 }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс alem: </div>
+                                                <div>{{ user2.b_alem|floatformat:2 }}</div>
+                                            </div>
+                                        </p>              
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-light" style="color: rgb(255, 81, 81) !important;">нет абонента</div>
+                        {% endif %}
+                        
+
+                    </div>
+
+                    <div class="col-md-6 right-column" style="border-left: 1px rgb(53, 72, 212) solid;">
+                        {% if user2k %}
+                            <h5 class="text-center">Кабельное</h5>
+
+                            <div class="container">
+                                <div class="card text-dark" {% if user1k.is_active %} style="background-color: rgb(155, 212, 155);" {% else %}  {% endif %} style="background-color: rgb(212, 182, 155);">
+                                    <div class="card-header text-dark">
+                                        {{ user2k.name }} {{ user2k.surname }}
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            <div style="border-bottom: 1px black solid; padding-bottom: 10px;" >
+                                                <div class="d-flex" style="justify-content: space-between;"><div>{{ user2k.street }}</div><div>{{ user2k.home }}</div><div>{{ user2k.flat }}</div></div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Баланс: </div>
+                                                <div>{{ user2k.balance }}</div>
+                                            </div>
+                                            <div class="d-flex justify-content-around" style="border-bottom: 1px black solid; padding: 10px 0;">
+                                                <div>Точек: </div>
+                                                <div>{{ user2k.count }}</div>
+                                            </div>
+                                        </p>              
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="text-light" style="color: rgb(255, 81, 81) !important;">нет кабельного</div>
+                        {% endif %}
+                        
+
+                    </div>    
+                </div>
+            {% else %}
+                <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">нет абонента</div>
+            {% endif %}
+            <!-- user2 info END -->
+
+
+            <!-- user2 and user2k nach info -->
+            {% if user2k_n or user2_n %}
+                {% if user2_n %}
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="telefon1" class="form-label text-end" style="width: 100px;">Абонплата</label>
+                                <input type="text" class="form-control" id="telefon1" placeholder="Абонплата" autocomplete="off" name="telefon1" value="{{user2_n.telefon}}" readonly style="width: 200px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px;">
+                                <label for="slr1" class="form-label text-end" style="width: 100px;">Слр</label>
+                                <input type="text" class="form-control" id="slr1" placeholder="слр" required autocomplete="off" name="slr1" value="{{user2_n.slr}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="kod1" class="form-label text-end" style="width: 100px;">Код</label>
+                                <input type="text" class="form-control" id="kod1" placeholder="Код" required autocomplete="off" name="kod1" value="{{user2_n.kod}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="zakaz1" class="form-label text-end" style="width: 100px;">Заказ</label>
+                                <input type="text" class="form-control" id="zakaz1" placeholder="Заказ" required autocomplete="off" name="zakaz1" value="{{user2_n.zakaz}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="prochee1" class="form-label text-end" style="width: 100px;">Прочее</label>
+                                <input type="text" class="form-control" id="prochee1" placeholder="Прочее" required autocomplete="off" name="prochee1" value="{{user2_n.prochee}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="dop_uslugi1" class="form-label text-end" style="width: 100px;">Доп. услуги</label>
+                                <input type="text" class="form-control" id="dop_uslugi1" placeholder="Доп. услуги" required autocomplete="off" name="dop_uslugi1" value="{{user2_n.dop_uslugi}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="internet1" class="form-label text-end" style="width: 100px;">Интернет</label>
+                                <input type="text" class="form-control" id="internet1" placeholder="Интернет" required autocomplete="off" name="internet1" value="{{user2_n.internet}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="alem1" class="form-label text-end" style="width: 100px;">Alem TV</label>
+                                <input type="text" class="form-control" id="alem1" placeholder="Alem TV" required autocomplete="off" name="alem1" value="{{user2_n.alem}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if user2k_n %}
+                    <div class="mt-3 mb-3">
+                        <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                            <div class="d-flex" style="column-gap: 10px; align-items:center;">
+                                <label for="kabel1" class="form-label text-end" style="width: 100px;">Kabel TV</label>
+                                <input type="text" class="form-control" id="kabel1" placeholder="Kabel TV" required autocomplete="off" name="kabel1" value="{{user2k_n.nach}}" style="width: 200px;" readonly>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if user2 or user2_n or user2k or user2k_n %}
+                    <div class="text-light mt-5" style="color: rgb(255, 81, 81) !important;">Нет начислений</div>
+                {% endif %}
+            {% endif %}
+            <!-- user2 and user2k nach info END -->
+        </div>
+        <!-- column right END-->
+        
+        <div class="mt-5 mb-5 d-none" id="perekinut_btn">
+            <div class="mb-3 text-center">
+                <label for="comment" class="form-label">Комментарий</label>
+                <textarea class="form-control" id="comment" name="comment" rows="3" form="perekidkaNachForm" style="width: 400px; margin-left: auto; margin-right: auto;" oninput="commentInputed(event)" onkeydown="return event.key !== 'Enter';"></textarea>
+            </div>
+            <button class="btn btn-danger d-none" style="align-self: center;" data-bs-toggle="modal" data-bs-target="#perekidkaAllModal" id="perekinut_submit">Перекинуть</button>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade text-dark" id="perekidkaAllModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Перекинуть начисления?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" id="perekidkaWseForm" onclick="this.form.submit(); this.disabled=true;" form="perekidkaNachForm">Да</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* .left-column {
+        min-height: 100vh; 
+    }
+    .right-column {
+        min-height: 100vh; 
+    } */
+
+    .input_bg_disable {
+        background-color:rgb(170, 170, 170);
+    }
+    .input_bg_enable {
+        background-color:rgb(189, 248, 194);
+    }
+</style>
+
+<script>
+
+
+const checkboxes = document.querySelectorAll('.checkboxes');
+const perekinut_btn = document.getElementById('perekinut_btn');
+const perekinut_submit = document.getElementById('perekinut_submit');
+
+const digitsInput = document.querySelectorAll('.digitsInput');
+
+{% if not messages %}
+    window.onload = function() {
+        // Прокрутить вниз
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+{% endif %}
+
+function commentInputed(event) {
+    if (event.target.value != '') {
+        if (perekinut_submit.classList.contains('d-none')) {
+            perekinut_submit.classList.remove('d-none')
+            window.scrollTo(0, document.body.scrollHeight);
+        } 
+    } else {
+        if (!perekinut_submit.classList.contains('d-none')) {
+            perekinut_submit.classList.add('d-none')
+        } 
+    }
+}
+
+
+
+
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        // Проверяем, отмечены ли хотя бы один из чекбоксов
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        
+        // Если хотя бы один чекбокс отмечен, убираем класс d-none
+        if (anyChecked) {
+            console.log('dadadad');   
+            perekinut_btn.classList.remove('d-none');
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            console.log('nenenene');
+            perekinut_btn.classList.add('d-none');
+        }
+    });
+});
+
+digitsInput.forEach(input => {
+    // Получаем текущее значение поля ввода
+    let value = input.value;
+
+    // Заменяем запятую на точку
+    if (value) {
+        value = value.replace(/,/g, '.');
+        input.value = value
+        if (parseFloat(value) == 0) {
+            id = input.id
+            console.log('id', id); 
+            checkBoxId = `${id}CheckBox`
+            document.getElementById(checkBoxId).disabled = true
+
+            
+        } 
+    } 
+    
+});
+
+function selectAll() {
+    var enable_btn = false
+    checkboxes.forEach(checkbox => {
+        if (!checkbox.disabled) {
+            checkbox.checked = true
+            enable_btn = true
+        }
+    }); 
+    if (enable_btn) {
+        if (perekinut_btn.classList.contains('d-none')) {
+            perekinut_btn.classList.remove('d-none');
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    }
+    
+}
+
+
+function notSelectAll() {
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false
+    }); 
+    if (!perekinut_btn.classList.contains('d-none')) {
+        perekinut_btn.classList.add('d-none');
+    }
+}
+
+// const telefon1CheckBox = document.getElementById('telefon1CheckBox')
+// const telefon1 = document.getElementById('telefon1')
+// const telefon1CheckBox_label = document.getElementById('telefon1CheckBox_label')
+
+// const slr1CheckBox = document.getElementById('slr1CheckBox')
+// const slr1 = document.getElementById('slr1')
+
+
+
+
+// telefon1CheckBox.addEventListener('change', function() {
+//     if (telefon1CheckBox.checked) {
+//         telefon1CheckBox_label.innerText = 'Перекинуть'
+//     } else {
+//         telefon1CheckBox_label.innerText = 'Не перекидывать'
+//     }
+// });
+
+// telefon1.addEventListener('keydown', function(event) {
+//     // Предотвращаем ввод с клавиатуры
+//     event.preventDefault();
+// });
+
+
+// slr1CheckBox.addEventListener('change', function() {
+//     if (slr1CheckBox.checked) {
+//         if (!slr1.classList.contains('input_bg_enable')) {
+//             slr1.classList.add('input_bg_enable')
+//         }
+//         if (slr1.classList.contains('input_bg_disable')) {
+//             slr1.classList.remove('input_bg_disable')
+//         }
+//     } else {
+//         if (slr1.classList.contains('input_bg_enable')) {
+//             slr1.classList.remove('input_bg_enable')
+//         }
+//         if (!slr1.classList.contains('input_bg_disable')) {
+//             slr1.classList.add('input_bg_disable')
+//         }
+//     }
+// });
+
+
+
+</script>
+
+{% endblock content %}
+

@@ -1,0 +1,155 @@
+/* ###################################
+    internet-plateji-nachisleniya & ##
+    internet-nachisleniya
+   ###################################
+*/
+.InternetPlateji_nachisleniya_string, .Internet_nachisleniya_string, .alem_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+.InternetPlatejiInfoRowContainerErr {
+    background-color: #FF6347;
+    width: 450px;
+    height: 50px;
+    border-radius: 5px;
+    color: black;
+    margin-top: 150px;
+}
+.InternetPlatejiNachisleniyaInfo .errorRow {
+    margin-top: 250px;
+}
+.InternetPlatejiNachisleniyaInfo .item2InternetPlateji {
+    padding-top: 15px;
+    padding-left: 10px;
+    border-radius: 5px;  
+}
+.InternetPlatejiInfoRowContainers {
+    width: 450px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #20B2AA;
+    color: black;
+    border: 1px black solid;
+}
+.InternetPlatejiNachisleniyaInfo {
+    width: 500px;
+    height: 700px;
+    background-color: #6495ED;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 20px ;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.InternetPlatejiNachisleniyaInfo .item1InternetPlateji {
+    padding-top: 15px;
+    padding-left: 10px;
+    width: 350px;
+    border-radius: 5px;
+    background-color: white;
+}
+/* .myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+} */
+
+.bg-gold {
+   background-color: #FFD700;
+}
+
+.InternetPlatejiNachisleniyaContainer {
+   color: white;
+   margin: 20px 40px;
+
+}
+.InternetPlatejiNachisleniyaSearchEtrap, .InternetPlatejiNachisleniyaSearchMonth,
+ .InternetPlatejiNachisleniyaSearchYear, .InternetPlatejiNachisleniyaSearchEtrap {
+   width: 160px;
+   background-color: #FFD700;
+}
+.InternetPlatejiNachisleniyaForm {
+   display: flex;
+   column-gap: 10px;
+   align-items: flex-end;
+   margin-left: auto;
+   margin-right: auto;
+   width: 570px;
+}
+.InternetPlatejiNachisleniyaSearchSubmit {
+   height: fit-content;
+   background-color: #FFD700;
+   color: black;
+}
+
+/* #######################################
+    internet-plateji-nachisleniya END & ##
+    internet-nachisleniya END
+   #######################################
+*/
+
+
+/* #########################
+    internetPlatejiSearch ##
+   #########################
+*/
+.internetPlatejiSearchFormBtn {
+    height: fit-content; 
+    margin-top: 24px;
+}
+
+.internetPlatejiSearchFormItems {
+    width: 250px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.internetPlatejiSearchContainer{
+    flex-direction: column; 
+    margin-top: 30px; 
+    padding: 0 40px;
+}
+
+.internetPlatejiSearchFormContainer {
+    column-gap: 20px; 
+    width: 1680px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.bg-gold {
+    background-color: #FFD700;
+}
+
+.internetPlatejiTable {
+    width: 1500px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    margin-top: 50px;
+}
+
+.internetPlatejiTable th, .internetPlatejiTable td {
+    padding:0 3px;
+}
+
+.internetPlatejiTable th:nth-of-type(1), .internetPlatejiTable td:nth-of-type(1){width: 50px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(2), .internetPlatejiTable td:nth-of-type(2){width: 50px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(3), .internetPlatejiTable td:nth-of-type(3){width: 400px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(4), .internetPlatejiTable td:nth-of-type(4){width: 200px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(5), .internetPlatejiTable td:nth-of-type(5){width: 300px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(6), .internetPlatejiTable td:nth-of-type(6){width: 700px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(7), .internetPlatejiTable td:nth-of-type(7){width: 100px; border: 1px black solid;}
+.internetPlatejiTable th:nth-of-type(8), .internetPlatejiTable td:nth-of-type(8){width: 100px; border: 1px black solid;}
+
+/* #############################
+    internetPlatejiSearch END ##
+   #############################
+*/

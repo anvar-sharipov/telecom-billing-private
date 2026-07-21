@@ -1,0 +1,5 @@
+dbfread==2.0.7
+Django==5.1.7
+icecream==2.1.4
+python_dateutil==2.9.0.post0
+tablib==3.8.0

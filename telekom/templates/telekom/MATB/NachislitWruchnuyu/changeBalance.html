@@ -1,0 +1,193 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Изменения Баланса{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="text-center text-light mb-4">Изменения баланса</h1>
+
+    <!-- Форма поиска -->
+    <div class="card bg-dark text-light mb-5 shadow">
+        <div class="card-body">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="etrap" class="form-label">Этрап</label>
+                    <select class="form-select" id="etrap" name="etrap" required>
+                        {% if open_all_etrap %}
+                            {% for e in etraps %}
+                                <option value="{{ e }}" {% if etrap == e %}selected{% endif %}>{{ e }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="number" class="form-label">Номер</label>
+                    <input type="text" class="form-control" id="number" placeholder="Номер абонента" required autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+                </div>
+
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100">Поиск</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if user_table_obj %}
+    <div class="card bg-dark text-light mb-4 shadow">
+        <div class="card-header bg-primary">
+            <h5 class="mb-0">
+                Абонент (Телефония / Интернет / Alem)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <strong>Фамилия / Организация:</strong><br>
+                    {{ user_table_obj.surname|default:"—" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Имя / Отдел:</strong><br>
+                    {{ user_table_obj.name|default:"—" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Улица:</strong><br>
+                    {{ user_table_obj.street|default:"—" }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Дом:</strong><br>
+                    {{ user_table_obj.home|default:"—" }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Квартира:</strong><br>
+                    {{ user_table_obj.flat|default:"—" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user_kabel_obj %}
+    <div class="card bg-dark text-light mb-4 shadow">
+        <div class="card-header bg-success">
+            <h5 class="mb-0">
+                Абонент (Кабельное ТВ)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <strong>Фамилия / Организация:</strong><br>
+                    {{ user_kabel_obj.surname|default:"—" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Имя / Отдел:</strong><br>
+                    {{ user_kabel_obj.name|default:"—" }}
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Улица:</strong><br>
+                    {{ user_kabel_obj.street|default:"—" }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Дом:</strong><br>
+                    {{ user_kabel_obj.home|default:"—" }}
+                </div>
+
+                <div class="col-md-3">
+                    <strong>Квартира:</strong><br>
+                    {{ user_kabel_obj.flat|default:"—" }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if user_table %}
+    <!-- Форма изменения баланса -->
+    <div class="card bg-dark text-light shadow">
+        <div class="card-body">
+            <form method="POST">{% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="type" class="form-label">Тип</label>
+                    <select class="form-select" id="type" name="type" required>
+                        <option value="" disabled selected>Выберите тип</option>
+                        {% if user_table and not only_kabel %}
+                            <option value="telefoniya" {% if type_ == "telefoniya" %} selected {% endif %}>Telefoniya</option>
+                            <option value="internet" {% if type_ == "internet" %} selected {% endif %}>Internet</option>
+                            <option value="alem" {% if type_ == "alem" %} selected {% endif %}>Alem</option>
+                        {% endif %}
+                        {% if user_kabel %}
+                            <option value="kabel" {% if type_ == "kabel" %} selected {% endif %}>Kabel</option>
+                        {% endif %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Баланс</label>
+                    <input type="text" class="form-control" id="price" placeholder="Введите новый баланс" required autocomplete="off" name="price" oninput="priceInputed(event)" {% if price %} value="{{price}}" {% endif %}>
+                </div>
+
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Комментарий</label>
+                    <input type="text" class="form-control" id="comment" placeholder="Введите комментарий" required autocomplete="off" name="comment" {% if comment %} value="{{comment}}" {% endif %}>
+                </div>
+
+                <!-- Кнопка вызова модального окна -->
+                <div class="text-center">
+                    <button type="button" class="btn btn-success w-50" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                        Изменить
+                    </button>
+                </div>
+
+                <!-- Модальное окно подтверждения -->
+                <div class="modal fade text-dark" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="confirmModalLabel">Подтвердите действие</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                            </div>
+                            <div class="modal-body">
+                                Вы уверены, что хотите изменить баланс абонента?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-success">Да, изменить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+function priceInputed(event) {
+    const input = event.target;
+    let value = input.value.replace(/,/g, '.');
+    const filteredValue = value.replace(/(?!^[-]?$)[^0-9.-]/g, '')
+                               .replace(/(?!^[-])[-]+/g, '')
+                               .replace(/(\..*?)\..+/g, '$1');
+    input.value = filteredValue.startsWith('.') ? '0' + filteredValue : filteredValue;
+
+    let segments = input.value.split('.');
+    if (segments.length > 2) input.value = segments[0] + '.' + segments[1];
+}
+</script>
+
+{% endblock content %}

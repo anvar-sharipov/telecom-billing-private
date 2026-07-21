@@ -1,0 +1,117 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Кабель TV Начисления{% endblock %}
+{% block content %}
+<div class="kabelTv_nachisleniya_string"><h2>Кабель TV Начисления</h2></div>
+
+<form action="" method="GET" class="kabelTvNachisleniyaForm text-light">
+    <div>
+        <div>Месяц</div>
+        <select class="form-select kabelTvNachisleniyaSearchMonth bg-gold" name="month">
+            <option {% if get_month == '' %} selected {% endif %} value="">Месяц</option>
+            {% for month in months %}
+                <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+            {% endfor %}       
+        </select>
+    </div>
+
+    <div>
+        <div>Год</div>
+        <select class="form-select kabelTvNachisleniyaSearchYear bg-gold" name="year">
+            {% for year in years %}
+                {% if get_year %}
+                <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                {% else %}
+                <option {% if current_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                {% endif %}
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Этрап</div>
+        <select class="form-select kabelTvNachisleniyaSearchEtrap bg-gold" aria-label="Default select example" name="etrap">
+            {% for etr in etraps %}
+                {% if etrap %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% else %}
+                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            {% endfor %}
+            <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+        </select>
+    </div>
+
+    <button class="btn kabelTvNachisleniyaSearchSubmit btn-success mt-4" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+
+</form>
+
+
+{% if dict_ %}
+<div class="container mt-5">
+    <h4 class="text-center text-light">Ilat</h4>
+    <table class="table table-striped table-bordered table-info">
+        <thead class="table-dark">
+            <tr>
+                <th>Точек</th>
+                <th>Число пользователей</th>
+                <th>Общая цена</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for count, data in dict_.items %}
+            <tr>
+                <td>{{ count }}</td>
+                <td>{{ data.count }}</td>
+                <td>{{ data.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if dict_edara %}
+<div class="container mt-5">
+    <h4 class="text-center text-light">Edara</h4>
+    <table class="table table-striped table-bordered table-info">
+        <thead class="table-dark">
+            <tr>
+                <th>Точек</th>
+                <th>Число пользователей</th>
+                <th>Общая цена</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for count, data in dict_edara.items %}
+            <tr>
+                <td>{{ count }}</td>
+                <td>{{ data.count }}</td>
+                <td>{{ data.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if dict_ or dict_edara %}
+    <div class="text-center mt-5">
+        <button {% if alreadyNach %} class="btn btn-secondary" disabled {% else %} class="btn btn-danger" {% endif %} data-bs-toggle="modal" data-bs-target="#NachModal">{% if alreadyNach %}Начислено{% else %}Начислить{% endif %}</button>
+        <form method="POST">{% csrf_token %}
+            <!-- Модальное окно Для удаление платежей-->
+            <div class="modal fade text-dark" id="NachModal" tabindex="-1" aria-labelledby="NachLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="NachLabel">Начислить?</h5>  
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endif %}
+{% endblock %}

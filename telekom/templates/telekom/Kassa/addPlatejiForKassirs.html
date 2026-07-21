@@ -1,0 +1,253 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Добавить платежи{% endblock %}
+{% block content %}
+
+<div class="p-4 mt-4 my_block_center my_width1000">
+    <form method="GET">
+        <div class="d-flex my_column_gap10">
+            <div>
+                <select class="form-select my_width200 border border-dark" name="etrap">
+                    {% for etr in etraps %}
+                    <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <select class="form-select my_width200 border border-dark" name="year">
+                    {% for y in years %}
+                    <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <select class="form-select my_width200 border border-dark" name="month">
+                    {% for mon in months %}
+                    <option value="{{mon}}" {% if mon == month %} selected {% endif %}>{{mon}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <select class="form-select my_width200 border border-dark" name="day">
+                    {% for d in days %}
+                    <option value="{{d}}" {% if d == day_ %} selected {% endif %}>{{d}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="search_btn">
+                <button class="btn btn-success">Поиск</button>
+            </div>
+        </div>
+        
+        
+    </form>
+</div>
+
+{% if day_  and error == False%}
+<div style="padding: 20px 40px 60px; margin-top: 40px; width: 1200px; margin-left: auto; margin-right: auto; border-radius: 15px; background-color: #3399CC; height: 150px;">
+    <div class="d-flex justify-content-between">
+        <h5 style="padding: 5px;">Добавить платеж за <span style="color: rgb(183, 46, 46); font-weight: bold; text-decoration: underline;">{{day_}}-{{month_digit}}-{{year}}</span> года</h5>
+
+        <div class="d-flex" style="column-gap: 10px;">
+        <span>Проверка файла</span>
+        <input onclick="ChangeSubmitValue2()" form="internetNachisleniyaForm" name="platejiTest" type="checkbox" checked class="form-check-input">
+        </div>   
+    </div>
+    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;" id="internetNachisleniyaForm">{% csrf_token %} 
+        <div class="d-flex importinternetNachisleniyaContainer justify-content-between">
+            <div class="file2-input">
+                <input type="file" id="file2" class="file2" name="my_file2">
+                <label for="file2">
+                Выберите Файл
+                </label>
+                
+            </div>
+            <div style="background-color: white; width: 770px; height: 38px; border-radius: 5px;"><p class="file2-name"></p></div>
+            <input type="hidden" name="platejiSKassy">
+
+            {% if already_have == False %}
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" form="internetNachisleniyaForm" id="internetNachisleniyaFormSubmit">Проверить</button>
+            {% else %}
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" form="internetNachisleniyaForm" id="internetNachisleniyaFormSubmit" disabled>Начислено</button>
+            {% endif %}
+            
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% if total_umumy %}
+<div class="my_width500 my_block_center mt-4 p-2" style="background-color:#b4ffc1; border-radius:8px;">
+    <div class="d-flex"><div class="my_width200">TYPE</div><div class="my_width150">PRICE</div><div class="my_width80">COUNT</div></div>
+    <hr>
+    {% if total_priceInt %}
+        <div class="d-flex"><div class="my_width200">Интернет платежи:</div><div class="my_width150">{{total_priceInt}}</div><div class="my_width80">{{countInt}}</div></div>
+        <hr>
+    {% endif %}
+
+    {% if total_priceAbon %}
+        <div class="d-flex"><div class="my_width200">Абонплата платежи:</div><div class="my_width150">{{total_priceAbon}}</div><div class="my_width80">{{countAbon}}</div></div>
+        <hr>
+    {% endif %}
+
+    {% if total_priceAlem %}
+        <div class="d-flex"><div class="my_width200">Alem TV платежи:</div><div class="my_width150">{{total_priceAlem}}</div><div class="my_width80">{{countAlem}}</div></div>
+        <hr>
+    {% endif %}
+    <div class="d-flex"><div class="my_width200">Всего платежей:</div><div class="my_width150">{{total_umumy}}</div><div class="my_width80">{{totalCount}}</div></div>
+</div>
+{% endif %}
+
+{% if pays_ %}
+<div style="padding: 20px 200px">
+    <div style="background-color: #d0daf4; padding: 0 5px;">
+        <div class="d-flex justify-content-between">
+            <form method="POST" class="d-flex p-2">{% csrf_token %}
+                <select name="kassirSelect" class="form-select">
+                    <option value="all">Кассиры Все</option>
+                    {% for k in kassirsList %}
+                        <option value="{{k}}" {% if k == kassirSelect %} selected {% endif %}>{{k}}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-success btn-sm mt-1" style="height: fit-content;">filtr</button>
+            </form>
+            <div class="pt-3">Интернет : {{total_sum_internet}}</div>
+            <div class="pt-3">Абонплата : {{total_sum_abonplata}}</div>
+            <div class="pt-3">Alem TV : {{total_sum_alem}}</div>
+            <div class="pt-3">Kabel TV : {{total_sum_kabel}}</div>
+            <div class="pt-3">SUMM : {{summ}}</div>
+        </div>
+    </div>
+    <hr>
+    <table class="table table-primary table-hover">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Номер</th>
+                <th style="background-color:#edffcf;">Абонплата</th>
+                <th style="background-color:#cfffe4;">Интернет</th>
+                <th style="background-color:#d9d0a9;">Alem TV</th>
+                <th style="background-color:#ffcfe7;">Kabel TV</th>
+                <th>Общая сумма</th>
+                <th>Кассир</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pays_ %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{p.abonent.number}}</td>
+
+                {% if p.prochee %}
+                    <td style="background-color:#edffcf;">{{p.prochee}}</td>
+                {% else %}
+                    <td style="background-color:#edffcf;"></td>
+                {% endif %}
+
+                {% if p.internet %}
+                    <td style="background-color:#cfffe4;">{{p.internet}}</td>
+                {% else %}
+                    <td style="background-color:#cfffe4;"></td>
+                {% endif %}
+
+                {% if p.alem %}
+                    <td style="background-color:#d9d0a9;">{{p.alem}}</td>
+                {% else %}
+                    <td style="background-color:#d9d0a9;"></td>
+                {% endif %}
+
+                {% if p.kabel %}
+                    <td style="background-color:#ffcfe7;">{{p.kabel}}</td>
+                {% else %}
+                    <td style="background-color:#ffcfe7;"></td>
+                {% endif %}
+
+                
+               
+               
+               
+        
+                
+                <td>{{p.total}}</td>
+                <td>{{p.kassir}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endif %}
+
+<style>
+th {padding: 0 !important; text-align: center;}
+td {padding: 0 !important; text-align: center;}
+.file2 {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+  }
+  
+.file2-input label {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 37px;
+    border-radius: 5px;
+    background: linear-gradient(40deg,#ff6ec4,#7873f5);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+  }
+  
+.file2-name {
+    padding-top: 8px;
+    color: black;
+    text-align: center;
+  }
+  
+input:hover + label,
+input:focus + label {
+    transform: scale(1.02);
+  }
+  
+/* Adding an outline to the label on focus */
+input:focus + label {
+    outline: 1px solid #000;
+    outline: -webkit-focus-ring-color auto 2px;
+  }
+
+</style>
+
+<script>
+
+const file2 = document.querySelector('#file2');
+file2.addEventListener('change', (e) => {
+  // Get the selected file
+  const [file2] = e.target.files;
+  // Get the file name and size
+  const { name: file2Name, size } = file2;
+  // Convert size in bytes to kilo bytes
+  const file2Size = (size / 1000).toFixed(2);
+  // Set the text content
+  const file2NameAndSize = `${file2Name} - ${file2Size}KB`;
+  document.querySelector('.file2-name').textContent = file2NameAndSize;
+});
+
+function ChangeSubmitValue2() {
+  if (event.target.checked == true) {
+    document.getElementById('internetNachisleniyaFormSubmit').innerHTML = 'Проверка'
+    document.getElementById('internetNachisleniyaFormSubmit').classList.remove('btn-danger')
+    document.getElementById('internetNachisleniyaFormSubmit').classList.add('btn-primary')
+  } else {
+    document.getElementById('internetNachisleniyaFormSubmit').innerHTML = 'Добавить'
+    document.getElementById('internetNachisleniyaFormSubmit').classList.add('btn-danger')
+    document.getElementById('internetNachisleniyaFormSubmit').classList.remove('btn-primary')
+  }
+}
+</script>
+{% endblock %}

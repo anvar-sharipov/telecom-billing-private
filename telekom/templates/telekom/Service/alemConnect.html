@@ -1,0 +1,158 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Alem TV Подключения/отключения{% endblock %}
+{% block content %}
+
+<div class="p-3 mt-3">
+    <form action="" class=" d-flex my_width500 my_block_center my_column_gap10" method="GET">
+        <select class="form-select" aria-label="Default select example" name="etrap">
+            {% for etr in etraps %}
+                {% if etrap %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% else %}
+                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input id="alem_connect_search_number" type="text" placeholder="Номер" class="form-control item" name="number" {% if number %} value={{number}} {% endif %} autocomplete="off">
+        <button class="btn btn-success">Поиск</button>
+    </form>
+
+
+
+
+{% if abonent %}
+<table class="table table-secondary table-bordered my_block_center mt-3">
+    <thead>
+        <tr>
+            <th>Ф.И.О</th>
+            <th>Номер</th>
+            <th>Логин</th>
+            <th>Договор</th>
+            <th>Улица</th>
+            <th>Дом</th>
+            <th>Кв.</th>
+            <th>Дата подключения Alem</th>
+            <th>Точек</th>
+            <!-- <th>Дата отключения Alem</th> -->
+            <th>Дата отсоединен Alem</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{abonent.surname}} {{abonent.name}}</td>
+            <td>{{number}}</td>
+            <td>{{abonent.login}}</td>
+            <td>{{abonent.dogowor}}</td>
+            <td>{{abonent.street}}</td>
+            <td>{{abonent.home}}</td>
+            <td>{{abonent.flat}}</td>
+            <td>{{abonent.alem_connect_date|date:'y-m-d H:s'}}</td>
+            <td>{{abonent.alemCount.alem_count}}</td>
+            <!-- <td>{{abonent.alem_off_date|date:'y-m-d H:s'}}</td> -->
+            <td>{{abonent.alem_disconnect_date|date:'y-m-d H:s'}}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<form action="" method="POST" class="d-flex flex-column my_row_gap10 justify-content-between my_width700 my_block_center mt-3 p-3" style="background-color:#1E90FF; border-radius: 10px;"> {% csrf_token %}
+    <select class="form-select my_bg_ligh_red" aria-label="Default select example" name="tarif_pk">
+
+        {% for alem in alems %}
+            <option {% if abonent.alemCount.pk == alem.pk %} selected {% endif %} value="{{alem.pk}}">Точек: {{alem.alem_count}}; Цена: {{alem.price}} manat</option>
+        {% endfor %}
+        <option value="" {% if abonent.alemCount == None %} selected {% endif %}>{% if abonent.alemCount == None %}Отключен{% else %}Отключить{% endif %}</option>
+
+    </select>
+
+    <div class="d-flex my_column_gap20 justify-content-between bg-light" style="height: 40px; border-radius: 3px; padding: 0 20px;">
+        <div class=" mt-2">Дата подсоединения/отсоединения/изменения</div>
+        <input type="datetime-local" class="form-control my_width200 my_bg_ligh_red" style="height: 35px; margin-top: 3px;" {% if  abonent.alem_connect_date %}value="{{abonent.alem_connect_date|date:'Y-m-d H:i'}}" {% endif %} name="alemConnectOrChangedDate">
+    </div>
+
+    <!-- <div class="d-flex my_column_gap20 justify-content-between bg-light" style="height: 40px; border-radius: 3px; padding: 0 20px;">
+        <div class="d-flex my_column_gap10 my_bg_ligh_red" style="margin: 4px 3px 3px 520px; padding: 0 5px; border-radius: 5px;" >
+            <div class="mt-1">Вкл/Отк</div>
+            <input type="checkbox" name="alemOnOff" class="form-check-input mt-1" {% if abonent.alem %} checked {% endif %} style="width: 25px; height: 25px;">
+        </div> -->
+        <!-- <div class="d-flex my_column_gap10">
+            <div class="mt-2">Дата вкл/откл</div>
+            <input type="datetime-local" class="form-control my_width200 my_bg_ligh_red" style="height: 35px; margin-top: 3px;"  {% if abonent.alem_on_date %}value="{{abonent.alem_on_date|date:'Y-m-d H:i'}}" {% elif abonent.alem_off_date %} value="{{abonent.alem_off_date|date:'Y-m-d H:i'}}"  {% endif %} name="alemOnOffDate">
+        </div> -->
+    <!-- </div> -->
+    
+    <button class="btn btn-success my_block_center mt-3" style="width: fit-content;">Сохранить</button>
+</form>
+{% endif %}
+
+{% if staffActionInfo %}
+<h5 class="text-center text-light" style="margin-top: 100px;">Подробная информация действий персонала</h5>
+<div class="d-flex flex-column bg-light" style="overflow-y: auto; height: 400px;">
+    
+    <table class="table table-secondary table-hover alem-staff-history-table m-3" style="width: 98%;">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th class="my_width500">Действие</th>
+                <th>Соотрудник</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for info in staffActionInfo %}
+            <tr>
+                <td>{{info.date|date:"Y-m-d h:i:s"}}</td>
+                <td class="my_width500">{{info.comment}}</td>
+                <td>{{info.user}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endif %}
+
+</div>
+
+
+<style>
+   
+.my_bg_ligh_red {background-color: #E9967A;}  
+
+
+
+.alem-staff-history-table th:nth-of-type(1), .alem-staff-history-table td:nth-of-type(1){width: 100px; border: 1px black solid;}
+.alem-staff-history-table th:nth-of-type(2), .alem-staff-history-table td:nth-of-type(2){border: 1px black solid;}
+.alem-staff-history-table th:nth-of-type(3), .alem-staff-history-table td:nth-of-type(3){width: 100px; border: 1px black solid;}
+
+</style>
+
+<script>
+// текущий url в виде строки
+var currentLocation = window.location.href;
+// если в текущем url есть подстрока alem-connect то выполнить код
+if (currentLocation.indexOf("alem-connect") >= 0) {
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("alem_connect_search_number").select();
+    })
+
+}
+/*фецис (цере) между цифрами телефона при вводе номера kassa-receipt*/
+(function () {
+document
+    .getElementById("alem_connect_search_number")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    });
+})();
+</script>
+
+{% endblock %}

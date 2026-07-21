@@ -1,0 +1,493 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark PrintNone" style="height: 40px; background-color: #1E90FF;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% if matbIndex %}
+                MTB
+              {% elif kassaIndex %}
+                Касса
+              {% elif setService %}
+                Абон-отдел
+              {% elif internetBilling%}
+                Биллинг
+              {% elif SHBIndex %}
+                SHB
+              {% elif operator071 %}
+                071
+              {% elif exam_group or request.user.is_superuser %}
+                Экзамен
+              {% else %}
+                Отдел
+              {% endif %}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{% url 'matb-index' %}">MTB</a></li>
+              <li><a class="dropdown-item" href="{% url 'kassa-index' %}">Касса</a></li>
+              <li><a class="dropdown-item" href="{% url 'service-connect' %}">Абон-отдел</a></li>
+              <li><a class="dropdown-item" href="{% url 'internet-bolum' %}">Биллинг</a></li>
+              <li><a class="dropdown-item" href="{% url 'shb-bolum' %}">SHB-отдел</a></li>
+              <li><a class="dropdown-item" href="{% url 'zakaz-calls' %}">071</a></li>
+              <li><a class="dropdown-item" href="{% url 'exam-index' %}">Экзамен</a></li>
+            </ul>
+          </li>
+          {% if request.user.is_superuser and request.user.username == 'admin1' %}
+          <li class="nav-item dropdown {% if admin_allow %} myActiveLink {% endif %}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdminPage" role="button" data-bs-toggle="dropdown" aria-expanded="false">Админ</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdminPage">
+              <li><a class="dropdown-item {% if saldo_po_godam_save %} myActiveLinkLight {% endif %}" href="{% url 'saldo_po_godam_save' %}">SaldoBalancePoGodam save</a></li>
+              <li><a class="dropdown-item {% if saldo_po_godam_save2 %} myActiveLinkLight {% endif %}" href="{% url 'saldo_po_godam_save2' %}">SaldoBalancePoGodam save2</a></li>
+              <li><a class="dropdown-item {% if add_nachisleniya_from_excel %} myActiveLinkLight {% endif %}" href="{% url 'add_nachisleniya_from_excel' %}">save nach from excel</a></li>
+            </ul>
+          </li> 
+          {% endif %}
+          {% if matbIndex or request.user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link {% if dataBase %} myActiveLink {% endif %}" href="{% url 'matb-index' %}">База</a>
+            </li>
+            {% if  request.user.is_superuser or request.user.username == 'Gayyp' %}
+              <li class="nav-item">
+                <a class="nav-link {% if importXlsx %} myActiveLink {% endif %}" href="{% url 'import-xlsx' %}">Импорт xlsx</a>
+              </li>
+            {% endif %}
+            {% if request.user.is_superuser or request.user.username == 'AyshatGoroglyMtb' or request.user.username == 'intizar_gorogly' or request.user.username == 'testMTBDZ' or request.user.username == 'GuljahanAkdepeMtb' or request.user.username == 'AzizShabatMtb' or request.user.username == 'Saryyewa_Gozel_Shabat_MTB' or request.user.username == 'BaharKoneurgenchKassa' or request.user.username == 'Merjen_Yylally_MTB' or request.user.username == 'GozelGubadagMtb' or request.user.username == 'SelbiBoldumsazMtb' or request.user.username == 'MahymAkdepeMtb' or request.user.username == 'Aramedowa_Oguljemal' or request.user.username == 'Jumyazowa_Oguljemal' or request.user.username == 'Kurbanowa_Gulnabat_Koneurgench' or 'Baltabayewa_Sewara_MTB_DGE' or request.user.username == 'Ishangulyyewa_Nurjemal_Koneurgench_kassa' %}
+              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
+                  <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+                </ul>
+              </li>
+            {% endif %}
+            
+            <li class="nav-item dropdown {% if localCalls or showZakaz or nonLocalCalls or alemNachisleniyaSearch or internetNachisleniyaSearch or staffActionList or InternetPlatejiSearch %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Просмотры</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if request.user.is_superuser %}
+                  <li><a class="dropdown-item {% if localCalls %} myActiveLinkLight {% endif %}" href="{% url 'local-calls' %}">Просмотр локальных звонков</a></li>
+                  <li><a class="dropdown-item {% if nonLocalCalls %} myActiveLinkLight {% endif %}" href="{% url 'none-local-calls' %}">Звонки по АМТС8</a></li>
+                  <li><a class="dropdown-item {% if staffActionList %} myActiveLinkLight {% endif %}" href="{% url 'staff-history-list' %}">Просмотр действий персонала</a></li>
+                  <li><a class="dropdown-item {% if InternetPlatejiSearch %} myActiveLinkLight {% endif %}" href="{% url 'internet-plateji-search' %}">Просмотр внешних платежей</a></li>
+                  <li><a class="dropdown-item {% if internetNachisleniyaSearch %} myActiveLinkLight {% endif %}" href="{% url 'internet-nachisleniya-search' %}">Просмотр интернет начислений</a></li>
+                  <li><a class="dropdown-item {% if alemNachisleniyaSearch %} myActiveLinkLight {% endif %}" href="{% url 'alem-nachisleniya-search' %}">Просмотр Alem TV начислений</a></li>
+                  <li><a class="dropdown-item {% if showZakaz %} myActiveLinkLight {% endif %}" href="{% url 'zakaz-show' %}">Просмотр заказных звонков</a></li>
+                {% else %}
+                  {% if log == 'Dashoguz' %}
+                    <li><a class="dropdown-item {% if nonLocalCalls %} myActiveLinkLight {% endif %}" href="{% url 'none-local-calls' %}">Звонки по АМТС8</a></li>
+                  {% endif %}
+                  <li><a class="dropdown-item {% if staffActionList %} myActiveLinkLight {% endif %}" href="{% url 'staff-history-list' %}">Просмотр действий персонала</a></li>
+                {% endif %}
+              </ul>
+            </li>
+            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+              <li class="nav-item dropdown {% if kodSlrFileNachisleniya or newAbonplataNachisleniya or zakazNachisleniya or nachisleniyaInternetPlateji or internetNachisleniyaBtn or alemNachisleniya or kabelTvNachisleniya or dop_uslugiNachisleniya or abonplataNachisleniya or dbf_a_nach or zte_nach or alem_add or alem_nach %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Начисления</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if kodSlrFileNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'kod-slr-file-nachisleniya' %}">Начисления DBF-ZTE файлов</a></li>
+                  <!-- <li><a class="dropdown-item {% if nachisleniyaInternetPlateji %} myActiveLinkLight {% endif %}" href="{% url 'nachisleniya-internet-plateji' %}">Начисления Внешних Платежей</a></li> -->
+                  <li><a class="dropdown-item {% if internetNachisleniyaBtn %} myActiveLinkLight {% endif %}" href="{% url 'internet-nachisleniya-btn' %}">Начисления Интернет</a></li>
+                  <li><a class="dropdown-item {% if import_internet_nach_new %} myActiveLinkLight {% endif %}" href="{% url 'import_internet_nach_new' %}">-Импорт интернет начисление с Excel</a></li>
+                  <li><a class="dropdown-item {% if internet_nachisleniya_new %} myActiveLinkLight {% endif %}" href="{% url 'internet_nachisleniya_new' %}">-Интернет начисление</a></li>
+                  <!-- <li><a class="dropdown-item {% if alemNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'alem-nachisleniya' %}">Начисления Alem TV</a></li> -->
+                  <li><a class="dropdown-item {% if kabelTvNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-nachisleniya' %}">Начисления Kabel TV</a></li>
+                  <li><a class="dropdown-item {% if dop_uslugiNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'dop-uslugi-nachisleniya' %}">Начисления Доп. услуг</a></li>
+                  <!-- <li><a class="dropdown-item {% if abonplataNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'abonplata-nachisleniya' %}">Начисления Абонплата</a></li> -->
+                  <li><a class="dropdown-item {% if newAbonplataNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'newAbonplataNachisleniya' %}">Начисления Абонплата</a></li>
+                  <li><a class="dropdown-item {% if zakazNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'zakaz-nachisleniya' %}">Начисления Заказ</a></li>
+                  <li><a class="dropdown-item {% if dbf_a_nach %} myActiveLinkLight {% endif %}" href="{% url 'dbf_a_nach' %}">Добавить dbf-txt</a></li>
+                  <li><a class="dropdown-item {% if zte_nach %} myActiveLinkLight {% endif %}" href="{% url 'zte_nach' %}">Добавить zte</a></li>
+                  <li><a class="dropdown-item {% if alem_add %} myActiveLinkLight {% endif %}" href="{% url 'alem_add' %}">alem_add</a></li>
+                  <li><a class="dropdown-item {% if alem_nach %} myActiveLinkLight {% endif %}" href="{% url 'alem_nach' %}">alem_nach</a></li>
+                  <li><a class="dropdown-item {% if dbf_nach_history %} myActiveLinkLight {% endif %}" href="{% url 'dbf_nach_history' %}">dbf_nach_history</a></li>
+
+
+                  <li><a class="dropdown-item {% if dbf_nach_history %} myActiveLinkLight {% endif %}" href="{% url 'dbf_nach_history' %}">dbf_nach_history</a></li>
+                </ul>
+              </li>  
+            {% endif %}    
+            {% if log == 'Dahoguz' or request.user.is_superuser %}
+              <li class="nav-item dropdown {% if kabelTvInfo or kabelTvAddUser %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if kabelTvInfo %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-info' %}">Кабель TV</a></li>
+                  <li><a class="dropdown-item {% if kabelTvAddUser %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-add-user' %}">Добавить</a></li>
+                </ul>
+              </li>
+            {% endif %}
+            {% if request.user.is_superuser %}
+              <li class="nav-item dropdown {% if exportDB %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Экспорт</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if exportDB %} myActiveLinkLight {% endif %}" href="{% url 'export-db' %}">Б\Д</a></li>
+                </ul>
+              </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link {% if KassaMTB %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+            <li class="nav-item">
+              <a class="nav-link {% if perekidka %} myActiveLink {% endif %}" href="{% url 'perekidka' %}">Удалить платеж</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link {% if showArhiw %} myActiveLink {% endif %}" href="{% url 'abonent-arhiw' %}">Архив</a>
+            </li>
+            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+              <!-- <li class="nav-item">
+                <a class="nav-link {% if totalSnyatie %} myActiveLink {% endif %}" href="{% url 'total-snyatie' %}">Снятие номеров</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if import_calls_files %} myActiveLink {% endif %}" href="{% url 'import_calls_files' %}">Calls</a>
+              </li> -->
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link {% if accountMTB %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if oldLoginDogowors %} myActiveLink {% endif %}" href="{% url 'oldLoginDogowors' %}">Old</a>
+            </li>
+            {% if log == 'Dashoguz' or request.user.is_superuser or 'subadmin' in request.user.username or is_allow_to_pay or internetBilling or matbIndex %}
+              <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
+                <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                  <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
+                  {% endif %}
+                </ul>
+              </li>  
+
+              <li class="nav-item dropdown {% if all_new_for_mtb %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MTB</a>
+                <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                  <!-- <li><a class="dropdown-item {% if nachislit_wruchnuyu %} myActiveLinkLight {% endif %}" href="{% url 'nachislit_wruchnuyu' %}">Начислить вручную</a></li>
+                  <li><a class="dropdown-item {% if nachislit_wruchnuyu_history %} myActiveLinkLight {% endif %}" href="{% url 'nachislit_wruchnuyu_history' %}">История начислить вручную</a></li> -->
+                  <li><a class="dropdown-item {% if perekidka_new %} myActiveLinkLight {% endif %}" href="{% url 'perekidka_new' %}">Перекидка</a></li>
+                  <li><a class="dropdown-item {% if perekidka_new_history %} myActiveLinkLight {% endif %}" href="{% url 'perekidka_new_history' %}">История перекидок</a></li>
+                  <li><a class="dropdown-item {% if snyatie_new %} myActiveLinkLight {% endif %}" href="{% url 'snyatie_new' %}">Снятие</a></li>
+                  <li><a class="dropdown-item {% if snyatie_new_history %} myActiveLinkLight {% endif %}" href="{% url 'snyatie_new_history' %}">История снятий</a></li>
+                  <li><a class="dropdown-item {% if check_pays %} myActiveLinkLight {% endif %}" href="{% url 'check_pays' %}">Сверка платежей с кассой</a></li>
+                  <li><a class="dropdown-item {% if baza_history %} myActiveLinkLight {% endif %}" href="{% url 'baza_history' %}">История изменений База</a></li>
+                  <!-- <li><a class="dropdown-item {% if perekidkaNachisleniya %} myActiveLinkLight {% endif %}" href="{% url 'perekidkaNachisleniya' %}">-Перекидка начислений</a></li> -->
+                  <li><a class="dropdown-item {% if check_dogowors %} myActiveLinkLight {% endif %}" href="{% url 'check_dogowors' %}">Проверка Dogowor</a></li>
+                  <li><a class="dropdown-item {% if pays_with_comment %} myActiveLinkLight {% endif %}" href="{% url 'pays_with_comment' %}">Платежи с комментариями</a></li>
+                  <li><a class="dropdown-item {% if pays_with_comment_history %} myActiveLinkLight {% endif %}" href="{% url 'pays_with_comment_history' %}">История платежей с комментариями</a></li>
+                  <li><a class="dropdown-item {% if change_nachislenie %} myActiveLinkLight {% endif %}" href="{% url 'change_nachislenie' %}">Изменение начислений</a></li>
+                  <li><a class="dropdown-item {% if changeBalance %} myActiveLinkLight {% endif %}" href="{% url 'changeBalance' %}">Изменение баланса с комментариями</a></li>
+                  <li><a class="dropdown-item {% if changeBalanceHistory %} myActiveLinkLight {% endif %}" href="{% url 'changeBalanceHistory' %}">История изменений Баланса с комментариями</a></li>
+                  
+                </ul>
+              </li> 
+
+              {% endif %}
+            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+              <li class="nav-item dropdown {% if monthOtchotForAshyr or trafik or trafik_dop or reestrMain or prochie_otchoty or balances %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">отчеты</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if monthOtchotForAshyr %} myActiveLinkLight {% endif %}" href="{% url 'month-ashyr-otchot' %}">сальдо</a></li>
+                  <li><a class="dropdown-item {% if trafik %} myActiveLinkLight {% endif %}" href="{% url 'trafik' %}">трафик</a></li>
+                  <li><a class="dropdown-item {% if trafik_dop %} myActiveLinkLight {% endif %}" href="{% url 'trafik-dop' %}">трафик ДОП</a></li>
+                  <li><a class="dropdown-item {% if reestrMain %} myActiveLinkLight {% endif %}" href="{% url 'reestr-main' %}">реестр</a></li>
+                  <li><a class="dropdown-item {% if prochie_otchoty %} myActiveLinkLight {% endif %}" href="{% url 'prochie-otchoty' %}">Прочие отчеты</a></li>
+                </ul>
+              </li>  
+              <li class="nav-item dropdown {% if add_month_pays_from_billing_to_my_programm or nach_pays_from_billing %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pays</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if add_month_pays_from_billing_to_my_programm %} myActiveLinkLight {% endif %}" href="{% url 'add_month_pays_from_billing_to_my_programm' %}">add Pays</a></li>
+                  <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">nach Pays</a></li>
+                </ul>
+              </li>
+            {% endif %}  
+
+            {% if not request.user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link {% if prochie_otchoty %} myActiveLink {% endif %}" href="{% url 'prochie-otchoty' %}">main</a>
+              </li>
+            {% endif %}
+            
+            <!-- ############################################################################################################################################################################################################### -->
+          {% elif kassaIndex or request.user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link {% if kassa %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if receipts %} myActiveLink {% endif %}" href="{% url 'receipts' %}">Квитанция</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if kassaReestr %} myActiveLink {% endif %}" href="{% url 'kassa-reestr' %}">Реестр</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if kassaAccount %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if kassirs_billing_names %} myActiveLink {% endif %}" href="{% url 'kassirs_billing_names' %}">Имена Кассиров</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if prochie_otchoty %} myActiveLink {% endif %}" href="{% url 'prochie-otchoty' %}">Прочие отчеты</a>
+            </li>
+            {% if log == 'Dashoguz' or request.user.is_superuser or 'subadmin' in request.user.username or is_allow_to_pay %}
+            <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
+              <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
+                {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
+                {% endif %}
+              </ul>
+            </li>  
+            {% endif %}
+            {% if request.user.is_superuser %}
+              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing or check_pays %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
+                  <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+                </ul>
+              </li>
+            {% endif %}
+
+
+
+            <!-- ############################################################################################################################################################################################################### -->
+          {% elif setService %}
+            <li class="nav-item">
+              <a class="nav-link {% if internetConnect %} myActiveLink {% endif %}" href="{% url 'internet-connect' %}">Интернет</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if serviceConnect %} myActiveLink {% endif %}" href="{% url 'service-connect' %}">Услуги</a>
+            </li>
+            <li class="nav-item dropdown {% if kabelTvInfo or kabelTvAddUser %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item {% if kabelTvInfo %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-info' %}">Кабель TV</a></li>
+                <li><a class="dropdown-item {% if kabelTvAddUser %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-add-user' %}">Добавить</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if accountMB %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if KassaMB %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if alemConnect %} myActiveLink {% endif %}" href="{% url 'alem-connect' %}">Alem TV</a>
+            </li>
+            {% if log == 'Dashoguz' or request.user.is_superuser or 'subadmin' in request.user.username or is_allow_to_pay %}
+              <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
+                <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                  <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
+                  {% endif %}
+                </ul>
+              </li> 
+            {% endif %} 
+
+            {% if request.user.username == 'Halekowa_Gulshat' %}
+            <li class="nav-item">
+              <a class="nav-link {% if nonLocalCalls %} myActiveLink {% endif %}" href="{% url 'none-local-calls' %}">Звонки по АМТС8</a>
+            </li>
+            {% endif %}
+
+            <!-- ############################################################################################################################################################################################################### -->
+          {% elif internetBilling%}
+            <li class="nav-item">
+              <a class="nav-link {% if payBilling %} myActiveLink {% endif %}" href="{% url 'internet-bolum' %}">Interpay</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if KassaInt %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if dataBaseInternet %} myActiveLink {% endif %}" href="{% url 'matb-index' %}">База</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if interpayPerekidka %} myActiveLink {% endif %}" href="{% url 'interpay-perekidka' %}">Перекидка</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if accountInt %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            {% if log == 'Dashoguz' or request.user.is_superuser or 'subadmin' in request.user.username or is_allow_to_pay or internetBilling or matbIndex %}
+              <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
+                <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                  <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
+                  {% endif %}
+                </ul>
+              </li>  
+            {% endif %}
+
+            <!-- ############################################################################################################################################################################################################### -->
+          {% elif SHBIndex %}
+            <li class="nav-item">
+              <a class="nav-link {% if SHBotdel %} myActiveLink {% endif %}" href="{% url 'shb-bolum' %}">SHB отдел</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if KassaSHB %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if accountSHB %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if dataBaseInternet %} myActiveLink {% endif %}" href="{% url 'matb-index' %}">База</a>
+            </li>
+            {% if request.user.username == 'lenashb' %}
+            <li class="nav-item">
+              <!-- <li><a class="dropdown-item {% if nonLocalCalls %} myActiveLinkLight {% endif %}" href="{% url 'none-local-calls' %}">Звонки по АМТС8</a></li> -->
+              <a class="nav-link {% if nonLocalCalls %} myActiveLink {% endif %}" href="{% url 'none-local-calls' %}">AMTC</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if check_pays %} myActiveLink {% endif %}" href="{% url 'check_pays' %}">Сверка платежей</a>
+            </li>
+            <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Платежи с комментариями</a>
+              <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                <li><a class="dropdown-item {% if pays_with_comment %} myActiveLinkLight {% endif %}" href="{% url 'pays_with_comment' %}">Платежи с комментариями</a></li>
+                <li><a class="dropdown-item {% if pays_with_comment_history %} myActiveLinkLight {% endif %}" href="{% url 'pays_with_comment_history' %}">Платежи с комментариями история</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            {% if log == 'Dashoguz' or request.user.is_superuser or 'subadmin' in request.user.username or is_allow_to_pay or internetBilling or matbIndex or SHBIndex %}
+              <li class="nav-item dropdown {% if KabelNewDropDown %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
+                <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
+                  <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
+                  {% endif %}
+                </ul>
+              </li>  
+            {% endif %}
+            {% if request.user.username == 'lenashb' %}
+            <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
+                <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+              </ul>
+            </li>
+            {% endif %}
+            <li class="nav-item dropdown {% if kabelTvInfo or kabelTvAddUser %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель</a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item {% if kabelTvInfo %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-info' %}">Кабель TV</a></li>
+                <li><a class="dropdown-item {% if kabelTvAddUser %} myActiveLinkLight {% endif %}" href="{% url 'kabel-tv-add-user' %}">Добавить</a></li>
+              </ul>
+            </li>
+
+            <!-- ############################################################################################################################################################################################################### -->
+          {% elif operator071 %}
+            <li class="nav-item">
+              <a class="nav-link {% if zakazCalls %} myActiveLink {% endif %}" href="{% url 'zakaz-calls' %}">Заказные звонки</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if Kassa071 %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if account071 %} myActiveLink {% endif %}" href="{% url 'account-page' %}">Счет</a>
+            </li>
+            {% elif exam_group or request.user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link {% if exam_group %} myActiveLink {% endif %}" href="{% url 'exam-index' %}">Экзамен</a>
+              </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- <button id="playJingle">Play Jingle Bells</button> -->
+
+      <!-- <audio id="jingleBells">
+        <source src="{% static 'telekom/audio/Christmas-jingle-bells-melody.mp3' %}" type="audio/mp3">
+      </audio>
+
+      <canvas id="snowCanvas"></canvas> -->
+
+      {% if request.user.is_authenticated %}
+        <div class="navbarWelcome">Welcome {{ request.user.username }}</div>
+        <div class="navbarWelcome"><a href="{% url 'user-logout' %}">Выход</a></div>
+      {% else %}
+      <div class="navbarWelcome"><a href="{% url 'user-login' %}">Вход</a></div>
+      {% comment %}
+      <div class="navbarWelcome"><a href="{% url 'user-register' %}">Регистрация</a></div>
+      {% endcomment %}
+      {% endif %} 
+    </div>
+</nav>
+
+  <!-- <style>
+    .myActiveLinkLight {
+  color: black !important; 
+  text-decoration: underline;
+}
+  </style> -->
+
+
+  
+<!-- <script>
+  const btn = document.getElementById('playJingle');
+  const audio = document.getElementById('jingleBells');
+  const canvas = document.getElementById('snowCanvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let snowflakes = [];
+
+  function createSnowflakes() {
+    snowflakes = [];
+    for (let i = 0; i < 150; i++) {
+      snowflakes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 3 + 1,
+        speed: Math.random() * 1.5 + 0.5
+      });
+    }
+  }
+
+  function drawSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    snowflakes.forEach(f => {
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      f.y += f.speed;
+      if (f.y > canvas.height) f.y = 0;
+    });
+    requestAnimationFrame(drawSnow);
+  }
+
+  createSnowflakes();
+  drawSnow(); // снег всегда падает
+
+  btn.addEventListener('click', () => {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log(e));
+  });
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+</script>
+
+<style>
+  #snowCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+</style> -->

@@ -1,0 +1,758 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Локальные звонки{% endblock %}
+{% block content %}
+
+
+<div class="localCallsContainer">
+    <form action="" method="GET" class="localCallsForm">
+        <div>
+            <label for="">Номер</label>
+            <input type="text" placeholder="Номер" class="form-control" id="localCallsSerachNumber" name="number" {% if number %} value={{number}} {% endif %}>
+        </div>
+
+        <div>
+            <div>Этрап</div>
+            <select class="form-select localCallsSearchEtrap" aria-label="Default select example" name="etrap">
+                {% if log or etrap %}
+                {% else %}
+                <option selected value="">Этрап</option>
+                {% endif %}
+                {% for etr in etraps %}
+                    {% if etrap %}
+                    <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% else %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            
+            
+        </div>
+        
+
+        <div><span>Дата начало</span><input type="date" name="start" class="form-control localCallsDateInput" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+        <div><span>Дата конец</span><input type="date" name="end"   class="form-control localCallsDateInput" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+
+        <button class="btn localCallsSearchSubmit btn-success">Поиск</button>
+
+    </form>
+    
+    {% if OneDay %}
+    <table class="localCallsTable">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>id</th>
+                <th>etrap</th>
+                <th>SUB_A</th>
+                <th>SUB_B</th>
+                <th>DATE</th>
+                <th>START</th>
+                <th>FIN</th>
+                <th>DUR</th>
+                <th>MT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{table.pk}}</td>
+                <td>{{table.etrap}}</td>
+                <td>{{table.SUB_A}}</td>
+                <td>{{table.SUB_B}}</td>
+                <td>{{table.DATE}}</td>
+                <td>{{table.START}}</td>
+                <td>{{table.FIN}}</td>
+                <td>{{table.DUR}}</td>
+                <td>{{table.MT}}</td>
+            </tr>
+            {% endfor %}
+            <tr>            
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold">ИТОГО:</td>
+                <td class="bg-gold">Цена:</td>
+                <td class="bg-gold">{{total_price|floatformat:2}}</td>
+                <td class="bg-gold">Минут:</td>
+                <td class="bg-gold">{{total_MT}}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+
+    {% if check_list %}
+    <table class="localCallsTable">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>id</th>
+                <th>etrap</th>
+                <th>SUB_A</th>
+                <th>SUB_B</th>
+                <th>DATE</th>
+                <th>START</th>
+                <th>FIN</th>
+                <th>DUR</th>
+                <th>MT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for iter, val in iterTables.items %}
+                {% for table in val %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{table.pk}}</td>
+                        <td>{{table.etrap}}</td>
+                        <td>{{table.SUB_A}}</td>
+                        <td>{{table.SUB_B}}</td>
+                        <td>{{table.DATE}}</td>
+                        <td>{{table.START}}</td>
+                        <td>{{table.FIN}}</td>
+                        <td>{{table.DUR}}</td>
+                        <td>{{table.MT}}</td>
+                    </tr>
+                {% endfor %}
+
+                {% if forloop.counter == 1 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 1 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}              
+                {% endif %}
+
+                {% if forloop.counter == 2 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 2 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 3 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 3 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 4 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 4 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 5 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 5 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 6 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 6 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 7 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 7 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 8 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 8 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 9 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 9 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 10 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 10 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 11 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 11 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 12 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 12 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 13 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 13 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 14 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 14 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 15 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 15 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 16 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 16 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 17 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 17 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 18 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 18 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 19 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 19 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 20 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 20 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if forloop.counter == 21 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 21 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 22 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 22 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 23 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 23 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 24 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 24 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 25 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 25 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 26 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 26 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 27 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 27 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 28 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 28 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 29 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 29 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 30 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 30 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if forloop.counter == 31 %}
+                    {% for date, val in check_list.items %}
+                        {% if forloop.counter == 31 %}
+                        <tr>            
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold"></td>
+                            <td class="bg-gold">ИТОГО:</td>
+                            <td class="bg-gold">Цена:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 2 %}{{v|floatformat:2}}{% endif %}{% endfor %}</td>
+                            <td class="bg-gold">Минут:</td>
+                            <td class="bg-gold">{% for v in val %}{% if forloop.counter == 1 %}{{v}}{% endif %}{% endfor %}</td> 
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            <tr>            
+                <td class="bg-green"></td>
+                <td class="bg-green"></td>
+                <td class="bg-green"></td>
+                <td class="bg-green"></td>
+                <td class="bg-green"></td>
+                <td class="bg-green"></td>
+                <td class="bg-green">Общая цена</td>
+                <td class="bg-green">{{umumyTotal_Price_Netto|floatformat:2}}</td>
+                <td class="bg-green">Всего минут:</td>
+                <td class="bg-green">{{umumyTotal_MT_Netto}}</td>
+
+            </tr>
+            
+
+           
+        </tbody>
+    </table>
+
+    {% endif %}
+
+</div>
+
+
+
+
+
+{% endblock %}

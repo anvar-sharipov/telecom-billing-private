@@ -1,0 +1,112 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Снятие всех номеров{% endblock %}
+{% block content %}
+
+<div style="background-color: #2a5b84; height: 100vh;" class="text-light pt-3">
+    <form method="GET">
+        <div class="d-flex text-center my_width500 my_block_center">
+            <div class="new-cost__control" >
+                <h5>Поиск номеров к снятию</h5>
+                <input type="date" name="start" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}>
+                <input type="date" name="end" {% if end %} value="{{end}}" {% else %} value="{{current_date}}" {% endif %}>
+                <button class="my-button">Поиск</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-5">
+        <h5 class="text-center">Всего снятых номеров {{objs.count}} </h5>
+    </div>
+
+
+    {% if objs %}
+
+    <div class="p-5" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-light table-hover">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Номер</th>
+                    <th>ФИО</th>
+                    <th>Улица</th>
+                    <th>Дом</th>
+                    <th>Кв.</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objs %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{obj.number}}</td>
+                    <td>{{obj.surname}} {{obj.name}}</td>
+                    <td>{{obj.street}}</td>
+                    <td>{{obj.home}}</td>
+                    <td>{{obj.flat}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+        <div class="my_width200 my_block_center">
+            <div class="d-flex"><div class="btn btn-danger"  style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#matbTotalSnyat">Снять </div><div class="pt-2">{{objs.count}} номеров</div></div>
+        </div>
+
+    <div class="modal fade" id="matbTotalSnyat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST">{% csrf_token %}
+                    <div class="modal-footer" style="background-color: #FA8072;">
+                        <div>Запишите комментарий</div>
+                        <textarea name="comment" id="comment" cols="50" rows="10"></textarea>
+                        <div class="d-flex justify-content-between my_width500" style="padding-left: 10px;">
+                            <div class="fw-bold text-uppercase mt-2">Снять Номера?</div>
+                            <input type="submit" value="Снять" class="btn btn-danger">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+
+
+</div>
+
+
+
+
+<style>
+
+.new-cost__control input {
+    font: inherit;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 10rem;
+    max-width: 100%;
+}
+
+.my-button {
+    font: inherit;
+    cursor: pointer;
+    padding: 0.5rem 2rem;
+    border: 1px solid black;
+    background-color: black;
+    color: #fefae1;
+    border-radius: 10px;
+    margin-right: 3px;
+}
+
+.my-button:hover,
+.my-button:active {
+    background-color: #2a5c84b2;
+    border-color: black;
+}
+</style>
+
+
+{% endblock %}

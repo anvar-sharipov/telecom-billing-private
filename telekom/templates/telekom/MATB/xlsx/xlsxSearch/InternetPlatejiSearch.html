@@ -1,0 +1,110 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Поиск Интернет Платежей{% endblock %}
+{% block content %}
+
+<div class="d-flex internetPlatejiSearchContainer">
+    <form action="" method="GET">
+        <div class="d-flex internetPlatejiSearchFormContainer">
+            <div>
+                <div for="" class="text-light text-center">Договор Номер</div>
+                <input type="text" class="form-control bg-gold internetPlatejiSearchFormItems" id="dogoworNomer" name="dogowor" {% if dogowor %} value="{{dogowor}}" {% endif %}>
+            </div>
+
+            <div>
+                <div for="" class="text-light text-center">Ф.И.О</div>
+                <input type="text" class="form-control bg-gold internetPlatejiSearchFormItems" name="FAO" {% if FAO %} value="{{FAO}}" {% endif %}>
+            </div>
+            <div>
+                <div for="" class="text-light text-center">Тип Платежа</div>
+                <select class="form-select internetPlatejiSearchFormItems bg-gold" style="height: fit-content;" name="type_">
+
+                    {% for type_ in type_list %}
+                    <option value="{{type_}}" {% if type_ == get_type %} selected {% endif %}>{{type_}}</option>
+                    {% endfor %}
+                    <option {% if get_type == '' %} selected {% endif %} value="">Все</option>
+                </select>
+            </div>
+
+            <div>
+                <div class="text-light text-center">Этрап</div>
+                <select class="form-select internetPlatejiSearchFormItems bg-gold" aria-label="Default select example" name="etrap">
+                    {% for etr in etraps %}
+                      {% if etrap %}
+                        <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                      {% else %}
+                        <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                      {% endif %}
+                    {% endfor %}
+                    <option {% if etrap == ''  and log == '' and etrap == '' %} selected {% endif %} value="">Все</option>
+                </select>
+            </div>
+
+
+
+            <div><div class="text-light text-center">Дата начало</div><input type="date" name="start" class="form-control internetPlatejiSearchFormItems bg-gold" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+            <div><div class="text-light text-center">Дата конец</div><input type="date" name="end"   class="form-control internetPlatejiSearchFormItems bg-gold" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+
+            <div>
+                <div class="text-light">OFF</div>
+                <input type="checkbox" name="off" class="form-check-input" {% if off %} checked {% endif %}>
+            </div>
+
+            <button class="btn btn-primary internetPlatejiSearchFormBtn">Искать</button>
+
+        </div>
+    </form>
+
+{% if tables %}
+    <table class="internetPlatejiTable">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>id</th>
+                <th>Тип Платежа</th>
+                <th>Дата Платежа</th>
+                <th>Договор №</th>
+                <th>Ф.И.О</th>
+                <th>Цена</th>
+                <th>Этрап</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{table.pk}}</td>
+                <td>{{table.type}}</td>
+                <td>{{table.pay_date}}</td>
+                <td>{{table.dogowor}}</td>
+                <td>{{table.FAO}}</td>
+                <td>{{table.price}}</td>
+                <td>{{table.etrap}}</td>
+            </tr>
+            {% endfor %}
+            <tr style="background-color: orange;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Jemi Toleg:</td>
+                <td>{{totalSum|floatformat:2}}</td>
+                <td></td>
+
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <h5 class="text-center text-danger mt-3">НЕТ ДАННЫХ</h5>
+{% endif %}
+
+{% if lenTables > tables.count %}
+<form action="" method="POST" style="width: 200px; margin-left: auto; margin-right: auto;">{% csrf_token %}
+    <button class="btn btn-primary">Посмотреть все</button>
+</form>
+{% endif %}
+
+
+</div>
+
+{% endblock %}

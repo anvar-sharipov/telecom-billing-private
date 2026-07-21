@@ -1,0 +1,87 @@
+{% load static %}
+<!-- Modal add new user -->
+<div class="modal fade" id="commentsModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="commentsModalLabel{{u.pk}}" aria-hidden="true" style="font-size: 12px;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title" id="commentsModalLabel{{u.pk}}">Комментарии</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2" style="text-align: left;">
+                <div class="card-container my-card-container">
+                    {% for c in u.kabelcomment_set.all|dictsortreversed:"comment_add_date" %}
+                        <div class="card my-card mb-2 position-relative">
+                            <div class="card-header py-2">
+                                <strong>Соотрудник:</strong> {{ c.worker }} <br>
+                                <strong>Действие:</strong> {{ c.action }}
+                                <strong class="position-absolute top-0 end-0 mt-2 me-2">{{ c.comment_add_date|date:"d-m-Y H:i" }}</strong>
+                            </div>
+                            <div class="card-body py-2">
+                                {% with c.comment as comment_text %}
+                                    {% for line in comment_text.splitlines %}
+                                        <p class="card-text mb-1">{{ line }}</p>
+                                    {% endfor %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="alert alert-warning py-2" role="alert">
+                            Нет комментариев
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- {% for c in u.kabelcomment_set.all %}
+                    <div class="card mb-2 position-relative" style="box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);">
+                        <div class="card-header py-2">
+                            <strong>Соотрудник:</strong> {{ c.worker }} <br>
+                            <strong>Действие:</strong> {{ c.action }}
+                            <strong class="position-absolute top-0 end-0 mt-2 me-2">{{ c.comment_add_date|date:"d-m-Y H:i" }}</strong>
+                        </div>
+                        <div class="card-body py-2">
+                            {% with c.comment as comment_text %}
+                                {% for line in comment_text.splitlines %}
+                                    <p class="card-text mb-1">{{ line }}</p>
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="alert alert-warning py-2" role="alert">
+                        Нет комментариев
+                    </div>
+                {% endfor %} -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <style>
+    .card:hover {
+        box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.5);
+        transform: scale(1.04);
+        transition: all 0.2s ease;
+    }
+</style> -->
+
+<style>
+    .my-card-container {
+        position: relative;
+    }
+
+    .my-card {
+        box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1;
+    }
+
+    .my-card:hover {
+        box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.5);
+        transform: scale(1.03);
+        z-index: 2;
+    }
+
+    .my-card-container:hover .my-card:not(:hover) {
+        opacity: 0.5;
+    }
+</style>

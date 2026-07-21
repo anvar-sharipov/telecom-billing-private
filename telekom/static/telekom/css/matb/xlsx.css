@@ -1,0 +1,145 @@
+/*###############################
+    internetNachisleniyaErrors ##
+#################################*/
+.importInternetNachisleniyaErrorsTable {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1350px;
+    margin-top: 10px;
+ }   
+
+.importInternetNachisleniyaErrorsTable th, .importInternetNachisleniyaErrorsTable td {
+    padding: 3px;
+    border: black solid 1px;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.importInternetNachisleniyaErrorsTable th:nth-of-type(1), .importInternetNachisleniyaErrorsTable td:nth-of-type(1){width: 50px;}
+.importInternetNachisleniyaErrorsTable th:nth-of-type(2), .importInternetNachisleniyaErrorsTable td:nth-of-type(2){width: 500px;}
+.importInternetNachisleniyaErrorsTable th:nth-of-type(3), .importInternetNachisleniyaErrorsTable td:nth-of-type(3){width: 150px;}
+.importInternetNachisleniyaErrorsTable th:nth-of-type(4), .importInternetNachisleniyaErrorsTable td:nth-of-type(4){width: 150px;}
+.importInternetNachisleniyaErrorsTable th:nth-of-type(5), .importInternetNachisleniyaErrorsTable td:nth-of-type(5){width: 150px;}
+.importInternetNachisleniyaErrorsTable th:nth-of-type(6), .importInternetNachisleniyaErrorsTable td:nth-of-type(6){width: 150px;}
+/*###################################
+    internetNachisleniyaErrors END ##
+#####################################*/
+
+
+/*##########################
+    internetPlatejiErrors ##
+############################*/
+.importInternetPlatejiErrorsTable {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1350px;
+    margin-top: 10px;
+ }   
+
+.importInternetPlatejiErrorsTable th, .importInternetPlatejiErrorsTable td {
+    padding: 3px;
+    border: black solid 1px;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.importInternetPlatejiErrorsTable th:nth-of-type(1), .importInternetPlatejiErrorsTable td:nth-of-type(1){width: 50px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(2), .importInternetPlatejiErrorsTable td:nth-of-type(2){width: 300px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(3), .importInternetPlatejiErrorsTable td:nth-of-type(3){width: 250px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(4), .importInternetPlatejiErrorsTable td:nth-of-type(4){width: 150px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(5), .importInternetPlatejiErrorsTable td:nth-of-type(5){width: 500px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(6), .importInternetPlatejiErrorsTable td:nth-of-type(6){width: 100px;}
+.importInternetPlatejiErrorsTable th:nth-of-type(7), .importInternetPlatejiErrorsTable td:nth-of-type(7){width: 100px;}
+/*##############################
+    internetPlatejiErrors END ##
+################################*/
+
+/*###############
+    importXlsx ##
+#################*/
+/* .file, .file2 {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+  }
+  
+  .file-input label, .file2-input label {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 37px;
+    border-radius: 5px;
+    background: linear-gradient(40deg,#ff6ec4,#7873f5);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+  }
+  
+  .file-name, .file2-name {
+    padding-top: 8px;
+    color: black;
+    text-align: center;
+  }
+  
+  input:hover + label,
+  input:focus + label {
+    transform: scale(1.02);
+  }
+  
+  
+  input:focus + label {
+    outline: 1px solid #000;
+    outline: -webkit-focus-ring-color auto 2px;
+  } */
+
+  .file, .file2, .file3, .file4 {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+  }
+  
+  .file-input label, .file2-input label, .file3-input label, .file4-input label {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 37px;
+    border-radius: 5px;
+    background: linear-gradient(40deg,#ff6ec4,#7873f5);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+  }
+  
+  .file-name, .file2-name, .file3-name, .file4-name {
+    padding-top: 8px;
+    color: black;
+    text-align: center;
+  }
+  
+  input:hover + label,
+  input:focus + label {
+    transform: scale(1.02);
+  }
+  
+  /* Adding an outline to the label on focus */
+  input:focus + label {
+    outline: 1px solid #000;
+    outline: -webkit-focus-ring-color auto 2px;
+  }
+/*###################
+    importXlsx END ##
+#####################*/

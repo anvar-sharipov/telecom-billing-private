@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/bootstrap/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/matb/matb-index.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/kassa/kassa.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/service/service.css' %}">
+	{% if internetBilling %}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom//css/interpay/interpay.css' %}">
+	{% endif %}
+	{% if kassaReestr or kassaReestrRezerw %}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/kassa/kassaReestr.css' %}">
+	{% endif %}
+	{% if localCalls or nonLocalCalls or slrNachisleniya or kodNachisleniya %}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/matb/DBF.css' %}">
+	{% endif %}
+	<!-- xlsx -->
+	{% if importXlsx %}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/matb/xlsx.css' %}">
+	{% endif %}
+	{% if nachisleniyaInternetPlateji or InternetPlatejiSearch or internetNachisleniyaBtn or alemNachisleniya%}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/matb/nachisleniyaInternetPlateji.css' %}">
+	{% endif %}
+	{% if kabelTvAddUser or kabelTvInfo or kabelTvNachisleniya%}
+	<link rel="stylesheet" type="text/css" href="{% static 'telekom/css/kabelTv.css' %}">
+	{% endif %}
+
+
+	<title>{% block title %}base.html{% endblock %}</title>
+</head>
+
+<body>
+
+	
+{% include 'telekom/BaseNavbar/navbar.html' %}
+
+
+	<!--Этот if у нас для вывода сообщений об ошибках или удачах-->
+	{% if messages %}
+	{% for message in messages %}
+		{% if message.tags == 'error' %}
+			<div class="alert error_anime" role="alert">
+				<div class="d-flex message-flex">
+				 <div class="message-text-error">{{ message }}</div>
+				 <button type="button" class="btn-close" onclick="closeErrorMessageX()" aria-label="Close"></button>
+				</div>
+			</div>
+			<audio id="myAudio">
+				<source src="{% static 'telekom/audio/error.mp3' %}" type="audio/mp3">
+			</audio>
+			
+		{% else %}
+			<div class="alert success_anime" role="alert">
+				<div class="d-flex message-flex">
+				  <div class="">{{ message }}</div>
+				 <button type="button" class="btn-close" aria-label="Close"onclick="closeSuccessMessageX()"></button>
+				</div>
+			</div>
+			<audio id="myAudio">
+				<source src="{% static 'telekom/audio/success.mp3' %}" type="audio/mp3">
+			</audio>
+		{% endif %}
+	{% endfor %}
+	{% endif %}
+<div></div>
+	<div>
+		{% block content %}{% endblock %}
+	</div>
+	
+<script type="text/javascript" src="{% static 'telekom/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'telekom/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'telekom/js/main.js' hash %}"></script>
+{% if dataBase or dataBaseInternet %}
+<script type="text/javascript" src="{% static 'telekom/js/matb/matbIndex.js' %}"></script>
+{% endif %}
+{% if localCalls or nonLocalCalls%}
+<script type="text/javascript" src="{% static 'telekom/js/matb/DBF.js' %}"></script>
+{% endif %}
+{% if kassaIndex or kassaRezerw or KassaMB or KassaMTB or kassaRezerwMTB or KassaInt or KassaSHB or Kassa071 %}
+<script type="text/javascript" src="{% static 'telekom/js/kassa/kassa.js' %}"></script>
+{% endif %}
+{% if internetBilling %}
+<script type="text/javascript" src="{% static 'telekom/js/interpay/interpay.js' %}"></script>
+{% endif %}
+{% if kassaReestr or kassaReestrRezerw %}
+<script type="text/javascript" src="{% static 'telekom/js/kassa/kassaReestr.js' %}"></script>
+{% endif %}
+{% if kabelTvAddUser or kabelTvInfo or kabelTvNachisleniya%}
+<script type="text/javascript" src="{% static 'telekom/js/kabelTv.js' %}"></script>
+{% endif %}
+
+<!-- xlsx -->
+{% if importXlsx or InternetPlatejiSearch %}
+<script type="text/javascript" src="{% static 'telekom/js/matb/xlsx.js' %}"></script>
+{% endif %}
+
+
+
+<script>
+try {
+	function playSuccessSound() {
+	var successSound = document.getElementById('myAudio')
+	successSound.volume = 1
+	successSound.play()
+	}
+	playSuccessSound()
+} catch {}
+</script>
+
+
+
+
+
+</body>
+
+</html>

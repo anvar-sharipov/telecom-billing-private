@@ -1,0 +1,78 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Касса {{abonent.number}} {{abonent.etrap}}{% endblock %}
+{% block content %}
+{% include 'telekom/Kassa/KassaIndexSections/modalsSection.html' %}
+<div style="position: absolute; left: 100px; color: #808080;">Kassa - WEAK {{log}}. Operator: {{request.user.username}}. Информация по AMTC: {{lastKodDate.DATE|date:"Y.m.d"}}, по заказу: {{lastZakazDate.DATE|date:"Y.m.d"}}</div>
+
+<!--kassaIndex-->
+<div style="padding: 10px 80px; {% if selected_year != current_year %} background-color: #808080; {% endif %}">
+    <!--строка поиска, Ф.И.О, адреса -->
+    <div>{% include 'telekom/Kassa/KassaIndexSections/searchRowSection.html' %}</div>
+
+    <!--Строка оплаты, Вклад, сумма к опл., -->
+    <div>{% include 'telekom/Kassa/KassaIndexSections/payRowSection.html' %}</div>
+
+    <div class="kassa-main-container" style="height: 75vh;">
+
+            <!--Таблица начислений и баланса абонента-->
+        <div>{% include 'telekom/Kassa/KassaIndexSections/userTableSection.html' %}</div>
+
+        <!--Таблица историй последних оплат-->
+        {% if lastPays or kabel_pays %}
+        <div>
+            <div style="height: 75vh; overflow-y: auto;">
+                {% include 'telekom/Kassa/KassaIndexSections/receiptHistoryTable.html' %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- список абенентов после фильтра Кабель -->
+        {% if abonents %}
+        <div style="height: 75vh; overflow-y: auto;">
+            {% include 'telekom/Kassa/KassaIndexSections/showFilteredAbonents.html' %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="d-none" id="current_path">{{current_path}}</div>
+<div class="d-none" id="numberForNewForm">{{abonent.number}}</div>
+<div class="d-none" id="numberForNewForm">{{abonent.number}}</div>
+
+<form method="POST" action="{{current_path}}" id="formForRefreshKassaWithNumber" class="d-none">
+    {% csrf_token %}
+    <input type="text" name="search_number" value="{{serach_number}}">
+    <input type="text" name="etrap" value="{{abonent.etrap}}">
+    <input type="text" name="selected_year" value="{{selected_year}}">
+    <input type="submit" value="Отправить">
+</form>
+
+
+<!-- Печать квитанции после оплаты -->
+{% if payHistory %}
+    <div id="printReceipt">yes</div>
+
+    <div id="print_telefon" style="display:none;visibility: hidden; font-size: 1px;">{{payHistory.telefon}}</div>
+    <div id="print_slr" style="display:none;visibility: hidden;">{{payHistory.slr}}</div>
+    <div id="print_kod" style="display:none;visibility: hidden;">{{payHistory.kod}}</div>
+    <div id="print_zakaz" style="display:none;visibility: hidden;">{{payHistory.zakaz}}</div>
+    <div id="print_prochee" style="display:none;visibility: hidden;">{{payHistory.prochee}}</div>
+    <div id="print_alem" style="display:none;visibility: hidden;">{{payHistory.alem}}</div>
+    <div id="print_internet" style="display:none;visibility: hidden;">{{payHistory.internet}}</div>
+    <div id="print_dop_uslugi" style="display:none;visibility: hidden;">{{payHistory.dop_uslugi}}</div>
+    <div id="print_kabel" style="display:none;visibility: hidden;">{{payHistory.kabel}}</div>
+
+    <div id="print_etrap" style="display:none;visibility: hidden;">{{payHistory.abonent.etrap}}</div>
+    <div id="print_name_suname_telefon" style="display:none;visibility: hidden;">{{payHistory.abonent.name}} {{payHistory.abonent.surname}} {{payHistory.abonent.number}}</div>
+    <div id="print_kw_date" style="display:none;visibility: hidden; font-size: 1px;">{{payHistory.pk}} {{payHistory.date|date:'Y-m-d H:i:s'}} </div>
+    <div id="print_kassir" style="display:none;visibility: hidden;">{{payHistory.kassir}}</div>
+    <div id="print_oplata_sum" style="display:none;visibility: hidden;">{{payHistory.total}}</div>
+    <div id="PC_name" style="display:none;visibility: hidden;">{{PC_name}}</div>
+{% else %}
+    <div id="printReceipt">no</div>
+{% endif %}
+
+
+
+{% endblock %}

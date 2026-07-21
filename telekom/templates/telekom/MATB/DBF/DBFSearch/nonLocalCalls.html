@@ -1,0 +1,201 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load static %}
+{% block title %}Междугородние и международные звонки{% endblock %}
+{% block content %}
+
+<div class="nonLocalCallsContainer">
+   <form action="" method="GET" class="nonLocalCallsForm">
+       <div>
+           <label for="">Telefon belgisi</label>
+           <input type="text" placeholder="Номер" class="form-control" id="nonLocalCallsSerachNumber" name="number" {% if number %} value={{number}} {% endif %}>
+       </div>
+
+       <div>
+           <div>Etrap</div>
+           <select class="form-select nonLocalCallsSearchEtrap" aria-label="Default select example" name="etrap">
+               {% if log or etrap %}
+               {% else %}
+               <option selected value="">Этрап</option>
+               {% endif %}
+               {% if request.user.is_superuser or request.user.username == "Gayyp" %}
+                {% for etr in etraps %}
+                    {% if etrap %}
+                    <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% else %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+               {% else %}
+                <option selected value="{{log}}">{{log}}</option>
+               {% endif %}
+           </select>
+           
+           
+       </div>
+       
+
+       <div><span>Başlaýyş senesi {{show_calls}}</span><input type="date" name="start" class="form-control nonLocalCallsDateInput" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+       <div><span>Gutarýan senesi</span><input type="date" name="end"   class="form-control nonLocalCallsDateInput" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+
+       <button class="btn nonLocalCallsSearchSubmit btn-success d-print-none">Поиск</button>
+   </form>
+
+   {% if request.user.username == 'lenashb' and not show_calls %}
+   <h5 class="text-center text-danger mt-5">Население</h5>
+   {% endif %}
+
+   {% if request.user.username == 'lenashb' and show_calls or request.user.is_superuser or matbIndex %}
+    {% if tables %}
+    <h5 class="text-center print-black" style="margin-top: 60px;">AMTC boyuncha gepleshikler</h5>
+    <table class="nonLocalCallsTable">
+        <thead>
+            <tr>
+                <th style="width: 10px;">№</th>
+<th>Belgi</th>
+<th>Ýurt/Şäher</th>
+<th>Sene</th>
+<th>Başlady</th>
+<th>Gutardy</th>
+<th>Dowamlylygy</th>
+<th>MT</th>
+<th>1 minut bahasy</th>
+<th>Jemi baha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+            <tr>
+                <td style="width: 10px;">{{forloop.counter}}</td>
+                <td>{{table.SUB_B}}</td>
+                <td>{{table.SUB_B_locations}}</td>
+                <td>{{table.DATE|date:"Y-m-d"}}</td>
+                <td>{{table.START}}</td>
+                <td>{{table.FIN}}</td>
+                <td>{{table.DUR}}</td>
+                <td>{{table.MT}}</td>
+                <td>{{table.price}}</td>
+                <td>{{table.total_price|floatformat:2}}</td>
+            </tr>
+            {% endfor %}
+            <tr>            
+                <td class="bg-gold" style="width: 10px;"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold"></td>
+                <td class="bg-gold">Итого:</td>
+                <td class="bg-gold">Минут:</td>
+                <td class="bg-gold">{{total_MT}}</td>
+                <td class="bg-gold">Цена:</td>
+                <td class="bg-gold">{{total_price|floatformat:2}}</td>
+
+            </tr>
+        </tbody>
+    </table>
+   
+    {% endif %}
+   {% endif %}
+
+    {% if etrap == 'Dashoguz' %}
+
+        {% if zakaz_cals %}
+
+        <h5 class="text-center print-black" style="margin-top: 60px;">ZAKAZ boyuncha gepleshikler</h5>
+
+            <table class="nonLocalCallsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 10px;">№</th>
+<th>Belgi</th>
+<th>Ýurt/Şäher</th>
+<th>Sene</th>
+<th>Başlady</th>
+<th>Dowamlylygy</th>
+<th>MT</th>
+<th>1 minut bahasy</th>
+<th>Jemi baha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for table in zakaz_cals %}
+                    <tr>
+                        <td style="width: 10px;">{{forloop.counter}}</td>
+                        <td>{{table.NUMBER_B}}</td>
+                        <td>{{table.NUMBER_LOCATIONS}}</td>
+                        <td>{{ table.DATE|date:"Y-m-d" }}</td>
+                        <td>{{ table.DATE|date:"H:i:s" }}</td>
+                        <td>{{table.DUR}}</td>
+                        <td>{{table.MT}}</td>
+                        <td>{{table.price}}</td>
+                        <td>{{table.total_price|floatformat:2}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>            
+                        <td class="bg-gold" style="width: 10px;"></td>
+                        <td class="bg-gold"></td>
+                        <td class="bg-gold"></td>
+                        <td class="bg-gold"></td>
+                        
+                        <td class="bg-gold">Итого:</td>
+                        <td class="bg-gold">Минут:</td>
+                        <td class="bg-gold">{{total_zakaz_minut}}</td>
+                        <td class="bg-gold">Цена:</td>
+                        <td class="bg-gold">{{total_zakaz|floatformat:2}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+        {% endif %}
+    {% endif %}
+
+    {% if tables and zakaz_cals %}
+    <div class="p-3 text-center print-black" >
+        <div class="mb-2">
+            <strong>Jemi minut:</strong> {{ umumy_minut }} minut
+        </div>
+        <div>
+            <strong>Jemi baha:</strong> {{ umumy_price|floatformat:2 }} manat
+        </div>
+    </div>
+
+
+    {% endif %}
+
+    {% if not tables and not zakaz_cals %}
+        <h5 class="text-danger text-center mt-3">AMTC we ZAKAZ buyuncha gepleshikler yok</h5>
+    {% endif %}
+
+   
+   
+</div>
+
+
+<style>
+   @media print {
+    /* body, html {
+    margin: 5px !important;
+    padding: 0 !important;
+  }  */
+
+  .nonLocalCallsTable {
+    width: 100%;
+    /* border-collapse: collapse; */
+  }
+
+  .d-print-none {
+    display: none !important;
+  }
+
+  .print-black, .print-black * {
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+</style>
+
+
+
+{% endblock %}

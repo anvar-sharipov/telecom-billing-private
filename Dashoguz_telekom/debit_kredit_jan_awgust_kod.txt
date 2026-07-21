@@ -1,0 +1,417 @@
+# Jun-aug debit kredit
+        if request.method == 'POST' and 'importDZdogowor' in request.POST:
+            dataset = Dataset()
+            xlsx_data = request.FILES['my_file']
+            imported_data = dataset.load(xlsx_data.read(), format='xlsx')
+            count = 0
+            total = 0
+
+            
+     
+
+            number_balance_jan_18_all = {} # {number: balance}
+
+            debit_kredit_jan = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_feb = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_mar = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_apr = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_may = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_jun = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_jul = {} # {number:{debit: debit, kredit: kredit}}
+            debit_kredit_aug = {} # {number:{debit: debit, kredit: kredit}}
+
+            tolegler_jan_18_31 = {} # {number: toleg}
+            tolegler_feb = {} # {number: toleg}
+            tolegler_mar = {} # {number: toleg}
+            tolegler_apr = {} # {number: toleg}
+            tolegler_may = {} # {number: toleg}
+            tolegler_jun = {} # {number: toleg}
+            tolegler_jul = {} # {number: toleg}
+    
+
+            nach_jan = {} # {number: toleg}
+            nach_feb = {} # {number: toleg}
+            nach_mar = {} # {number: toleg}
+            nach_apr = {} # {number: toleg}
+            nach_may = {} # {number: toleg}
+            nach_jun = {} # {number: toleg}
+            nach_jul = {} # {number: toleg}
+      
+            # for i in range(20000, 100000):
+            #     number_balance_jan_18_all[i] = 0
+
+
+
+            toleg_jan_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-01-17', '2024-01-31 23:59:59']).exclude(kassa__in=['Dostluk Bank', 'E-government', 'Saray Tolegy', 'Tolleg APP TMCELL', 'Turkmen Pochta'])
+            for p in toleg_jan_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_jan_18_31:
+                        # print(int(p.abonent.number), p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi)
+                        tolegler_jan_18_31[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_jan_18_31[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            toleg_jan_objs2 = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-01-01', '2024-01-31 23:59:59'], kassa__in=['Dostluk Bank', 'E-government', 'Saray Tolegy', 'Tolleg APP TMCELL', 'Turkmen Pochta'])
+            for p in toleg_jan_objs2:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_jan_18_31:
+                        # print(int(p.abonent.number), p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi)
+                        tolegler_jan_18_31[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_jan_18_31[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            nach_jan_objs = NachMinus.objects.filter(year='2024', month='01', user__etrap='Dashoguz')
+            for n in nach_jan_objs:
+                nach_jan[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+    
+            # 0 number   3 balance
+            
+            for d in dataset:
+                number_balance_jan_18_all[d[0]] = d[3]
+
+            for number, balance in number_balance_jan_18_all.items():
+                if balance < 0:
+                    debit_kredit_jan[number] = {'debit': abs(balance), 'kredit': 0}
+                else:
+                    debit_kredit_jan[number] = {'debit': 0, 'kredit': balance}
+        
+
+            balance_1_feb = {}
+            for number, balance in number_balance_jan_18_all.items():
+                t_jan = 0
+                if number in tolegler_jan_18_31:
+                    t_jan = tolegler_jan_18_31[number]
+                n_jan = 0
+                if number in nach_jan:
+                    n_jan = nach_jan[number]
+
+                new_balance = balance + t_jan - n_jan
+                balance_1_feb[number] = new_balance
+
+            for number, balance in balance_1_feb.items():
+                if balance < 0:
+                    debit_kredit_feb[number] = {'debit': abs(balance), 'kredit': 0}
+                else:
+                    debit_kredit_feb[number] = {'debit': 0, 'kredit': balance}
+
+            # # yanw - fewral
+            # headers = ("number", "yanwar_18_debit", "yanwar_18_kredit", "yanwar_toleg", "yanwar_nach", "fewral_1_debit", "fewral_1_kredit")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+            # for number, balance in number_balance_jan_18_all.items(): 
+            #     toleg_yanwar = 0
+            #     if number in tolegler_jan_18_31:
+            #         toleg_yanwar = tolegler_jan_18_31[number]
+
+            #     nach_yanwar = 0
+            #     if number in nach_jan:
+            #         nach_yanwar = nach_jan[number]
+            #     data.append((number, debit_kredit_jan[number]['debit'], debit_kredit_jan[number]['kredit'], toleg_yanwar, nach_yanwar, debit_kredit_feb[number]['debit'], debit_kredit_feb[number]['kredit']))
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_yanwar_debit_kredit.xlsx"
+            # return response 
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+            # fewral
+            toleg_feb_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-02-01', '2024-02-29 23:59:59'])
+            for p in toleg_feb_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_feb:
+                        tolegler_feb[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_feb[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            nach_few_objs = NachMinus.objects.filter(year='2024', month='02', user__etrap='Dashoguz')
+            for n in nach_few_objs:
+                nach_feb[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_mar = {}
+      
+            # headers = ("number", "fewral_debit", "fewral_kredit", "fewral_toleg", "fewral_nach", "debit_na_1_mart", "kredit_na_1_mart")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+
+            for number, balance in balance_1_feb.items():
+                t_feb = 0
+                if number in tolegler_feb:
+                    t_feb = tolegler_feb[number]
+
+                n_feb = 0
+                if number in nach_feb:
+                    n_feb = nach_feb[number]
+
+                new_balance = balance + t_feb - n_feb
+                balance_1_mar[number] = new_balance
+
+                mart_deb = 0
+                mart_kr = 0
+                if new_balance < 0:
+                    mart_deb = abs(new_balance)
+                    debit_kredit_mar[number] = {'debit': mart_deb, 'kredit': 0}
+                else:
+                    mart_kr = new_balance
+                    debit_kredit_mar[number] = {'debit': 0, 'kredit': mart_kr}
+
+            #     data.append((number, debit_kredit_feb[number]['debit'], debit_kredit_feb[number]['kredit'], t_feb, n_feb, mart_deb, mart_kr))
+
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_fewral_debit_kredit_.xlsx"
+            # return response
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+
+            # mart
+            toleg_mar_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-03-01', '2024-03-31 23:59:59'])
+            for p in toleg_mar_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_mar:
+                        tolegler_mar[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_mar[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            nach_mar_objs = NachMinus.objects.filter(year='2024', month='03', user__etrap='Dashoguz')
+            for n in nach_mar_objs:
+                nach_mar[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_apr = {}
+      
+            # headers = ("number", "mart_debit", "mart_kredit", "mart_toleg", "mart_nach", "debit_na_1_aprel", "kredit_na_1_aprel")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+
+            for number, balance in balance_1_mar.items():
+                t_mar = 0
+                if number in tolegler_mar:
+                    t_mar = tolegler_mar[number]
+
+                n_mar = 0
+                if number in nach_mar:
+                    n_mar = nach_mar[number]
+
+                new_balance = balance + t_mar - n_mar
+                balance_1_apr[number] = new_balance
+
+                aprel_deb = 0
+                aprel_kr = 0
+                if new_balance < 0:
+                    aprel_deb = abs(new_balance)
+                    debit_kredit_apr[number] = {'debit': aprel_deb, 'kredit': 0}
+                else:
+                    aprel_kr = new_balance
+                    debit_kredit_apr[number] = {'debit': 0, 'kredit': aprel_kr}
+
+            #     data.append((number, debit_kredit_mar[number]['debit'], debit_kredit_mar[number]['kredit'], t_mar, n_mar, aprel_deb, aprel_kr))
+
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_mart_debit_kredit_.xlsx"
+            # return response
+
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+
+            # aprel
+            toleg_apr_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-04-01', '2024-04-30 23:59:59'])
+            for p in toleg_apr_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_apr:
+                        tolegler_apr[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_apr[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            nach_apr_objs = NachMinus.objects.filter(year='2024', month='04', user__etrap='Dashoguz')
+            for n in nach_apr_objs:
+                nach_apr[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_may = {}
+      
+            # headers = ("number", "aprel_debit", "aprel_kredit", "aprel_toleg", "aprel_nach", "debit_na_1_may", "kredit_na_1_may")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+
+            for number, balance in balance_1_apr.items():
+                t_apr = 0
+                if number in tolegler_apr:
+                    t_apr = tolegler_apr[number]
+
+                n_apr = 0
+                if number in nach_apr:
+                    n_apr = nach_apr[number]
+
+                new_balance = balance + t_apr - n_apr
+                balance_1_may[number] = new_balance
+
+                mayF_deb = 0
+                mayF_kr = 0
+                if new_balance < 0:
+                    mayF_deb = abs(new_balance)
+                    debit_kredit_may[number] = {'debit': mayF_deb, 'kredit': 0}
+                else:
+                    mayF_kr = new_balance
+                    debit_kredit_may[number] = {'debit': 0, 'kredit': mayF_kr}
+
+            #     data.append((number, debit_kredit_apr[number]['debit'], debit_kredit_apr[number]['kredit'], t_apr, n_apr, mayF_deb, mayF_kr))
+
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_aprel_debit_kredit_.xlsx"
+            # return response
+
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+
+            # may
+            toleg_may_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-05-01', '2024-05-31 23:59:59'])
+            for p in toleg_may_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_may:
+                        tolegler_may[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_may[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+
+            nach_may_objs = NachMinus.objects.filter(year='2024', month='05', user__etrap='Dashoguz')
+            for n in nach_may_objs:
+                nach_may[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_jun = {}
+      
+            # headers = ("number", "may_debit", "may_kredit", "may_toleg", "may_nach", "debit_na_1_iyun", "kredit_na_1_iyun")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+
+            for number, balance in balance_1_may.items():
+                t_may = 0
+                if number in tolegler_may:
+                    t_may = tolegler_may[number]
+
+                n_may = 0
+                if number in nach_may:
+                    n_may = nach_may[number]
+
+                new_balance = balance + t_may - n_may
+                balance_1_jun[number] = new_balance
+
+                june_deb = 0
+                june_kr = 0
+                if new_balance < 0:
+                    june_deb = abs(new_balance)
+                    debit_kredit_jun[number] = {'debit': june_deb, 'kredit': 0}
+                else:
+                    june_kr = new_balance
+                    debit_kredit_jun[number] = {'debit': 0, 'kredit': june_kr}
+
+            #     data.append((number, debit_kredit_may[number]['debit'], debit_kredit_may[number]['kredit'], t_may, n_may, june_deb, june_kr))
+
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_may_debit_kredit_.xlsx"
+            # return response
+
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+
+            # june
+            toleg_jun_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-06-01', '2024-06-30 23:59:59'])
+            for p in toleg_jun_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_jun:
+                        tolegler_jun[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_jun[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+            
+            nach_jun_objs = NachMinus.objects.filter(year='2024', month='06', user__etrap='Dashoguz')
+            for n in nach_jun_objs:
+                nach_jun[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_jul = {}
+      
+            # headers = ("number", "iyun_debit", "iyun_kredit", "iyun_toleg", "iyun_nach", "debit_na_1_iyul", "kredit_na_1_iyul")
+            # data = []
+            # data = tablib.Dataset(*data, headers=headers)
+
+            for number, balance in balance_1_jun.items():
+                t_jun = 0
+                if number in tolegler_jun:
+                    t_jun = tolegler_jun[number]
+
+                n_jun = 0
+                if number in nach_jun:
+                    n_jun = nach_jun[number]
+
+                new_balance = balance + t_jun - n_jun
+                balance_1_jul[number] = new_balance
+
+                jule_deb = 0
+                jule_kr = 0
+                if new_balance < 0:
+                    jule_deb = abs(new_balance)
+                    debit_kredit_jul[number] = {'debit': jule_deb, 'kredit': 0}
+                else:
+                    jule_kr = new_balance
+                    debit_kredit_jul[number] = {'debit': 0, 'kredit': jule_kr}
+
+            #     data.append((number, debit_kredit_jun[number]['debit'], debit_kredit_jun[number]['kredit'], t_jun, n_jun, jule_deb, jule_kr))
+
+            # response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            # response['Content-Disposition'] = f"attachment; filename= Dashoguz_iyun_debit_kredit_.xlsx"
+            # return response
+
+
+            ######################################################################################################################################################################
+            ######################################################################################################################################################################
+
+
+            # jule
+            toleg_jul_objs = PayHistory.objects.filter(abonent__etrap='Dashoguz', date__range=['2024-07-01', '2024-07-31 23:59:59'])
+            for p in toleg_jul_objs:
+                if p.telefon or p.slr or p.kod or p.zakaz or p.prochee or p.dop_uslugi:
+                    if int(p.abonent.number) not in tolegler_jul:
+                        tolegler_jul[int(p.abonent.number)] = p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+                    else:
+                        tolegler_jul[int(p.abonent.number)] += p.telefon + p.slr + p.kod + p.zakaz + p.prochee + p.dop_uslugi
+            
+            nach_jul_objs = NachMinus.objects.filter(year='2024', month='07', user__etrap='Dashoguz')
+            for n in nach_jul_objs:
+                nach_jul[int(n.user.number)] = n.telefon + n.slr + n.kod + n.zakaz + n.prochee + n.dop_uslugi
+
+            balance_1_aug = {}
+      
+            headers = ("number", "iyul_debit", "iyul_kredit", "iyul_toleg", "iyul_nach", "debit_na_1_awgust", "kredit_na_1_awgust")
+            data = []
+            data = tablib.Dataset(*data, headers=headers)
+            
+            for number, balance in balance_1_jul.items():
+                t_jul = 0
+                if number in tolegler_jul:
+                    t_jul = tolegler_jul[number]
+
+                n_jul = 0
+                if number in nach_jul:
+                    n_jul = nach_jul[number]
+
+                new_balance = balance + t_jul - n_jul
+                balance_1_aug[number] = new_balance
+
+                august_deb = 0
+                august_kr = 0
+                if new_balance < 0:
+                    august_deb = abs(new_balance)
+                    debit_kredit_aug[number] = {'debit': august_deb, 'kredit': 0}
+                else:
+                    august_kr = new_balance
+                    debit_kredit_aug[number] = {'debit': 0, 'kredit': august_kr}
+
+                data.append((number, debit_kredit_jul[number]['debit'], debit_kredit_jul[number]['kredit'], t_jul, n_jul, august_deb, august_kr))
+
+            response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            response['Content-Disposition'] = f"attachment; filename= Dashoguz_iyul_debit_kredit_.xlsx"
+            return response
+

@@ -1,0 +1,369 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Внешние платежи начисления{% endblock %}
+{% block content %}
+<div class="InternetPlatejiNachisleniyaContainer">
+    <form action="" method="GET" class="InternetPlatejiNachisleniyaForm">
+        <div>
+            <div>Месяц</div>
+            <select class="form-select InternetPlatejiNachisleniyaSearchMonth" name="month">
+                {% if get_month %}
+                {% else %}
+                <option selected value="">Месяц</option>
+                {% endif %}
+                {% for month in months %}
+                    <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+
+        <div>
+            <div>Год</div>
+            <select class="form-select InternetPlatejiNachisleniyaSearchYear" name="year">
+                {% for year in years %}
+                    <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+
+        <div>
+            <div>Этрап</div>
+            <select class="form-select InternetPlatejiNachisleniyaSearchEtrap" aria-label="Default select example" name="etrap">
+                {% for etr in etraps %}
+                    {% if etrap %}
+                    <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% else %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+                <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+            </select>
+        </div>
+
+        <div>
+            <div class="text-light">OFF</div>
+            <input type="checkbox" name="off" class="form-check-input" {% if off %} checked {% endif %}>
+        </div>
+
+        <button class="btn InternetPlatejiNachisleniyaSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+        <!-- <input type="text" value="{{request.get_full_path }}" name="url_from"> -->
+
+    </form>
+
+
+    <div style="margin-top: 30px; display: flex; justify-content: space-around; width: 100%;">
+        <!-- Успешные платежи -->
+        <div>  
+            <div style="background-color: #CCFFCC; height: 750px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+                <h5 style="text-align: center;">Информация об успешных платежах</h5>
+                <div class="d-flex justify-content-between">
+
+                    {% if nothingNach %}
+                    <button class="btn btn-secondary" disabled>0 Начислений</button>
+                    {% elif alreadyNach or alreadyallNach %}
+                    <button class="btn btn-secondary" disabled>Начислено</button>
+                    {% elif alreadySeparateNach %}
+                    <button class="btn btn-secondary" disabled>Частично начислено</button>
+                    
+                    {% else %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#localNachisleniyaBtnModal">Начислить</button>
+                    {% endif %}
+     
+                    <div class="text-center" >Интернет</div>
+                    <div><a href="{% url 'internet-plateji-success-txt' get_year get_month etrap off %}"><button class="btn btn-primary">Скачать .txt</button></a></div>
+                </div>
+                
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiDogCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiDogoworPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiDogoworTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Alem TV</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiAlem}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiAlemPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiAlemTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Абонплата</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiTelefon}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiTelefonPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiTelefonTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Итого</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalSuccessAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalSuccessPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalSuccessPayPrice|floatformat:2}}</div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- Ошибки -->
+        <div>
+            <div style="background-color: #FFCCCC; height: 750px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+                <h5 style="text-align: center;">Информация об Ошибках</h5>
+                <div class="d-flex">
+                    <div style="width: 190px;"><a href="{% url 'internet-plateji-error-txt' get_year get_month etrap off %}"><button class="btn btn-primary">Скачать .txt</button></a></div>
+                    <div class="text-center" >Интернет</div>
+                </div>
+                
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiDogError}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorDogoworPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorDogoworTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Alem TV</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiAlemError}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorAlemPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorAlemTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Абонплата</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{PlatejiTelefonError}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorTelefonPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{platejiErrorTelefonTotalPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Итого</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalErrorAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalErrorPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalErrorPayPrice|floatformat:2}}</div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- Общая информация -->
+        <div>
+            <div style="background-color: #CCCCCC; height: 750px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+                <h5 style="text-align: center;">Вся информация за весь месяц</h5>
+                <div class="d-flex">
+                    <div style="width: 190px;"><a href="{% url 'internet-plateji-total-txt' get_year get_month etrap off %}"><button class="btn btn-primary">Скачать .txt</button></a></div>
+                    <div class="text-center" >Интернет</div>
+                </div>
+                
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalInternetAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalInternetPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalInternetPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Alem TV</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAlemAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAlemPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAlemPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Абонплата</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAbonplataAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAbonplataPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalAbonplataPrice|floatformat:2}}</div>
+                </div>
+
+                <div class="text-center" >Итого</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Абонентов</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalAbonentCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Кол-во Платежей</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalPayCount}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Общая цена</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{TotalPayPrice|floatformat:2}}</div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    
+    
+    {% comment %}
+    <!-- <div class="InternetPlatejiNachisleniyaInfo">
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Количество абонентов для начисления</div>
+            <div class="item2InternetPlateji">{{countHaveInDB}}</div>
+        </div>
+
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Общая цена начисления</div>
+            <div class="item2InternetPlateji">{{totalPay|floatformat:2}}</div>
+        </div>
+
+        
+        <div class="d-flex justify-content-around">
+            <a href="{% url 'internet-plateji-success-txt' get_year get_month etrap %}"><button class="btn btn-primary">Скачать TXT</button></a>
+
+            
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#localNachisleniyaBtnModal">Начислить</button>
+
+            
+        </div>
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Количество абонентов не найденных в БД</div>
+            <div class="item2InternetPlateji">{{countNotInDB}}</div>
+        </div>
+
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Общая цена плетеже не найденных в БД</div>
+            <div class="item2InternetPlateji">{{totalPayError|floatformat:2}}</div>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'internet-plateji-error-txt' get_year get_month etrap %}"><button class="btn btn-primary">Скачать TXT</button></a>
+        </div>
+
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Всего платежей</div>
+            <div class="item2InternetPlateji">{{totalPays}}</div>
+        </div>
+        <div class="d-flex InternetPlatejiInfoRowContainers">
+            <div class="item1InternetPlateji">Всего Количество абонентов</div>
+            <div class="item2InternetPlateji">{{totalAbonents}}</div>
+        </div>
+
+    </div> -->
+    {% endcomment %}
+
+
+</div>
+
+
+
+  
+<!-- Modal -->
+<div class="modal fade" id="localNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-body">
+    <h5>Начисления за {{get_month}} {{get_year}} год</р>
+    <h5>Начислить?</h5>
+    </div>
+    <div class="modal-footer">
+        <form action="" method="POST">{% csrf_token %}
+            <div>Комментарий - задокументируйте ваши действия</div>
+            <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+            <input type="hidden" value="{{get_year}}" name="year">
+            <input type="hidden" value="{{get_month}}" name="month">
+            <input type="hidden" value="{{etrap}}" name="etrap">
+            <input type="hidden" value="{{request.get_full_path}}" name="url_from">
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Начислить</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+<div class="InternetPlateji_nachisleniya_string"><h2>Начисления Платежей</h2></div>
+
+{% endblock %}

@@ -1,0 +1,984 @@
+  <!-- Modal для оплаты -->
+  <div class="modal fade" id="oplataModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: darkgray;">
+          <div class="modal-title fw-bold" id="exampleModalLabel" style="width: 100%;"><div class="d-flex justify-content-around"><div>{{abonent.etrap}}</div><div>{{serach_number}}</div><div>{{abonent.surname|slice:"0:10"}}</div><div>{{abonent.name|slice:"0:10"}}</div></div></div>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex justify-content-between gap-2">
+                <form action="" method="POST" id="oplata_modal_form">{% csrf_token %}
+                  <div class="d-flex flex-column gap-2" style="width: 250px;">
+                    
+                      <div class="oplata_lablel col2" ><div>Абонплата</div><div><input id="abonplata_input_kassa" name="abonplata" type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgAbonplata()" autocomplete="off"></div></div>
+                      <div class="oplata_lablel col3" ><div>Слр</div><div>      <input id="slr_input_kassa"       name="slr"       type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgSlr()"       autocomplete="off"></div></div>
+                      <div class="oplata_lablel col4" ><div>Код</div><div>      <input id="kod_input_kassa"       name="kod"       type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgKod()"       autocomplete="off"></div></div>
+                      <div class="oplata_lablel col5" ><div>Заказ</div><div>    <input id="zakaz_input_kassa"     name="zakaz"     type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgZakaz()"     autocomplete="off"></div></div>
+                      <div class="oplata_lablel col6" ><div>Прочее</div><div>   <input id="prochee_input_kassa"   name="prochee"   type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgProchee()"   autocomplete="off"></div></div>
+                      <div class="oplata_lablel col7" ><div>Доп. Усл.</div><div><input id="dop_uslugi_input_kassa"name="dop_uslugi"type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgDop_uslugi()"autocomplete="off"></div></div>  
+                      <div class="oplata_lablel col8" ><div>Интернет</div><div> <input id="internet_input_kassa"  name="internet"  type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgInternet()"  autocomplete="off"></div></div>
+                      <div class="oplata_lablel col9" ><div>Кабель TV</div><div><input id="kabel_input_kassa"     name="kabel"     type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgKabel()"     autocomplete="off"></div></div>                    
+                      <div class="oplata_lablel col10" ><div>Alem</div><div>     <input id="alem_input_kassa"      name="alem"      type="text" onkeyup="mathCalculate()" onclick="onClickChangeBgAlem()"      autocomplete="off"></div></div>
+                      
+                      <input type="hidden" name="user_id"           value="{{abonent.pk}}">
+                      <input type="hidden" name="oplata_serach_number" value="{{serach_number}}">
+                      <input id="user_etrap" type="hidden" name="etrap" value="{{etrap}}">
+                      <input type="submit" hidden id="oplata_modal_form_submit" onclick="stopSubmit()">
+                  </div>
+              </form>
+                <div class="d-flex flex-column gap-2" > 
+                        <!--input Вклад-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label w-100">Вклад</div>
+                        <input name="wklad" form="oplata_modal_form" type="text" class="kassa_second_row kassa_second_row2" id="wklad_modal" readonly>
+                    </div>
+
+                    <!--input К оплате-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label input_label2 w-100">К оплате</div>
+                        <input type="text" class="kassa_second_row kassa_second_row2" disabled>
+                    </div>
+
+                    <!--input Сумма к откл.-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label input_label2 w-100">Сума к откл.</div>
+                        <input type="text" class="kassa_second_row kassa_second_row2" readonly id="summa_k_otkl_payModal">
+                    </div>
+
+                    <!--input Баланс-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label input_label2 w-100">Баланс</div>
+                        <input type="text" class="kassa_second_row kassa_second_row2" readonly id="oplata_modal_balance_input">
+                    </div>
+
+                    <!--input Ост задолж-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label input_label2 w-100">Ост. задол.</div>
+                        <input type="text" class="kassa_second_row kassa_second_row2" readonly id="ostatok_zadol_payModal">
+                    </div>
+
+                    <!--input Ост. платежа-->
+                    <div class="d-flex justify-content-between">
+                        <div class="input_label input_label2 w-100">Ост. плат.</div>
+                        <input type="text" class="kassa_second_row kassa_second_row2"  id="ostatok_plateja" readonly>
+                    </div>
+                </div> 
+            </div>
+            <div class="d-flex" style="margin-top: 10px;"><div class="oplata_lablel is_card_label">Карточка?: </div><input onclick="onClickChangeAllModalInputBg()" name="is_card" type="checkbox" class="form-check-input is_card_chebox_input" id="card_input_kassa" form="oplata_modal_form"></div>
+            <div class="d-flex justify-content-between" style="margin-top: 10px;"><div class="input_label w-100">Сумма в кассу</div><input name="summa_w_kassu" form="oplata_modal_form" id="summa_w_kassu" class="kassa_second_row" readonly></div>
+        </div>
+        <div class="modal-footer" style="display: none;">
+          <button type="button" class="btn btn-primary" id="oplata_btm_modal">Оплатить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Modal internet -->
+<div class="modal fade" id="internetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-body">
+              <div style="font-size: 24px;">
+                <div>Скорость: {{abonent.internet_tarif.tarif}}</div>
+                <div>Цена: {{abonent.internet_tarif.price}} МАНАТ</div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal alem -->
+<div class="modal fade" id="alemModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-body">
+              <div style="font-size: 24px;">
+                  <div>Точек: {{abonent.alemCount.alem_count}}</div>
+                  <div>Статус: {% if abonent.alem %}Включен{% else %}Отключен{% endif %}</div>
+                  <div>Цена: {{abonent.alemCount.price}} МАНАТ</div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-body">
+              <div>
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      <th>Услуга</th>
+                      <th>Цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for service in abonent.service.all %}
+                    <tr>
+                      <td>{{service.service}}</td>
+                      <td>{{service.price}}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+<!-- 
+  #####################################
+  Show dop_uslugi nachisleniya Modal ##
+  #####################################
+ -->
+<!-- Modal service end_list_aug -->
+<div class="modal fade" id="serviceEndListAugModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_aug %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_jul -->
+<div class="modal fade" id="serviceEndListJulModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_jul %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_jun -->
+<div class="modal fade" id="serviceEndListJunModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_jun %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_may -->
+<div class="modal fade" id="serviceEndListMayModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_may %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_apr -->
+<div class="modal fade" id="serviceEndListAprModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_apr %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_mar -->
+<div class="modal fade" id="serviceEndListMarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_mar %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_feb -->
+<div class="modal fade" id="serviceEndListFebModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_feb %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_jan -->
+<div class="modal fade" id="serviceEndListJanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_jan %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_sep -->
+<div class="modal fade" id="serviceEndListSepModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_sep %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_oct -->
+<div class="modal fade" id="serviceEndListOctModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_oct %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_nov -->
+<div class="modal fade" id="serviceEndListNovModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_nov %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal service end_list_dec -->
+<div class="modal fade" id="serviceEndListDecModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content my_width800">
+          <div class="modal-body">
+              <div>
+                
+                <table class="table table-success">
+                  <thead>
+                    <tr>
+                      
+                      <th>Дата подкл</th>
+                      <th>Нач. цена</th>
+                      <th>Подкл. Услуги</th>
+                      <th>Полная цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in end_list_dec %}
+                      <tr>
+                        {% for i in item %}
+
+                          {% if forloop.counter == 1 %}
+                          <td>{{i}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 2 %}
+                          <td>{{i|floatformat:2}}</td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.service|slice:":20"}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+
+                          {% if forloop.counter == 3 %}
+                          <td>
+                            {% for j in i %}
+                            <div class="d-flex" style="flex-direction: column;">
+                              <div>{{j.price}}</div>
+                            </div>
+                            {% endfor %}
+                          </td>
+                          {% endif %}
+                          
+                        {% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- 
+  #########################################
+  Show dop_uslugi nachisleniya Modal END ##
+  #########################################
+ -->
+
+<!-- 
+  ###############
+  Строка Итого ##
+  ###############
+ -->
+
+   <!-- Modal инфа о абонплате и метрах (если есть) -->
+   <div class="modal fade" id="abonAndMetrInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          {% if abonent.count_of_numbers %}
+          <div>Абонплата</div>
+          <table class="table table-dark table-hover">  
+            <thead>
+              <tr>
+                <th>Номер по счету</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent.count_of_numbers.count_of_numbers}}</td>
+                <td>{{abonent.count_of_numbers.price}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if abonent.abon_length %}
+          <div>Метры</div>
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Метры</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent.abon_length.metr}}</td>
+                <td>{{abonent.abon_length.price}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+          {% if abonent.beneficiary %}
+          <div>Льгота</div>
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Льгота</th>
+                <th>Процент</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent.beneficiary.beneficiary}}</td>
+                <td>{{abonent.beneficiary.percent}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- kabelInfoModal -->
+
+  <div class="modal fade" id="kabelInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          {% if abonent.kabel_count %}
+            <div style="font-size: 24px;">
+              <div>Кол-во точек: {{abonent.kabel_count.kabel_count}}</div>
+              <div>Цена: {{abonent.kabel_count.price}}</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 
+  ###################
+  Строка Итого END ##
+  ###################
+ -->

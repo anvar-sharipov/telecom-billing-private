@@ -1,0 +1,36 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}zte_nach{% endblock %}
+{% block content %}
+<h1 style="color: white;">zte_nach</h1>
+
+<div class="container mt-5">
+    <form method="POST">{% csrf_token %}
+        <div class="mb-3 text-light">
+            <input type="checkbox" id="nachislit" name="nachislit">
+            <label for="nachislit" class="form-label" id="nachislitLabel">Начислить ZTE</label>
+        </div>
+        <button type="submit" class="btn btn-primary" id="nachislitBtn">Проверить ZTE</button>
+    </form>
+</div>
+
+
+<script>
+    const nachislit = document.getElementById('nachislit')
+    const nachislitLabel = document.getElementById('nachislitLabel')
+    const nachislitBtn = document.getElementById('nachislitBtn')
+
+      // Обработчик события изменения состояния чекбокса
+      nachislit.addEventListener('change', function() {
+        if (this.checked) {
+            nachislitBtn.innerText = 'Начислить ZTE'
+            nachislitBtn.classList.remove('btn-primary')
+            nachislitBtn.classList.add('btn-danger')
+        } else {
+            nachislitBtn.innerText = 'Проверить ZTE'
+            nachislitBtn.classList.add('btn-primary')
+            nachislitBtn.classList.remove('btn-danger')
+        }
+    });
+</script>
+
+{% endblock content %}

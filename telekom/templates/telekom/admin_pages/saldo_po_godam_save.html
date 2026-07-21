@@ -1,0 +1,486 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Админ страница{% endblock %}
+{% block content %}
+
+<h1 class="text-center text-light mt-5">Сохранение в SaldoBalancePoGodam (закрытие года)</h1>
+
+<div class="container-fluid mt-5 d-flex text-center" style="row-gap: 20px; flex-direction: column;">
+    <!-- b_kabel SaldoBalancePoGodam -->
+    <div>
+        <button id="kabel1" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kabel1Modal">
+            b_kabel
+        </button>
+        
+        {% if kabel1 %}
+            <div class="container mb-5 mt-2">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-light text-center">
+                        <h5 class="mb-0">Информация для Кабельное b</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Сумма баланса кабеля (31 декабря {{year_kabel_1}} года) (SaldoBalancePoGodam)</th>
+                                    <th>Сумма баланса кабеля (31 декабря {{year_kabel_1}} года) с учетом вычета платежей и начислений {{next_year_kabel_1}} года (UserTable)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{total_kabel1_b_year|floatformat:2}}</td>
+                                    <td>{{total_kabel1_b_year_from_user_table|floatformat:2}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">{% if savedKabel1 %} Сохранено {% else %} Не сохранено {% endif %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Modal kabel1 -->
+        <div class="modal fade" id="kabel1Modal" tabindex="-1" aria-labelledby="kabel1ModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- <div class="modal-header">
+                        <h6 class="modal-title text-center" id="kabel1ModalLabel">Выберите год для сохранения b_kabel в SaldoBalancePoGodam (Только для Дашогуз)</h6>
+                    </div> -->
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Выберите год для сохранения b_kabel в SaldoBalancePoGodam (Только для Дашогуз) (Возьмём с b_kabel UserTable и если есть платежи или начисление выше выбранного года, то их убираем)</label>
+                            <select class="form-select" id="year" required name="year" form="kabel1Form" onchange="kabel1YearSelectChanged(event)">
+                                <option value="" disabled selected>Выберите год</option>
+                                {% if not year_kabel_1 %}
+                                    <option value="2024" {% if current_year == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+                                {% else %}
+                                    <option value="2024" {% if year_kabel_1 == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if year_kabel_1 == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if year_kabel_1 == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if year_kabel_1 == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if year_kabel_1 == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if year_kabel_1 == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if year_kabel_1 == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if year_kabel_1 == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if year_kabel_1 == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if year_kabel_1 == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if year_kabel_1 == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if year_kabel_1 == '2035' %}selected{% endif %}>2035</option>
+                                {% endif %}
+                            </select>
+                            <input type="hidden" form="kabel1Form" name="kabel1">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <form method="POST" id="kabel1Form" style="width: 100%;">{% csrf_token %}
+                            <div class="d-flex justify-content-around d-none" style="align-items: center;" id="kabel1SaveButtonContainer">
+                                <div>
+                                    <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" id="kabel1Submit"></button>
+                                </div>
+                                <div>
+                                    <label for="kabel1CheckOrSaveInput">Сохранить</label>
+                                    <input type="checkbox" class="form-check-input" id="kabel1CheckOrSaveInput" name="kabel1CheckOrSave" onchange="kabel1Func(event)" {% if save_this_kabel1 %}checked{% endif %} onkeydown="return event.key !== 'Enter';">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- s_kabel SaldoBalancePoGodam -->
+    <div>
+        <button id="kabel2" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kabel2Modal">
+            s_kabel
+        </button>
+        
+        {% if kabel2 %}
+            <div class="container mb-5 mt-2">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-light text-center">
+                        <h5 class="mb-0">Информация для Кабельное s</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Сумма сальдо кабеля ({{year_kabel_2}} года) (SaldoBalancePoGodam) (Возьмём s_kabel с UserTable)</th>
+                                    <th>Сумма сальдо кабеля (UserTable)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{total_kabel2_s_year|floatformat:2}}</td>
+                                    <td>{{total_kabel2_s_year_userTable|floatformat:2}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">{% if savedKabel2 %} Сохранено {% else %} Не сохранено {% endif %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Modal kabel2 -->
+        <div class="modal fade" id="kabel2Modal" tabindex="-1" aria-labelledby="kabel2ModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!-- <div class="modal-header">
+                        <h6 class="modal-title text-center" id="kabel2ModalLabel">Выберите год для сохранения b_kabel в SaldoBalancePoGodam (Только для Дашогуз)</h6>
+                    </div> -->
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Выберите год для сохранения s_kabel в SaldoBalancePoGodam (Только для Дашогуз)</label>
+                            <select class="form-select" id="year" required name="year" form="kabel2Form" onchange="kabel2YearSelectChanged(event)">
+                                <option value="" disabled selected>Выберите год</option>
+                                {% if not year_kabel_2 %}
+                                    <option value="2024" {% if current_year == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+                                {% else %}
+                                    <option value="2024" {% if year_kabel_2 == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if year_kabel_2 == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if year_kabel_2 == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if year_kabel_2 == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if year_kabel_2 == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if year_kabel_2 == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if year_kabel_2 == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if year_kabel_2 == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if year_kabel_2 == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if year_kabel_2 == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if year_kabel_2 == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if year_kabel_2 == '2035' %}selected{% endif %}>2035</option>
+                                {% endif %}
+                            </select>
+                            <input type="hidden" form="kabel2Form" name="kabel2">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <form method="POST" id="kabel2Form" style="width: 100%;">{% csrf_token %}
+                            <div class="d-flex justify-content-around d-none" style="align-items: center;" id="kabel2SaveButtonContainer">
+                                <div>
+                                    <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" id="kabel2Submit"></button>
+                                </div>
+                                <div>
+                                    <label for="kabel2CheckOrSaveInput">Сохранить</label>
+                                    <input type="checkbox" class="form-check-input" id="kabel2CheckOrSaveInput" name="kabel2CheckOrSave" onchange="kabel2Func(event)" {% if save_this_kabel2 %}checked{% endif %} onkeydown="return event.key !== 'Enter';">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- b_internet -->
+    <div>
+        <button id="internet_b" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#internet_bModal">
+            b_internet
+        </button>
+        
+        {% if internet_b %}
+            <div class="container mb-5 mt-2">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-light text-center">
+                        <h5 class="mb-0">Информация для b_internet</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Сумма баланса интернет (31 декабря {{year_internet_b}} года) (SaldoBalancePoGodam)</th>
+                                    <th>Сумма баланса интернет (31 декабря {{year_internet_b}} года) с учетом вычета платежей и начислений {{next_year_internet_b}} года (UserTable)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{total_internet_b_year|floatformat:2}}</td>
+                                    <td>{{total_internet_b_year_from_user_table|floatformat:2}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">{% if savedInternet_b %} Сохранено {% else %} Не сохранено {% endif %}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Modal internet_b -->
+        <div class="modal fade" id="internet_bModal" tabindex="-1" aria-labelledby="internet_bModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title text-center" id="kabel1ModalLabel">Выберите год и этрап для сохранения b_internet в SaldoBalancePoGodam (Возьмём с b_internet UserTable и если есть платежи или начисление выше выбранного года, то их убираем)</h6>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Год</label>
+                            <select class="form-select" id="year" required name="year" form="internet_bForm" onchange="internet_bYearSelectChanged(event)">
+                                <option value="" disabled selected>Выберите год</option>
+                                {% if not year_internet_1 %}
+                                    <option value="2024" {% if current_year == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+                                {% else %}
+                                    <option value="2024" {% if year_internet_1 == '2024' %}selected{% endif %}>2024</option>
+                                    <option value="2025" {% if year_internet_1 == '2025' %}selected{% endif %}>2025</option>
+                                    <option value="2026" {% if year_internet_1 == '2026' %}selected{% endif %}>2026</option>
+                                    <option value="2027" {% if year_internet_1 == '2027' %}selected{% endif %}>2027</option>
+                                    <option value="2028" {% if year_internet_1 == '2028' %}selected{% endif %}>2028</option>
+                                    <option value="2029" {% if year_internet_1 == '2029' %}selected{% endif %}>2029</option>
+                                    <option value="2030" {% if year_internet_1 == '2030' %}selected{% endif %}>2030</option>
+                                    <option value="2031" {% if year_internet_1 == '2031' %}selected{% endif %}>2031</option>
+                                    <option value="2032" {% if year_internet_1 == '2032' %}selected{% endif %}>2032</option>
+                                    <option value="2033" {% if year_internet_1 == '2033' %}selected{% endif %}>2033</option>
+                                    <option value="2034" {% if year_internet_1 == '2034' %}selected{% endif %}>2034</option>
+                                    <option value="2035" {% if year_internet_1 == '2035' %}selected{% endif %}>2035</option>
+                                {% endif %}
+                            </select>
+                            <div class="mb-3 mt-5">
+                                <label for="etrap" class="form-label">Этрап</label>
+                                <select class="form-select" id="etrap" name="etrap" form="internet_bForm">
+                                    {% for etrap in etraps %}
+                                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <input type="hidden" form="internet_bForm" name="internet_b">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <form method="POST" id="internet_bForm" style="width: 100%;">{% csrf_token %}
+                            <div class="d-flex justify-content-around d-none" style="align-items: center;" id="internet_bSaveButtonContainer">
+                                <div>
+                                    <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" id="internet_bSubmit"></button>
+                                </div>
+                                <div>
+                                    <label for="internet_bCheckOrSaveInput">Сохранить</label>
+                                    <input type="checkbox" class="form-check-input" id="internet_bCheckOrSaveInput" name="internet_bCheckOrSave" onchange="internet_bFunc(event)" {% if save_this_internet_b %}checked{% endif %} onkeydown="return event.key !== 'Enter';">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  
+    
+</div>
+
+
+
+<script>
+
+function kabel1YearSelectChanged(event) {
+    const kabel1SaveButtonContainer = document.getElementById('kabel1SaveButtonContainer')
+    if (event.target.value) {
+        if (kabel1SaveButtonContainer.classList.contains('d-none')) {
+            kabel1SaveButtonContainer.classList.remove('d-none')
+        }
+    } else {
+        if (!kabel1SaveButtonContainer.classList.contains('d-none')) {
+            kabel1SaveButtonContainer.classList.add('d-none')
+        }
+    }
+}
+
+function kabel2YearSelectChanged(event) {
+    const kabel2SaveButtonContainer = document.getElementById('kabel2SaveButtonContainer')
+    if (event.target.value) {
+        if (kabel2SaveButtonContainer.classList.contains('d-none')) {
+            kabel2SaveButtonContainer.classList.remove('d-none')
+        }
+    } else {
+        if (!kabel2SaveButtonContainer.classList.contains('d-none')) {
+            kabel2SaveButtonContainer.classList.add('d-none')
+        }
+    }
+}
+
+function internet_bYearSelectChanged(event) {
+    const internet_bSaveButtonContainer = document.getElementById('internet_bSaveButtonContainer')
+    if (event.target.value) {
+        if (internet_bSaveButtonContainer.classList.contains('d-none')) {
+            internet_bSaveButtonContainer.classList.remove('d-none')
+        }
+    } else {
+        if (!internet_bSaveButtonContainer.classList.contains('d-none')) {
+            internet_bSaveButtonContainer.classList.add('d-none')
+        }
+    }
+}
+
+window.onload = function() {
+    const kabel1Submit = document.getElementById('kabel1Submit')
+    const kabel1CheckOrSaveInput = document.getElementById('kabel1CheckOrSaveInput')
+    if (kabel1CheckOrSaveInput.checked) {
+        kabel1Submit.innerText = 'Сохранить'
+        if (kabel1Submit.classList.contains('btn-primary')) {
+            kabel1Submit.classList.remove('btn-primary')
+        }
+        if (!kabel1Submit.classList.contains('btn-danger')) {
+            kabel1Submit.classList.add('btn-danger')
+        }
+    } else {
+        kabel1Submit.innerText = 'Проверить'
+        if (kabel1Submit.classList.contains('btn-danger')) {
+            kabel1Submit.classList.remove('btn-danger')
+        }
+        if (!kabel1Submit.classList.contains('btn-primary')) {
+            kabel1Submit.classList.add('btn-primary')
+        }
+    }
+
+    const kabel2Submit = document.getElementById('kabel2Submit')
+    const kabel2CheckOrSaveInput = document.getElementById('kabel2CheckOrSaveInput')
+    if (kabel2CheckOrSaveInput.checked) {
+        kabel2Submit.innerText = 'Сохранить'
+        if (kabel2Submit.classList.contains('btn-primary')) {
+            kabel2Submit.classList.remove('btn-primary')
+        }
+        if (!kabel2Submit.classList.contains('btn-danger')) {
+            kabel2Submit.classList.add('btn-danger')
+        }
+    } else {
+        kabel2Submit.innerText = 'Проверить'
+        if (kabel2Submit.classList.contains('btn-danger')) {
+            kabel2Submit.classList.remove('btn-danger')
+        }
+        if (!kabel2Submit.classList.contains('btn-primary')) {
+            kabel2Submit.classList.add('btn-primary')
+        }
+    }
+
+    const internet_bSubmit = document.getElementById('internet_bSubmit')
+    const internet_bCheckOrSaveInput = document.getElementById('internet_bCheckOrSaveInput')
+    if (internet_bCheckOrSaveInput.checked) {
+        internet_bSubmit.innerText = 'Сохранить'
+        if (internet_bSubmit.classList.contains('btn-primary')) {
+            internet_bSubmit.classList.remove('btn-primary')
+        }
+        if (!internet_bSubmit.classList.contains('btn-danger')) {
+            internet_bSubmit.classList.add('btn-danger')
+        }
+    } else {
+        internet_bSubmit.innerText = 'Проверить'
+        if (internet_bSubmit.classList.contains('btn-danger')) {
+            internet_bSubmit.classList.remove('btn-danger')
+        }
+        if (!internet_bSubmit.classList.contains('btn-primary')) {
+            internet_bSubmit.classList.add('btn-primary')
+        }
+    }
+     
+};
+
+function kabel1Func(event) {
+    const kabel1Submit = document.getElementById('kabel1Submit')
+    if (event.target.checked) {
+        kabel1Submit.innerText = 'Сохранить'
+        if (kabel1Submit.classList.contains('btn-primary')) {
+            kabel1Submit.classList.remove('btn-primary')
+        }
+        if (!kabel1Submit.classList.contains('btn-danger')) {
+            kabel1Submit.classList.add('btn-danger')
+        }
+    } else {
+        kabel1Submit.innerText = 'Проверить'
+        if (kabel1Submit.classList.contains('btn-danger')) {
+            kabel1Submit.classList.remove('btn-danger')
+        }
+        if (!kabel1Submit.classList.contains('btn-primary')) {
+            kabel1Submit.classList.add('btn-primary')
+        }
+    }
+}
+
+
+function kabel2Func(event) {
+    const kabel2Submit = document.getElementById('kabel2Submit')
+    if (event.target.checked) {
+        kabel2Submit.innerText = 'Сохранить'
+        if (kabel2Submit.classList.contains('btn-primary')) {
+            kabel2Submit.classList.remove('btn-primary')
+        }
+        if (!kabel2Submit.classList.contains('btn-danger')) {
+            kabel2Submit.classList.add('btn-danger')
+        }
+    } else {
+        kabel2Submit.innerText = 'Проверить'
+        if (kabel2Submit.classList.contains('btn-danger')) {
+            kabel2Submit.classList.remove('btn-danger')
+        }
+        if (!kabel2Submit.classList.contains('btn-primary')) {
+            kabel2Submit.classList.add('btn-primary')
+        }
+    }
+}
+
+function internet_bFunc(event) {
+    const internet_bSubmit = document.getElementById('internet_bSubmit')
+    if (event.target.checked) {
+        internet_bSubmit.innerText = 'Сохранить'
+        if (internet_bSubmit.classList.contains('btn-primary')) {
+            internet_bSubmit.classList.remove('btn-primary')
+        }
+        if (!internet_bSubmit.classList.contains('btn-danger')) {
+            internet_bSubmit.classList.add('btn-danger')
+        }
+    } else {
+        internet_bSubmit.innerText = 'Проверить'
+        if (internet_bSubmit.classList.contains('btn-danger')) {
+            internet_bSubmit.classList.remove('btn-danger')
+        }
+        if (!internet_bSubmit.classList.contains('btn-primary')) {
+            internet_bSubmit.classList.add('btn-primary')
+        }
+    }
+}
+
+</script>
+
+{% endblock content %}
+

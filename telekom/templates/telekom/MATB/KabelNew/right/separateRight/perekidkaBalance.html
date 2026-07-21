@@ -1,0 +1,587 @@
+{% load static %}
+<!-- Модальное окно для добавления нового пользователя -->
+<div class="modal fade" id="perekidkaModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="add_user_modal_content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Перекидка пользователя {{ u.surname }} {{ u.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tablinks" onclick="openTab(event, 'tab1{{u.pk}}')">Перекидка Баланса</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab2{{u.pk}}')">Перекидка Всех данных</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab3{{u.pk}}')">Возврат денег</button>
+                </div>
+            
+                <!-- Перекидка Баланса -->
+                <div id="tab1{{u.pk}}" class="tabcontent">
+                    <form method="POST" id="form1{{u.pk}}">{% csrf_token %}
+                        <input type="hidden" name="perekidka1">
+                        <input type="hidden" name="perekidka">
+                        <input type="hidden" name="numberA" value="{{u.number}}">
+                        <input type="hidden" name="numberA_bal" value="{{u.balance}}">
+                        <div>
+                            <div class="d-flex justify-content-around">
+                                <div>
+                                    <label for="na_nomer{{u.pk}}">На Номер</label>
+                                    <input type="text" id="na_nomer{{u.pk}}" name="na_nomer" class="form-control my_width100" autocomplete="off" {% if per_number %} value="{{per_number}}" {% endif %}>
+                                </div>
+                                <div>
+                                    <div>Этрап</div>
+                                    <select name="perekidka_etrap" class="form-select">
+                                        <option value="Dashoguz" {% if per_etrap == 'Dashoguz' %} selected {% endif %}>Dashoguz</option>
+                                        <!-- <option value="Akdepe" {% if per_etrap == 'Akdepe' %} selected {% endif %}>Akdepe</option>
+                                        <option value="Boldumsaz" {% if per_etrap == 'Boldumsaz' %} selected {% endif %}>Boldumsaz</option>
+                                        <option value="Gorogly" {% if per_etrap == 'Gorogly' %} selected {% endif %}>Gorogly</option>
+                                        <option value="Koneurgench" {% if per_etrap == 'Koneurgench' %} selected {% endif %}>Koneurgench</option>
+                                        <option value="Turkmenbashy" {% if per_etrap == 'Turkmenbashy' %} selected {% endif %}>Turkmenbashy</option>
+                                        <option value="S.A.Nyyazow" {% if per_etrap == 'S.A.Nyyazow' %} selected {% endif %}>S.A.Nyyazow</option>
+                                        <option value="Ruhubelent" {% if per_etrap == 'Ruhubelent' %} selected {% endif %}>Ruhubelent</option>     -->
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div>
+                                <label for="per_sum{{u.pk}}">Сумма перекидки</label>
+                                <input type="text" id="per_sum{{u.pk}}" name="per_sum" class="form-control" autocomplete="off" value="{{u.balance}}">
+                            </div>
+                            <br>
+                            <div>Куда перекинуть</div>
+                            <select name="perekidka_type" class="form-select">
+                                <option value="abonplata">Телефония</option>
+                                <option value="internet">Интернет</option>
+                                <option value="alem">Alem</option>
+                                <option value="kabel">Kabel</option>
+                            </select>
+                            <br>
+                            <br>
+                            <div>
+                                <label for="per_akt{{u.pk}}">Акт рапорт</label>
+                                <input type="text" id="per_akt{{u.pk}}" name="per_akt" class="form-control" autocomplete="off" value="{{reversed_date_str}}">
+                            </div>
+                            <br><br>
+                            <div class="text-end">
+                                <button class="btn btn-success">Перекинуть баланс</button>
+                            </div>    
+                        </div>
+                    </form>
+                </div>
+                <!-- Перекидка Всех данных -->
+                <div id="tab2{{u.pk}}" class="tabcontent">
+                    <form method="POST" id="form2{{u.pk}}">{% csrf_token %}<input type="hidden" name="perekidka2"><input type="hidden" name="perekidka">
+                        <div class="d-flex justify-content-around">
+                            <div>
+                                <label for="na_nomer{{u.pk}}">На Номер</label>
+                                <input type="text" id="na_nomer{{u.pk}}" name="na_nomer" class="form-control my_width100" autocomplete="off" {% if per_number %} value="{{per_number}}" {% endif %}>
+                            </div>
+                            <div>
+                                <div>Этрап</div>
+                                <select name="perekidka_etrap" class="form-select">
+                                    <option value="Dashoguz" {% if per_etrap == 'Dashoguz' %} selected {% endif %}>Dashoguz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <label for="per_akt{{u.pk}}">Акт рапорт</label>
+                            <input type="text" id="per_akt{{u.pk}}" name="per_akt" class="form-control" autocomplete="off" value="{{reversed_date_str}}">
+                        </div>
+                        <br>
+                        <div class="text-end">
+                            <button class="btn btn-success">Перекинуть все данные</button>
+                        </div>
+                        <input type="hidden" name="numberA" value="{{u.number}}">
+                        
+                    </form>
+                </div>
+                <!-- Возврат денег -->
+                <!-- <div id="tab3{{u.pk}}" class="tabcontent">
+                    <form method="POST" id="form3{{u.pk}}">{% csrf_token %}<input type="hidden" name="wozwrat"><input type="hidden" name="perekidka">
+                        <button class="btn btn-success">Возврат денег (Обнуление баланса)</button>
+                    </form>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .tabs {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .tablinks {
+        background-color: #f1f1f1;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: background-color 0.3s;
+        font-size: 17px;
+    }
+
+    .tablinks:hover {
+        background-color: #ddd;
+    }
+
+    .tabcontent {
+        display: none;
+        padding: 20px;
+        border-top: none;
+    }
+
+    .active {
+        display: block;
+    }
+</style>
+
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+
+        // Скрыть весь контент вкладок
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Убрать активный класс со всех кнопок вкладок
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Показать текущий контент вкладки и добавить "active" класс к кнопке вкладки
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Опционально, установить вкладку по умолчанию открытой
+    document.addEventListener('DOMContentLoaded', function() {
+        var tabLinks = document.querySelectorAll('.tablinks');
+        if (tabLinks.length > 0) {
+            tabLinks[0].click();
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+{% load static %}
+<!-- Модальное окно для добавления нового пользователя -->
+<div class="modal fade" id="perekidkaModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="add_user_modal_content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Перекидка Баланса пользователя {{ u.surname }} {{ u.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tablinks" onclick="openTab(event, 'tab1{{u.pk}}')">Перекидка На другой номер</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab2{{u.pk}}')">Перекидка На другие услуги</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab3{{u.pk}}')">Возврат денег</button>
+                </div>
+            
+                <!-- Перекидка На другой номер -->
+                <div id="tab1{{u.pk}}" class="tabcontent">
+                    <form method="POST">{% csrf_token %}
+                        <input type="hidden" name="perekidka1">
+                        <input type="hidden" name="perekidka">
+                        <input type="hidden" name="numberA" value="{{u.number}}">
+                        <input type="hidden" name="numberA_bal" value="{{u.balance}}">
+                        <div>
+                            <div class="d-flex justify-content-around">
+                                <div>
+                                    <label for="na_nomer">На Номер</label>
+                                    <input type="text" id="na_nomer" name="na_nomer" class="form-control my_width100" autocomplete="off" {% if per_number %} value="{{per_number}}" {% endif %}>
+                                </div>
+                                <div>
+                                    <div>Этрап</div>
+                                    <select name="perekidka_etrap" class="form-select">
+                                        <option value="Dashoguz" {% if per_etrap == 'Dashoguz' %} selected {% endif %}>Dashoguz</option>
+                                        <option value="Akdepe" {% if per_etrap == 'Akdepe' %} selected {% endif %}>Akdepe</option>
+                                        <option value="Boldumsaz" {% if per_etrap == 'Boldumsaz' %} selected {% endif %}>Boldumsaz</option>
+                                        <option value="Gorogly" {% if per_etrap == 'Gorogly' %} selected {% endif %}>Gorogly</option>
+                                        <option value="Koneurgench" {% if per_etrap == 'Koneurgench' %} selected {% endif %}>Koneurgench</option>
+                                        <option value="Turkmenbashy" {% if per_etrap == 'Turkmenbashy' %} selected {% endif %}>Turkmenbashy</option>
+                                        <option value="S.A.Nyyazow" {% if per_etrap == 'S.A.Nyyazow' %} selected {% endif %}>S.A.Nyyazow</option>
+                                        <option value="Ruhubelent" {% if per_etrap == 'Ruhubelent' %} selected {% endif %}>Ruhubelent</option>    
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div>
+                                <label for="per_sum">Сумма перекидки</label>
+                                <input type="text" id="per_sum" name="per_sum" class="form-control" autocomplete="off" value="{{u.balance}}">
+                            </div>
+                            <br>
+                            <div>Куда перекинуть</div>
+                            <select name="perekidka_type" class="form-select">
+                                <option value="abonplata">Телефония</option>
+                                <option value="internet">Интернет</option>
+                                <option value="alem">Alem</option>
+                                <option value="kabel">Kabel</option>
+                            </select>
+                            <br>
+                            <br>
+                            <div class="text-end">
+                                <button class="btn btn-success">Перекинуть</button>
+                            </div>    
+                        </div>
+                    </form>
+                </div>
+                <!-- Перекидка На другие услуги -->
+                <div id="tab2{{u.pk}}" class="tabcontent">
+                    <form method="POST">{% csrf_token %}<input type="hidden" name="perekidka2"><input type="hidden" name="perekidka">
+                        <div>
+                            <div>Куда перекинуть</div>
+                            <select name="perekidka_type" class="form-select">
+                                <option value="abonplata">Телефония</option>
+                                <option value="internet">Интернет</option>
+                                <option value="alem">Alem</option>
+                                <option value="kabel">Kabel</option>
+                            </select>
+                            <br>
+                            <br>
+                            <div class="text-end">
+                                <button class="btn btn-success">Перекинуть</button>
+                            </div>    
+                        </div>
+                    </form>
+                </div>
+                <!-- Возврат денег -->
+                <div id="tab3{{u.pk}}" class="tabcontent">
+                    <form method="POST">{% csrf_token %}<input type="hidden" name="wozwrat"><input type="hidden" name="perekidka">
+                        <button class="btn btn-success">Возврат денег (Обнуление баланса)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .tabs {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .tablinks {
+        background-color: #f1f1f1;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: background-color 0.3s;
+        font-size: 17px;
+    }
+
+    .tablinks:hover {
+        background-color: #ddd;
+    }
+
+    .tabcontent {
+        display: none;
+        padding: 20px;
+        border-top: none;
+    }
+
+    .active {
+        display: block;
+    }
+</style>
+
+
+
+
+
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+
+        // Скрыть весь контент вкладок
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Убрать активный класс со всех кнопок вкладок
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Показать текущий контент вкладки и добавить "active" класс к кнопке вкладки
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Опционально, установить вкладку по умолчанию открытой
+    document.addEventListener('DOMContentLoaded', function() {
+        var tabLinks = document.querySelectorAll('.tablinks');
+        if (tabLinks.length > 0) {
+            tabLinks[0].click();
+        }
+    });
+</script>
+
+
+{% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+{% load static %}
+<!-- Modal add new user -->
+<div class="modal fade" id="perekidkaModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="add_user_modal_content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Перекидка Баланса пользователя {{ u.surname }} {{ u.name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <button class="tablinks" onclick="openTab(event, 'tab1')">Перекидка На другой номер</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab2')">Перекидка На другие услуги</button>
+                    <button class="tablinks" onclick="openTab(event, 'tab3')">Возврат денег</button>
+                </div>
+            
+                <!-- Перекидка На другой номер -->
+                <div id="tab1" class="tabcontent">
+                    <form method="POST">{% csrf_token %}
+                        <input type="hidden" name="perekidka1">
+                        <input type="hidden" name="perekidka">
+                        <input type="hidden" name="numberA" value="{{u.number}}">
+                        <input type="hidden" name="numberA_bal" value="{{u.balance}}">
+                        <div>
+                            <div class="d-flex justify-content-around">
+                                <div>
+                                    <label for="na_nomer">На Номер</label>
+                                    <input type="text" id="na_nomer" name="na_nomer" class="form-control my_width100" autocomplete="off" {% if per_number %} value="{{per_number}}" {% endif %}>
+                                </div>
+                                <div>
+                                    <div>Этрап</div>
+                                    <select name="perekidka_etrap" class="form-select">
+                                        <option value="Dashoguz" {% if per_etrap == 'Dashoguz' %} selected {% endif %}>Dashoguz</option>
+                                        <option value="Akdepe" {% if per_etrap == 'Akdepe' %} selected {% endif %}>Akdepe</option>
+                                        <option value="Boldumsaz" {% if per_etrap == 'Boldumsaz' %} selected {% endif %}>Boldumsaz</option>
+                                        <option value="Gorogly" {% if per_etrap == 'Gorogly' %} selected {% endif %}>Gorogly</option>
+                                        <option value="Koneurgench" {% if per_etrap == 'Koneurgench' %} selected {% endif %}>Koneurgench</option>
+                                        <option value="Turkmenbashy" {% if per_etrap == 'Turkmenbashy' %} selected {% endif %}>Turkmenbashy</option>
+                                        <option value="S.A.Nyyazow" {% if per_etrap == 'S.A.Nyyazow' %} selected {% endif %}>S.A.Nyyazow</option>
+                                        <option value="Ruhubelent" {% if per_etrap == 'Ruhubelent' %} selected {% endif %}>Ruhubelent</option>    
+                                    </select>
+                                </div>
+                            </div>
+
+                            
+                            <br>
+                            <div>
+                                <label for="per_sum">Сумма перекидки</label>
+                                <input type="text" id="per_sum" name="per_sum" class="form-control" autocomplete="off" value="{{u.balance}}">
+                            </div>
+                            
+                            
+                            <br>
+                            <div>Куда перекинуть</div>
+                            <select name="perekidka_type" class="form-select">
+                                <option value="abonplata">Телефония</option>
+                                <option value="internet">Интернет</option>
+                                <option value="alem">Alem</option>
+                                <option value="kabel">Kabel</option>
+                            </select>
+                            <br>
+
+
+                            <br>
+                            <div class="text-end">
+                                <button class="btn btn-success">Перекинуть</button>
+                            </div>    
+                        </div>
+                    </form>
+                </div>
+                <!-- Перекидка На другие услуги -->
+                <div id="tab2" class="tabcontent">
+                    <form method="POST">{% csrf_token %}<input type="hidden" name="perekidka2"><input type="hidden" name="perekidka">
+                        <div>
+                            <div>Куда перекинуть</div>
+                            <select name="perekidka_type" class="form-select">
+                                <option value="abonplata">Телефония</option>
+                                <option value="internet">Интернет</option>
+                                <option value="alem">Alem</option>
+                                <option value="kabel">Kabel</option>
+                            </select>
+                            <br>
+                            <br>
+                            <div class="text-end">
+                                <button class="btn btn-success">Перекинуть</button>
+                            </div>    
+                        </div>
+                    </form>
+                </div>
+                <!-- Возврат денег -->
+                <div id="tab3" class="tabcontent">
+                    <form method="POST">{% csrf_token %}<input type="hidden" name="wozwrat"><input type="hidden" name="perekidka">
+                        <button class="btn btn-success">Возврать денег (Обнуление баланса)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    .tabs {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.tablinks {
+    background-color: #f1f1f1;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: background-color 0.3s;
+    font-size: 17px;
+}
+
+.tablinks:hover {
+    background-color: #ddd;
+}
+
+.tabcontent {
+    display: none;
+    padding: 20px;
+    border-top: none;
+}
+
+.active {
+    display: block;
+}
+</style>
+
+
+<script>
+    function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+
+    // Hide all tab content
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Remove the background color of all tab links
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab content and add "active" class to the tab link
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+</script>
+
+{% endcomment %}

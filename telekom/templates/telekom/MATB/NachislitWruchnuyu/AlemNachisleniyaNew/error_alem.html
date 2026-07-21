@@ -1,0 +1,85 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Alem Error {% endblock %}
+{% block content %}
+
+
+{% if error_list %}
+<div class="container mt-4 text-light">
+  <h1 class="mb-4 text-warning">Ошибки файла <span class="text-info">{{ error_file_name }}</span></h1>
+
+  <table class="table table-bordered table-dark table-hover">
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Пользователь</th>
+        <th>Договор</th>
+        <th>Учетное имя</th>
+        <th>Тариф</th>
+        <th>Списание за услугу</th>
+        <th>Итого</th>
+        <th class="text-danger">Тип ошибки</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for error in error_list %}
+            <tr>
+              <!-- <td>{{ forloop.counter }}</td> -->
+              
+                {% for e in error %}
+                    {% if forloop.counter != 8 %}
+                        <td>{{ e }}</td>
+                    {% else %}
+                        <td class="text-danger fw-bold">{{ e }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% elif error_data_price %}
+<div class="container mt-4 text-light">
+  <h5 class="mb-4 text-warning">
+    В колонке <span class="text-info">Итого</span> вместо даты автоматически подставилась цена.
+    Пожалуйста, проверьте корректность цены и начислений в файле
+    <span class="text-info">{{ error_file_name }}</span>.
+    В противном случае, откройте Excel и исправьте значения вручную.
+  </h5>
+
+  <table class="table table-bordered table-dark table-hover">
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Пользователь</th>
+        <th>Договор</th>
+        <th>Учетное имя</th>
+        <th>Списание за услугу</th>
+        <th>Итого</th>
+        <th>Заменено на</th>
+        <th class="text-danger">Тип ошибки</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for error in error_data_price %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+                
+                {% for item in error %}
+                    {% if forloop.counter == 8 %}
+                        <td class="text-danger fw-bold">{{ item }}</td>
+                    {% else %}
+                        <td>{{ item }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endif %}
+
+{% endblock content %}

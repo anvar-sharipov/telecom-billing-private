@@ -1,0 +1,134 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Абонплата Начисления{% endblock %}
+{% block content %}
+
+<div class="abonplata_nachisleniya_string"><h2>Абонплата Начисления</h2></div>
+
+<form action="" method="GET" class="abonplataNachisleniyaForm text-light">
+    <div>
+        <div>Месяц</div>
+        <select class="form-select abonplataNachisleniyaSearchMonth bg-gold" name="month">
+            {% if get_month %}
+            {% else %}
+            <option selected value="">Месяц</option>
+            {% endif %}
+            {% for month in months %}
+                <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Год</div>
+        <select class="form-select abonplataNachisleniyaSearchYear bg-gold" name="year">
+            {% for year in years %}
+                <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Этрап</div>
+        <select class="form-select abonplataNachisleniyaSearchEtrap bg-gold" aria-label="Default select example" name="etrap">
+            {% for etr in etraps %}
+                {% if etrap %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% else %}
+                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            {% endfor %}
+            <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+        </select>
+    </div>
+
+    <button class="btn abonplataNachisleniyaSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+    <!-- <input type="text" value="{{request.get_full_path }}" name="url_from"> -->
+
+</form>
+
+
+
+<div style="margin-top: 30px; display: flex; justify-content: space-around; width: 100%;">
+    <!-- информация -->
+    <div>
+        <div style="background-color: #CCFFCC; height: 380px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+            
+            <div class="d-flex justify-content-between">
+                <div><a href="{% url 'abonplata-txt-nachisleniya' etrap %}"><button class="btn btn-primary">Скачать .txt</button></a></div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#abonplataNachisleniyaBtnModal" {% if disabled_nach %} disabled {% endif %} {% if totalUserCount == 0 %} disabled {% endif %} {% if ne_polnoye_nach %}disabled{% endif %}>{% if disabled_nach %}Начислено{% elif totalUserCount == 0 %}Нет абонплат {% elif ne_polnoye_nach %}Частично начислено{% else %}Начислить{% endif %}</button>
+            </div>
+
+            <div class="text-center">Население</div>
+            
+            <div class="d-flex" >
+                <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">кол-во абонентов</div>
+                <div style="background-color: white; padding: 5px; width: 200px;">{{countUserN}}</div>
+            </div>
+
+            <div class="d-flex" >
+                <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">сумма начисления</div>
+                <div style="background-color: white; padding: 5px; width: 200px;">{{sumAbonplataN|floatformat:2}}</div>
+            </div>
+
+            <div class="text-center mt-4">Предприятие</div>
+
+            <div class="d-flex" >
+                <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">кол-во абонентов</div>
+                <div style="background-color: white; padding: 5px; width: 200px;">{{countUserE}}</div>
+            </div>
+
+            <div class="d-flex" >
+                <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">сумма начисления</div>
+                <div style="background-color: white; padding: 5px; width: 200px;">{{sumAbonplataE|floatformat:2}}</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="abonplataNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-footer">
+                <form action="" method="POST">{% csrf_token %}
+                    <div>Комментарий</div>
+                    <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+                    <div class="d-flex justify-content-between">
+                        <div class="pt-2 fw-bold text-danger">Начислить за {{get_month}} {{get_year}} год</div>
+                        <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Начислить</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.abonplataNachisleniyaForm {
+    display: flex;
+    column-gap: 10px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+.abonplataNachisleniyaSearchSubmit {
+    height: fit-content;
+    margin-top: 25px;
+}
+
+.abonplata_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+</style>
+
+{% endblock %}

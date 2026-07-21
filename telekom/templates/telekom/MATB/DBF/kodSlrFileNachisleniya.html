@@ -1,0 +1,446 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}DBF Начисление{% endblock %}
+{% block content %}
+
+
+
+<div class="d-flex p-3 justify-content-around" >
+    <div class="mt-4">
+        <form action="" method="GET" id="kodSlrNachisleniyaForm">
+            <!-- <div>
+                <div>Месяц</div>
+                <select class="form-select kodSlrNachisleniyaSearchMonth" name="month">
+                    {% if get_month %}
+                    {% else %}
+                    <option selected value="">Месяц</option>
+                    {% endif %}
+                    {% for month in months %}
+                        <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+                    {% endfor %}         
+                </select>
+            </div>
+    
+            <div>
+                <div>Год</div>
+                <select class="form-select kodSlrNachisleniyaSearchYear" name="year">
+                    {% for year in years %}
+                        <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                    {% endfor %}         
+                </select>
+            </div> -->
+            <div class="my_width100 my_block_center">
+                <button class="btn kodSlrNachisleniyaSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Просмотр</button>
+            </div>
+        </form>
+
+        <div class="my_width300 my-bg-white my_block_center mt-3" role="button" style="height: 650px; border-radius: 10px; overflow-y: scroll;">
+            <div class="mt-3">
+                {% for dbf in dbf_name_lists %}
+                <div class="text-dark d-flex my_width200 p-2 {% if dbf.is_nach %} bg-green {% elif dbf.name in getNameList%} bg-gold {% endif %} {{ dbf.pk }}" id="{{ dbf.pk }}" onclick="KodSlrChangeBg(this.id)" style="margin: 0 10px; margin-top: 10px; border: 1px black solid; margin-left: 40px; border-radius: 5px;">
+                    <div class="my_width200">
+                        {{ dbf.name }}
+                    </div>
+                    <div>
+                        {% if dbf.is_nach %}
+                        <input type="checkbox" class="form-check-input {{dbf.pk}}" checked disabled>
+                        {% else %}
+                            {% if dbf.name in getNameList %}
+                            <input type="checkbox" class="form-check-input {{dbf.pk}}" form="kodSlrNachisleniyaForm" name="getNameList" value="{{dbf.name}}" checked>
+                            {% else %}
+                            <input type="checkbox" class="form-check-input {{dbf.pk}}" form="kodSlrNachisleniyaForm" name="getNameList" value="{{dbf.name}}">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+    {% if dbfYearMonth %}
+
+    <!-- KOD -->
+    <div>
+        <div class="kodSlrNachisleniyaInfo">
+            <h5 class="text-center">KOD</h5>
+            <!-- succes info -->
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{AbonentCountSuccessGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{totalSuccesCallsGlobal}}</div>
+            </div>
+            
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{totalMtSuccessGlobal}}</div>
+            </div>
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Общая цена начисления</div>
+                <div class="item2kodSlr">{{totalSuccessPriceGlobal|floatformat:2}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Население цена</div>
+                <div class="item2kodSlr">{{totalKodPriceIlat|floatformat:2}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Предприятие цена</div>
+                <div class="item2kodSlr">{{totalKodPriceEdara|floatformat:2}}</div>
+            </div>
+
+            <div class="d-flex justify-content-around">
+                <form method="POST"> {% csrf_token %}
+                    <input type="hidden" name="downloadKodLists">
+                    <button class="btn btn-primary">Скачать</button>
+                </form>
+            </div>
+    
+            <!-- error info -->
+            <!-- <h5 class="text-center">Не найденные В БД</h5>
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{AbonentCountErrorGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{totalErrorCallsGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{totalMtErrorGlobal}}</div>
+            </div>
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Общая цена</div>
+                <div class="item2kodSlr">{{totalErrorPriceGlobal|floatformat:2}}</div>
+            </div>
+            <div class="text-center">
+                <form action="{% url 'kod-error-txt' %}" method="POST"> {% csrf_token %}
+                    {% for name in getNameList %}
+                    <input type="hidden" name="nameLists" value="{{name}}">
+                    {% endfor %}
+                    <button class="btn btn-primary">Скачать TXT</button>
+                </form>
+
+            </div> -->
+    
+        </div>
+    </div>
+
+    <!-- SLR -->
+    <div>
+        <div class="kodSlrNachisleniyaInfo">
+            <h5 class="text-center">SLR</h5>
+            <!-- succes info -->
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{AbonentCountSuccessLocal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{totalSuccesCallsLocal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{totalMtBruttoSuccessLocal}}</div>
+            </div>
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Общая цена начисления</div>
+                <div class="item2kodSlr">{{totalSuccessPriceBruttoLocal|floatformat:2}}</div>
+            </div>
+            <div class="d-flex justify-content-around">
+                <form method="POST"> {% csrf_token %}
+                    <input type="hidden" name="downloadSlrLists">
+                    <button class="btn btn-primary">Скачать</button>
+                </form>  
+            </div>
+
+    
+            <!-- error info -->
+            <!-- <h5 class="text-center">Не найденные В БД</h5>
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{AbonentCountErrorLocal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{totalErrorCallsLocal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{totalMtBruttoErrorLocal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Общая цена</div>
+                <div class="item2kodSlr">{{totalErrorPriceLocal|floatformat:2}}</div>
+            </div>
+            <div class="text-center">
+                <form action="{% url 'slr-error-txt' %}" method="POST"> {% csrf_token %}
+                    {% for name in getNameList %}
+                    <input type="hidden" name="nameLists" value="{{name}}">
+                    {% endfor %}
+                    <button class="btn btn-primary">Скачать TXT</button>
+                </form>           
+            </div> -->
+    
+        </div>
+    </div>
+
+    <!-- KOD + SLR -->
+    <div>
+        <div class="kodSlrNachisleniyaInfo">
+            <h5 class="text-center">KOD + SLR</h5>
+            <!-- succes info -->
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{umumyAbonentCountSuccessGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{umumyTotalSuccesCallsGlobal}}</div>
+            </div>
+            
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{umumyTotalMtSuccessGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainers">
+                <div class="item1kodSlr">Общая цена начисления</div>
+                <div class="item2kodSlr">{{umumyTotalSuccessPriceGlobal|floatformat:2}}</div>
+            </div>
+            <!-- <div class="d-flex justify-content-around">
+                <a href=""><button class="btn btn-primary">Скачать TXT</button></a>
+            </div>
+     -->
+            <!-- error info -->
+            <!-- <h5 class="text-center">Не найденные В БД</h5>
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего абонентов</div>
+                <div class="item2kodSlr">{{umumyAbonentCountErrorGlobal}}</div>
+            </div> -->
+
+            <!-- <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего звонков</div>
+                <div class="item2kodSlr">{{umumyTotalErrorCallsGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Всего минут</div>
+                <div class="item2kodSlr">{{umumyTotalMtErrorGlobal}}</div>
+            </div>
+
+            <div class="d-flex kodSlrInfoRowContainerErr">
+                <div class="item1kodSlr">Общая цена</div>
+                <div class="item2kodSlr">{{umumyTotalErrorPriceGlobal|floatformat:2}}</div>
+            </div> -->
+            <!-- <div class="text-center">
+                <a href=""><button class="btn btn-primary">Скачать TXT</button></a>
+            </div> -->
+    
+        </div>
+    </div>   
+
+    {% endif %}
+
+
+</div>
+
+
+
+{% if dbfYearMonth %}
+<div class="my_width400 d-flex text-light" style="position: absolute; right: 0; column-gap: 20px;">
+    <div>
+        <div>Будет начислено за:</div>
+        <div class="p-2 bg-gold" style="height: 100px; width: 200px; overflow-y: scroll;">
+                {% for i in dbfYearMonth %}
+                <div class="text-dark">{{i}}</div>
+                {% endfor %}
+        </div>
+    </div>
+    
+
+    <div>
+        <!-- <div>Месяц</div>
+        <select class="form-select kodSlrNachisleniyaSearchMonth" name="month" form="kodSlrNachisleniyaPostForm">
+            {% for month in months %}
+                <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Год</div>
+        <select class="form-select kodSlrNachisleniyaSearchYear" name="year" form="kodSlrNachisleniyaPostForm">
+            {% for year in years %}
+                <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+            {% endfor %}         
+        </select> -->
+    </div>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#kodSlrNachisleniyaBtnModal" style="height: fit-content;">Начислить</button>
+</div>
+{% endif %}
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="kodSlrNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-body">
+    <h5>Начисления за {{get_month}} {{get_year}} год</р>
+    <h5>Начислить?</h5>
+    </div>
+    <div class="modal-footer">
+        <form action="" method="POST" id="kodSlrNachisleniyaPostForm">{% csrf_token %}
+            <div>Комментарий - задокументируйте ваши действия</div>
+            <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+            <!-- <input type="hidden" value="{{get_year}}" name="year">
+            <input type="hidden" value="{{get_month}}" name="month"> -->
+            <input type="hidden" value="{{request.get_full_path}}" name="url_from">
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Начислить</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+
+
+
+{% if getYearMonth %}
+    {% for year, values in getYearMonth.items %}
+        <h1 class="text-light">{{year}}</h1>
+        {% for v in values %}
+        <h1 class="text-light">{{v}}</h1>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+
+
+
+<!-- <div class="kodSlr_nachisleniya_string"><h1>Код+slr</h1> <span>начисления</span></div> -->
+
+
+<style>
+    /* ##########################
+    kod-slr-nachisleniya index ##
+   ##############################
+*/
+.kodSlr_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+.kodSlrInfoRowContainerErr {
+    background-color: #FF6347;
+    width: 300px;
+    height: 50px;
+    border-radius: 5px;
+    color: black;
+    margin-top: 50;
+}
+.kodSlrNachisleniyaInfo .errorRow {
+    margin-top: 250px;
+}
+.kodSlrNachisleniyaInfo .item2kodSlr {
+    padding-top: 12px;
+    padding-left: 10px;
+    border-radius: 5px;
+    
+}
+.kodSlrInfoRowContainers {
+    width: 300px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #20B2AA;
+    color: black;
+    border: 1px black solid;
+}
+.kodSlrNachisleniyaInfo {
+    width: 350px;
+    height: 700px;
+    background-color: #6495ED;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 10px;
+    padding: 20px ;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.kodSlrNachisleniyaInfo .item1kodSlr {
+    padding-top: 12px;
+    padding-left: 10px;
+    width: 200px;
+    border-radius: 5px;
+    background-color: white;
+}
+.myActiveLinkLight {
+    color: black !important; 
+    text-decoration: underline;
+}
+.bg-gold {
+   background-color: #FFD700;
+}
+
+.kodSlrNachisleniyaSearchEtrap, .kodSlrNachisleniyaSearchMonth, .kodSlrNachisleniyaSearchYear {
+   width: 160px;
+   background-color: #FFD700;
+}
+.kodSlrNachisleniyaForm {
+   display: flex;
+   column-gap: 10px;
+   align-items: flex-end;
+   margin-left: auto;
+   margin-right: auto;
+   width: 430px;
+}
+.kodSlrNachisleniyaSearchSubmit {
+   height: fit-content;
+   background-color: #FFD700;
+   color: black;
+}
+/* ##################################
+    kod-slr-nachisleniya index END ##
+   ##################################
+*/
+</style>
+
+<script>
+
+function KodSlrChangeBg(id) {
+    if (document.getElementById(id).childNodes[3].childNodes[1].disabled == false) {
+        if (document.getElementById(id).childNodes[3].childNodes[1].checked == false) {
+            document.getElementById(id).childNodes[3].childNodes[1].checked = true
+            document.getElementById(id).classList.add('bg-gold')
+        } else {
+            document.getElementById(id).childNodes[3].childNodes[1].checked = false
+            document.getElementById(id).classList.remove('bg-gold')
+        }
+    }
+}
+
+</script>
+
+{% endblock %}

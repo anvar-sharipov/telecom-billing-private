@@ -1,0 +1,88 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}История изменений в Базе {% endblock %}
+{% block content %}
+
+<h1 class="text-light text-center mt-3">История Изменений а Базе</h1>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="justify-content: space-around; align-items: center;">
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap">
+                {% if request.user.is_superuser %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Номер</label>
+            <input type="text" class="form-control" id="number" placeholder="Поиск по номеру абонента" autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Поиск по коментариям" autocomplete="off" name="comment" {% if comment %} value="{{comment}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="akt_raport" class="form-label">Акт рапорт</label>
+            <input type="text" class="form-control" id="akt_raport" placeholder="Поиск по коментариям" autocomplete="off" name="akt_raport" {% if akt_raport %} value="{{akt_raport}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_from" class="form-label">Дата От</label>
+            <input type="date" class="form-control" id="date_from" name="date_from" {% if date_from %} value="{{date_from}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_to" class="form-label">Дата До</label>
+            <input type="date" class="form-control" id="date_to" name="date_to" {% if date_to %} value="{{date_to}}"{% endif %}>
+        </div>
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+
+
+    {% if baza_changes %}
+    <div class="mt-4">
+        <h2 class="text-center">Результаты поиска:</h2>
+        <table class="table table-striped table-bordered text-center table-primary">
+            <thead>
+                <tr>
+                    <th scope=" ">Этрап</th>
+                    <th scope="col">Номер</th>
+                    <th scope="col">Комментарий</th>
+                    <th scope="col">Кто изменил</th>
+                    <th scope="col">Дата изменения</th>
+                    <th scope="col">Акт рапорт</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for change in baza_changes %}
+                    <tr>
+                        <td>{{ change.etrap }}</td>
+                        <td>{{ change.number }}</td>
+                        <td><div class="text-start"><pre>{{ change.comment }}</pre></div></td>
+                        <td>{{ change.operator }}</td>
+                        <td>{{ change.date }}</td>
+                        <td>{{ change.akt_raport }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">Нет данных для отображения.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+
+
+</div>
+
+
+
+
+
+{% endblock content %}
+

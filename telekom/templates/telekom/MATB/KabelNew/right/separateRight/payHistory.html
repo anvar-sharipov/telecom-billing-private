@@ -1,0 +1,106 @@
+{% load static %}
+<!-- Начало История платежей -->
+<div class="col-md-6" style="padding-bottom: 5px;">
+    <div class="card" style="border: none;">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" style="color: rgba(0, 0, 0, 0.5);">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Сумма</th>
+                            <th>Карт</th>
+                            <th style="display: flex; justify-content: space-between;">
+                                <span>Кассир</span>
+                                <span>
+                                    <!-- trigger modal PayHistory -->
+                                    <img src="{% static 'telekom/jpg/lupa.png' %}" width="18" data-bs-toggle="modal" data-bs-target="#payHistoryModalKabel{{u.pk}}">
+                                    <!-- Начало Modal payHistory -->
+                                    <div class="modal fade" id="payHistoryModalKabel{{ u.pk }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <div class="container">
+                                                        <div class="row justify-content-center">
+                                                            <div class="col-md-12">
+                                                                <div class="card shadow">
+                                                                    <div class="card-body">
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-striped table-hover">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Дата</th>
+                                                                                        <th>Сумма</th>
+                                                                                        <th>Карт</th>
+                                                                                        <th>Кассир</th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {% for payment in u.sorted_payments %}
+                                                                                    <tr>
+                                                                                        <td>{{ payment.pay_date|date:'d-m-Y' }}</td>
+                                                                                        <td>{{ payment.pay }}</td>
+                                                                                        <td>
+                                                                                            {% if payment.card %}
+                                                                                            <input type="checkbox" checked disabled>
+                                                                                            {% else %}
+                                                                                            <input type="checkbox" disabled>
+                                                                                            {% endif %}
+                                                                                        </td>
+                                                                                        <td>{{ payment.pay_kassir }}</td>
+                                                                                    </tr>
+                                                                                    {% endfor %}
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Конец Modal payHistory -->
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in u.sorted_payments|slice:":5" %}
+                        {% if success_pay and forloop.counter == 1 %}
+                        <tr class="last_pay_row">
+                            <td>{{ payment.pay_date|date:'d-m-Y' }}</td>
+                            <td>{{ payment.pay }}</td>
+                            <td>
+                                {% if payment.card %}
+                                <input type="checkbox" checked disabled>
+                                {% else %}
+                                <input type="checkbox" disabled>
+                                {% endif %}
+                            </td>
+                            <td>{{ payment.pay_kassir }}</td>
+                        </tr>
+                        {% else %}
+                        <tr style="color: rgba(0, 0, 0, 0.5) !important;">
+                            <td>{{ payment.pay_date|date:'d-m-Y' }}</td>
+                            <td>{{ payment.pay }}</td>
+                            <td>
+                                {% if payment.card %}
+                                <input type="checkbox" checked disabled>
+                                {% else %}
+                                <input type="checkbox" disabled>
+                                {% endif %}
+                            </td>
+                            <td>{{ payment.pay_kassir }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Конец История платежей -->

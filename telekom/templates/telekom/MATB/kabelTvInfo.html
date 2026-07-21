@@ -1,0 +1,536 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Кабель TV Информация{% endblock %}
+{% block content %}
+
+
+
+
+
+
+
+
+<div class="p-3">
+
+    <div class="d-flex my_column_gap10">
+        
+        {% if matbIndex %}
+        <!-- Скачать xlsx -->
+        <form action="" method="POST" id="downloadXlsx">{% csrf_token %}
+            <input type="hidden" name="xlsx_sort" value="{{sort}}">
+            <input type="hidden" name="is_onSort" value="{{is_onSort}}">
+            <input type="hidden" name="is_enterprisesSort" value="{{is_enterprisesSort}}">
+            <button class="btn btn-success">Скачать xlsx</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="oneMonthMinus">
+            <button class="btn btn-primary">Не платили месяц</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="twoMonthMinus">
+            <button class="btn btn-primary">Не платили 2 месяца</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="threeMonthMinus">
+            <button class="btn btn-primary">Не платили 3 месяца</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="fourMonthMinus">
+            <button class="btn btn-primary">Не платили 4 месяца</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="fiveMonthMinus">
+            <button class="btn btn-primary">Не платили 5 месяцев</button>
+        </form>
+
+        <form action="" method="POST">{% csrf_token %}
+            <input type="hidden" name="sixMonthMinus">
+            <button class="btn btn-primary">Не платили 6 месяцев</button>
+        </form>
+        {% endif %}
+
+
+
+        <!-- Фильтр -->
+        <form action="" method="GET" id="totalFilter">
+            <input type="hidden" name="sort" value="{{sort}}">
+            <input type="hidden" name="is_onSort" value="{{is_onSort}}">
+            <input type="hidden" name="is_enterprisesSort" value="{{is_enterprisesSort}}">
+        </form>
+
+        <!-- Сброс фильтра -->
+        <form action="" method="POST" id="sbros">{% csrf_token %}
+            <input type="hidden" name="sbros">
+            {% if sort or is_onSort or is_enterprisesSort or ids or etrap or surname or name or street or home or flat or kabel_count or balanceStart or balanceEnd or number or sotowyy or start or end or is_on or is_enterprises %}
+            <button class="btn btn-danger" form="sbros">Сбросить Фильтр</button>
+            {% endif %}
+        </form>
+
+
+        <a href="{% url 'kabel-tv-add-user' %}"><button class="btn btn-success">Добавить</button></a>
+  
+
+
+        
+    </div>
+
+    <table class="table table-dark table-hover kabelInfoTable mt-2">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">ID</div>
+                        <ul class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column" style="row-gap: 10px;">
+                                <input type="hidden" name="test" {% if test_list %} value="{{test_list}}" {% endif %}>
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="ids" value="ids">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="ids" value="-ids">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Введите ID" name="kabelIdSearch" form="totalFilter" {% if ids %} value="{{ids}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >Этрап</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="padding: 0; margin: 0;">
+                            <div class="d-flex flex-column" style="row-gap: 10px; padding: 10px;">
+                                <select class="form-select kabelTvNachisleniyaSearchEtrap bg-gold" aria-label="Default select example" name="etrap" form="totalFilter">
+                                    {% for etr in etraps %}
+                                    <option {% if etr == etrap %} selected {% elif etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                                    {% endfor %}
+                                    <option {% if etrap == '' %} selected {% endif %} value="">Все</option>
+                                </select>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Фамилия</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="surname" value="surname">
+                                        <button class="btn btn-primary btn-sm">от а до я</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="surname" value="-surname">
+                                        <button class="btn btn-primary btn-sm">от я до а</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Введите Фамилию" name="kabelSurnameSearch" form="totalFilter" {% if surname %} value="{{surname}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Имя</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="name" value="name">
+                                        <button class="btn btn-primary btn-sm">от а до я</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="name" value="-name">
+                                        <button class="btn btn-primary btn-sm">от я до а</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Введите Имя" name="kabelNameSearch" form="totalFilter" {% if name %} value="{{name}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Улица</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="street" value="street">
+                                        <button class="btn btn-primary btn-sm">от а до я</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="street" value="-street">
+                                        <button class="btn btn-primary btn-sm">от я до а</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Улица" name="kabelStreetSearch" form="totalFilter" {% if street %} value="{{street}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Дом</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="home" value="home">
+                                        <button class="btn btn-primary btn-sm">от а до я</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="home" value="-home">
+                                        <button class="btn btn-primary btn-sm">от я до а</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Дом" name="kabelHomeSearch" form="totalFilter" {% if home %} value="{{home}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Кв</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="flat" value="flat">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="flat" value="-flat">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Квартира" name="kabelFlatSearch" form="totalFilter" {% if flat %} value="{{flat}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Точек</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="kabel_count" value="kabel_count__kabel_count">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="kabel_count" value="-kabel_count__kabel_count">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="кол-во точек" name="kabelCountSearch" form="totalFilter" {% if kabel_count %} value="{{kabel_count}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Баланс</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="balance" value="b_kabel">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="balance" value="-b_kabel">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="number" class="form-control" placeholder="Start" name="kabelBalanceSearchStart" form="totalFilter" {% if balanceStart %} value="{{balanceStart}}" {% endif %}>
+                                    <input type="number" class="form-control" placeholder="End" name="kabelBalanceSearchEnd" form="totalFilter" {% if balanceEnd %} value="{{balanceEnd}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button> 
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Дом тел</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="number" value="number">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="number" value="-number">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" id="kabelNumberSearch" placeholder="Дом. Тел." name="kabelNumberSearch" form="totalFilter" {% if number %} value="{{number}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Сотовый</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="sotowyy" value="sotowyy">
+                                        <button class="btn btn-primary btn-sm">По возрастанию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="sotowyy" value="-sotowyy">
+                                        <button class="btn btn-primary btn-sm">По убыванию</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="text" class="form-control" placeholder="Сотовый" name="kabelSotowyySearch" form="totalFilter" {% if sotowyy %} value="{{sotowyy}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Дата установки</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="d-flex">
+                                    &uarr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="connect_date" value="-connect_date">
+                                        <button class="btn btn-primary btn-sm">Сначала новые</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex">
+                                    &darr;
+                                    <form action="" method="POST">{% csrf_token %}
+                                        <input type="hidden" name="connect_date" value="connect_date">
+                                        <button class="btn btn-primary btn-sm">Сначала старые</button>
+                                    </form>
+                                </div>
+                                <div class="d-flex flex-column" style="row-gap: 10px;">
+                                    <input type="date" class="form-control" name="kabelConnect_dateSearchStart" form="totalFilter" {% if start %} value="{{start}}" {% endif %}>
+                                    <input type="date" class="form-control" name="kabelConnect_dateSearchEnd" form="totalFilter" {% if end %} value="{{end}}" {% endif %}>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Вкл</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="text-center">
+                                    <input type="radio" id="On" name="is_on" value="On" form="totalFilter" {% if is_on == 'On' %} checked {% endif %}>
+                                    <label for="On">On</label><br>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" id="Off" name="is_on" value="Off" form="totalFilter" {% if is_on == 'Off' %} checked {% endif %}>
+                                    <label for="Off">Off</label>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <div class="dropdown">
+                        <div class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Пред</div>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <div class="d-flex flex-column p-2" style="row-gap: 10px;">
+                                <div class="text-center">
+                                    <input type="radio" id="On_is_enterprises" name="is_enterprises" value="On" form="totalFilter" {% if is_enterprises == 'On' %} checked {% endif %}>
+                                    <label for="On_is_enterprises">On</label><br>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" id="Off_is_enterprises" name="is_enterprises" value="Off" form="totalFilter" {% if is_enterprises == 'Off' %} checked {% endif %}>
+                                    <label for="Off_is_enterprises">Off</label>
+                                </div>
+                                <button class="btn btn-success" form="totalFilter">ОК</button>
+                                <button class="btn btn-danger" form="sbros">Сброс</button>
+                            </div>
+                        </ul>
+                    </div>
+                </th>
+                <th>Примечание</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.ids }}</td>
+                <td>{{ user.etrap }}</td>
+                <td>{{ user.surname|slice:":12" }}</td>
+                <td>{{ user.name|slice:":12" }}</td>
+                <td>{{ user.street|slice:":12" }}</td>
+                <td>{{ user.home }}</td>
+                <td>{{ user.flat }}</td>
+                <td>{{ user.kabel_count.kabel_count }}</td>
+                <td>{{ user.b_kabel|floatformat:2 }}</td>
+                <td>{{ user.number}}</td>
+                <td>{{ user.sotowyy|slice:":1" }}-{{ user.sotowyy|slice:"1:3" }}-{{ user.sotowyy|slice:"3:5" }}-{{ user.sotowyy|slice:"5:7" }}-{{ user.sotowyy|slice:"7:9" }}</td>
+                <td>{% if user.connect_date %}{{ user.connect_date|date:"d.m.Y h:i:s" }}{% endif %}</td>
+                <td><input type="checkbox" class="form-check-input" {% if user.is_on %} checked {% endif %} disabled></td>
+                <td><input type="checkbox" class="form-check-input" {% if user.is_enterprises %} checked {% endif %} disabled></td>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        {% if user.kabel_comments %}
+                        <div>{{ user.kabel_comments|slice:":20" }}</div>
+                        <div class="dropdown">
+                            <div class="" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"> ...</div>
+                            <div class="dropdown-menu p-2" aria-labelledby="dropdownMenuButton1">
+                            <div>{{ user.kabel_comments }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if moreThan500 %}
+    <div class="text-danger text-center">Абонентов Больше 500 чтобы просмотреть их всех скачайте в xlsx формате </div>
+    <div class="my_block_center my_width100">
+        <button class="btn btn-secondary" form="downloadXlsx">Скачать</button>
+    </div>
+    
+{% endif %}
+
+
+{% if oneUser %}
+<div style="background-color: #1E90FF; padding: 20px; border-radius: 10px;" class="my_width400 my_block_center">
+    <form action="" method="POST" class="d-flex flex-column .my_row_gap20 justify-content-between my_width700 my_block_center text-light" style="row-gap: 10px;"> {% csrf_token %}
+        <div>
+            <div>Кол-во точек</div>
+            <select class="form-select  my_width300 bg-gold" aria-label="Default select example" name="tarif_pk" style="height: fit-content;">
+                {% for tarif in tarifs %}
+                    <option {% if current_tarif_pk == tarif.pk %} selected {% endif %} value="{{tarif.pk}}">Кол-во точек {{tarif.kabel_count}}; Цена {{tarif.price}} манат</option>
+                {% endfor %}
+                <option value="off" {% if current_tarif_pk == 'off' %} selected {% endif %}>{% if current_tarif_pk == 'off' %}Отключен{% else %}Отключить{% endif %}</option>
+            </select>
+        </div>
+        <div>
+            <div>Примечание</div>
+            <textarea rows="2" cols="35" name="comment"></textarea>
+        </div>
+        <div class="d-flex my_column_gap10 bg-gold my_width200 btn" style="padding-left: 10px;" role="button">
+            {% if oneUser.is_on %}
+            <input type="checkbox" class="form-check-input" name="is_on" checked>
+            {% else %}
+            <input type="checkbox" class="form-check-input" name="is_on">
+            {% endif %}
+            <div class="my_width100 text-dark">Включить?</div> 
+            
+        </div>
+        
+        
+        <input type="hidden" name="pk" value="{{oneUser.pk}}">
+        <button class="btn btn-danger mt-4" style="height: fit-content; width: fit-content;" {% if request.user.is_superuser %} {% else %} disabled {% endif %}>Сохранить</button>
+    </form>
+</div>
+{% endif %}
+
+
+{% endblock %}
+

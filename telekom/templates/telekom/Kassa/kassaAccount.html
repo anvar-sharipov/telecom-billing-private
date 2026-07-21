@@ -1,0 +1,175 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Счет{% endblock %}
+{% block content %}
+{% load addFloat %}
+
+<div style="background-color: powderblue; height: 96vh; padding: 20px 50px; font-size: 12px;">
+    <div class="d-flex my_column_gap10">
+        <form method="GET">
+            <div class="d-flex my_column_gap10">
+                <div class="pt-2">Счет</div>
+                <input type="number" class="form-control my_width100 border border-dark" id="accountNumber" name="accountNumber" {% if accountNumber %} value="{{accountNumber}}" {% endif %}>
+                <select name="etrap" class="form-select">
+                    
+                    {% if etrap %}
+                        {% for etr in etraps %}
+                            <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                        {% endfor %}
+                    {% else %}
+                        {% for etr in etraps %}
+                            <option value="{{etr}}" {% if etr == log %} selected {% endif %}>{{etr}}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </form>
+        <div style="background-color: LightGrey; padding: 5px 10px; border-radius: 5px; width: 450px;" class="border border-dark">{{accountName}}</div>
+        
+        
+
+    </div>
+<!-- 
+    <div class="d-flex my_column_gap10 mt-3">
+        <div>
+            <div>Сумма к отключению</div>
+            <div style="background-color: LightGrey; height: 35px;" class="border border-dark my_width300"></div>
+        </div>
+        <div>
+            <div>Баланс</div>
+            <div style="background-color: LightGrey; height: 35px;" class="border border-dark my_width300"></div>
+        </div>
+
+        <div style="margin-left: auto;">
+            <div>Остаток (-долг/+аванс)</div>
+            <div style="background-color: LightGrey; height: 35px;" class="border border-dark my_width300"></div>
+        </div>
+    </div> -->
+
+    <div class="d-flex mt-2 my_column_gap10">
+        <div style="background-color: white;">
+            <div class="d-flex d-none" id="myHeader" style="position: absolute; margin-left: 10px;">
+                <div class="text-center border-end border-dark" style="width: 29px;">№</div>
+                {% for col in columns %}
+                    <div class="text-center my_width100 border-end border-dark">{{col}}</div>
+                {% endfor %}
+            </div>
+            <div style="height: 60vh; overflow-y: auto;margin-top: 30px;" class="border border-dark p-2" id="myScroll">
+                
+                <table class="table table-light table-hover table-bordered" style="width: 730px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">№</th>
+                            {% for col in columns %}
+                            <th class="text-center my_width100">{{col}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td style="width: 30px;">{{forloop.counter}}</td>
+                            <td class="text-center my_width100">{{user.number|slice:":1"}}-{{user.number|slice:"1:3"}}-{{user.number|slice:"3:"}}</td>
+                            <td class="text-center my_width100">{{user.b_prochee}}</td>
+                            <td class="text-center my_width100">{{user.b_internet}}</td>
+                            <td class="text-center my_width100">{{user.b_kabel}}</td>
+                            <td class="text-center my_width100">{{user.b_alem}}</td>
+                            {% if user.b_prochee < 0 and user.b_internet < 0 and user.b_kabel < 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_internet|add:user.b_kabel|add:user.b_alem}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet < 0 and user.b_kabel < 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_internet|add:user.b_kabel}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet < 0 and user.b_kabel >= 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_internet|add:user.b_alem}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet < 0 and user.b_kabel >= 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_internet}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet >= 0 and user.b_kabel < 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_kabel|add:user.b_alem}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet >= 0 and user.b_kabel < 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_kabel}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet >= 0 and user.b_kabel >= 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_alem}}</td>
+                            {% elif user.b_prochee < 0 and user.b_internet >= 0 and user.b_kabel >= 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_prochee}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet < 0 and user.b_kabel < 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_internet|add:user.b_kabel|add:user.b_alem}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet < 0 and user.b_kabel < 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_internet|add:user.b_kabel}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet < 0 and user.b_kabel >= 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_internet|add:user.b_alem}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet < 0 and user.b_kabel >= 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_internet}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet >= 0 and user.b_kabel < 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_kabel|add:user.b_alem}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet >= 0 and user.b_kabel < 0 and user.b_alem >= 0 %}
+                            <td class="text-center my_width100">{{user.b_kabel}}</td>
+                            {% elif user.b_prochee >= 0 and user.b_internet >= 0 and user.b_kabel >= 0 and user.b_alem < 0 %}
+                            <td class="text-center my_width100">{{user.b_alem}}</td>
+                            {% else %}
+                            <td class="text-center my_width100">0</td>
+                            {% endif %}
+                            <td class="text-center my_width100">{{user.b_prochee|add:user.b_internet|add:user.b_kabel|add:user.b_alem}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex" style="margin-left: 9px;">
+                <div style="width: 130px;" class="border border-dark text-center">{{users.count}}</div>
+                <div class="border border-dark text-center my_width100">{{sum_b_abon|floatformat:2}}</div>
+                <div class="border border-dark text-center my_width100">{{sum_b_int|floatformat:2}}</div>
+                <div class="border border-dark text-center my_width100">{{sum_b_kab|floatformat:2}}</div>
+                <div class="border border-dark text-center my_width100">{{sum_b_alem|floatformat:2}}</div>
+                <div class="border border-dark text-center my_width100">{{total_debit|floatformat:2}}</div>
+                <div class="border border-dark text-center my_width100">{{total_balance|floatformat:2}}</div>
+
+            </div>
+        </div>
+        <div style="background-color: white; margin-left: auto;" class="border border-dark my_width400">
+            <div class="text-center fw-bold">Оплаты по счетам</div>
+            <div class="d-flex fw-bold justify-content-between" style="padding: 0 5px;">
+                <div class="border border-dark text-center" style="width: 100%;">Услуга, вклад</div>
+                <div class="border border-dark text-center" style="width: 100%;">Дата</div>
+                <div class="border border-dark text-center" style="width: 100%;">Сумма</div>
+            </div>
+        </div>
+    </div>
+
+<br><br>
+    {% if users %}
+    <form method="POST" class="d-flex">{% csrf_token %}
+        <div><input type="text" class="form-control" name="account_name_new" {% if acc_name %} value="{{acc_name}}" {% else %} value="{{accountName}}" {% endif %} style="width: 600px;"></div>
+        <div><input type="text" class="form-control" name="accountBalanceNew" value="{{new_balance}}" style="width: 150px; margin-left: 50px;"></div>
+        <input type="hidden" name="account_new" value="{{accountNumber}}">
+        <!-- <input type="hidden" name="account_name_new" value="{{accountName}}"> -->
+        <button class="btn btn-success" style="margin-left: 50px;">Сохранить</button>
+    </form>
+    {% endif %}
+</div>
+
+<style>
+    th, td {padding: 0 0 0 2px !important;}
+    
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("accountNumber").select();
+
+
+});
+
+var myScroll = document.getElementById('myScroll')
+
+myScroll.addEventListener('scroll', function() {
+    if (myScroll.scrollTop >= 30) {
+        document.getElementById('myHeader').classList.remove('d-none')
+    }
+    if (myScroll.scrollTop == 0) {
+        document.getElementById('myHeader').classList.add('d-none')
+    }
+})
+</script>
+
+
+
+
+{% endblock %}

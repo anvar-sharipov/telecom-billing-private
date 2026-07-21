@@ -1,0 +1,1225 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Трафик ДОП{% endblock %}
+{% block content %}
+
+<div class="text-light my_width300 my_block_center no-print">
+    <br>
+    <form method="GET">
+        <select name="etrap" class="form-select">
+            {% for etr in etraps %}
+
+                {% if etrap in etraps %}
+                    <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                {% elif log in etrpas %}
+                    <option value="{{etr}}" {% if log == etr %} selected {% endif %}>{{etr}}</option>
+                {% else %}
+                    <option value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            
+            {% endfor %}
+        </select>
+        <br>
+        <select name="year" class="form-select">
+            {% for y in years %}
+                <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <select name="month" class="form-select">
+            {% for m in months %}
+                <option value="{{m}}" {% if m == month %} selected {% endif %}>{{m}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-success btn-sm">Поиск</button>
+        </div>
+
+    </form>
+</div>
+
+<br>
+
+<div class="text-center">
+    {{month}} {{year}} {{etrap}}
+</div>
+<!-- Для бюд -->
+{% if daysAndNightCallsBud %}
+<div class="my_width800 my_block_center">
+    <h6 class="text-center bg-light fw-bold">Трафик междугородней связи АТС (по предприятиям (бюджет)) за {{month}} {{year}}</h6>
+    <table class="table table-success table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="4">Страна</th>
+                <th rowspan="4">Тариф</th>
+                <th colspan="5" class="text-center">Через оператора ДОП</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td rowspan="2" colspan="2">Количество соединений</td>
+                <td rowspan="2" colspan="2">Количество минут</td>
+                <td rowspan="3">На сумму манат</td>
+            </tr>
+        </tbody> 
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <!-- для etrap -->
+        <tbody class="digit_body">
+            {% if etrapDictBud %}
+                {% for country, values in etrapDictBud.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Велаяту:</td>
+                    {% for val in etrapTotalBud %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для terkmenistan (welayat) -->
+        <tbody class="digit_body">
+            {% if welayatDictBud %}
+                {% for country, values in welayatDictBud.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Туркменистану:</td>
+                    {% for val in welayatTotalBud %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для sng -->
+        <tbody class="digit_body">
+            {% if sngDictBud %}
+                {% for country, values in sngDictBud.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по СНГ:</td>
+                    {% for val in sngTotalBud %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для international (Другие) -->
+        <tbody class="digit_body">
+            {% if internationalDictBud %}
+                {% for country, values in internationalDictBud.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по другим странам:</td>
+                    {% for val in internationalTotalBud %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <tbody>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">ОБЩИЙ ИТОГ:</td>
+                {% for val in itogoTotalBud %}
+                    {% if forloop.counter == 1 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                    <td colspan="2" class="text-center">{{val|floatformat:2}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="my-page-break"></div>
+{% endif %}
+
+<!-- для хоз -->
+{% if daysAndNightCallsHoz %}
+<div class="my_width800 my_block_center">
+    <h6 class="text-center bg-light fw-bold">Трафик междугородней связи АТС (по предприятиям (Хоз расчет)) за {{month}} {{year}}</h6>
+    <table class="table table-success table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="4">Страна</th>
+                <th rowspan="4">Тариф</th>
+                <th colspan="5" class="text-center">По коду АМТС</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td rowspan="2" colspan="2">Количество соединений</td>
+                <td rowspan="2" colspan="2">Количество минут</td>
+                <td rowspan="3">На сумму манат (10%)</td>
+            </tr>
+        </tbody> 
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <!-- для etrap -->
+        <tbody class="digit_body">
+            {% if etrapDictHoz %}
+                {% for country, values in etrapDictHoz.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Велаяту:</td>
+                    {% for val in etrapTotalHoz %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для terkmenistan (welayat) -->
+        <tbody class="digit_body">
+            {% if welayatDictHoz %}
+                {% for country, values in welayatDictHoz.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Туркменистану:</td>
+                    {% for val in welayatTotalHoz %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для sng -->
+        <tbody class="digit_body">
+            {% if sngDictHoz %}
+                {% for country, values in sngDictHoz.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по СНГ:</td>
+                    {% for val in sngTotalHoz %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для international (Другие) -->
+        <tbody class="digit_body">
+            {% if internationalDictHoz %}
+                {% for country, values in internationalDictHoz.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по другим странам:</td>
+                    {% for val in internationalTotalHoz %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <tbody>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">ОБЩИЙ ИТОГ:</td>
+                {% for val in itogoTotalHoz %}
+                    {% if forloop.counter == 1 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                    <td colspan="2" class="text-center">{{val|floatformat:2}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="my-page-break"></div>
+{% endif %}
+
+<!-- для населения -->
+{% if daysAndNightCallsNaseleniya %}
+<div class="my_width800 my_block_center">
+    <h6 class="text-center fw-bold bg-light">Трафик междугородней связи АТС (по населению) за {{month}} {{year}}</h6>
+    <table class="table table-success table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="4">Страна</th>
+                <th rowspan="4">Тариф</th>
+                <th colspan="5" class="text-center">Через оператора ДОП</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td rowspan="2" colspan="2">Количество соединений</td>
+                <td rowspan="2" colspan="2">Количество минут</td>
+                <td rowspan="3">На сумму манат (5%)</td>
+            </tr>
+        </tbody> 
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <!-- для etrap -->
+        <tbody class="digit_body">
+            {% if etrapDictNaseleniya %}
+                {% for country, values in etrapDictNaseleniya.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Велаяту:</td>
+                    {% for val in etrapTotalNaseleniya %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для terkmenistan (welayat) -->
+        <tbody class="digit_body">
+            {% if welayatDictNaseleniya %}
+                {% for country, values in welayatDictNaseleniya.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Туркменистану:</td>
+                    {% for val in welayatTotalNaseleniya %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для sng -->
+        <tbody class="digit_body">
+            {% if sngDictNaseleniya %}
+                {% for country, values in sngDictNaseleniya.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по СНГ:</td>
+                    {% for val in sngTotalNaseleniya %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для international (Другие) -->
+        <tbody class="digit_body">
+            {% if internationalDictNaseleniya %}
+                {% for country, values in internationalDictNaseleniya.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по другим странам:</td>
+                    {% for val in internationalTotalNaseleniya %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <tbody>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">ОБЩИЙ ИТОГ:</td>
+                {% for val in itogoTotalNaseleniya %}
+                    {% if forloop.counter == 1 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                    <td colspan="2" class="text-center">{{val|floatformat:2}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="my-page-break"></div>
+{% endif %}
+
+<!-- для АТС -->
+{% if daysAndNightCallsATS %}
+<div class="my_width800 my_block_center">
+    <h6 class="text-center fw-bold bg-light">Трафик междугородней связи АТС (по служебным) за {{month}} {{year}}</h6>
+    <table class="table table-success table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="4">Страна</th>
+                <th rowspan="4">Тариф</th>
+                <th colspan="5" class="text-center">Через оператора ДОП</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td rowspan="2" colspan="2">Количество соединений</td>
+                <td rowspan="2" colspan="2">Количество минут</td>
+                <td rowspan="3">На сумму манат (10%)</td>
+            </tr>
+        </tbody> 
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <!-- для etrap -->
+        <tbody class="digit_body">
+            {% if etrapDictATS %}
+                {% for country, values in etrapDictATS.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Велаяту:</td>
+                    {% for val in etrapTotalATS %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для terkmenistan (welayat) -->
+        <tbody class="digit_body">
+            {% if welayatDictATS %}
+                {% for country, values in welayatDictATS.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Туркменистану:</td>
+                    {% for val in welayatTotalATS %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для sng -->
+        <tbody class="digit_body">
+            {% if sngDictATS %}
+                {% for country, values in sngDictATS.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по СНГ:</td>
+                    {% for val in sngTotalATS %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для international (Другие) -->
+        <tbody class="digit_body">
+            {% if internationalDictATS %}
+                {% for country, values in internationalDictATS.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по другим странам:</td>
+                    {% for val in internationalTotalATS %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <tbody>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">ОБЩИЙ ИТОГ:</td>
+                {% for val in itogoTotalATS %}
+                    {% if forloop.counter == 1 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                    <td colspan="2" class="text-center">{{val|floatformat:2}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="my-page-break"></div>
+{% endif %}
+
+<!-- для Неопознанные (unknown) -->
+{% if daysAndNightUnknownEdara %}
+<div class="my_width800 my_block_center">
+    <h6 class="text-center fw-bold bg-light">Трафик междугородней связи Предприятие (Неопознанные) за {{month}} {{year}}</h6>
+    <table class="table table-success table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="4">Страна</th>
+                <th rowspan="4">Тариф</th>
+                <th colspan="5" class="text-center">Через оператора ДОП</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td rowspan="2" colspan="2">Количество соединений</td>
+                <td rowspan="2" colspan="2">Количество минут</td>
+                <td rowspan="3">На сумму манат (10%)</td>
+            </tr>
+        </tbody> 
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td>Дневных</td>
+                <td>Ночных</td>
+                <td></td>
+            </tr>
+        </tbody>
+        <!-- для etrap -->
+        <tbody class="digit_body">
+            {% if etrapDictUnknownEdara %}
+                {% for country, values in etrapDictUnknownEdara.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Велаяту:</td>
+                    {% for val in etrapTotalUnknownEdara %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для terkmenistan (welayat) -->
+        <tbody class="digit_body">
+            {% if welayatDictUnknownEdara %}
+                {% for country, values in welayatDictUnknownEdara.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по Туркменистану:</td>
+                    {% for val in welayatTotalUnknownEdara %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для sng -->
+        <tbody class="digit_body">
+            {% if sngDictUnknownEdara %}
+                {% for country, values in sngDictUnknownEdara.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по СНГ:</td>
+                    {% for val in sngTotalUnknownEdara %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <!-- для international (Другие) -->
+        <tbody class="digit_body">
+            {% if internationalDictUnknownEdara %}
+                {% for country, values in internationalDictUnknownEdara.items  %}
+                <tr>
+                    <td>{{country}}</td>
+                    {% for value in values %}
+                        {% if forloop.counter == 1 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 4 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 5 %}
+                            <td>{{value}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 6 %}
+                            <td>{{value|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="2" class="text-end">Итог по другим странам:</td>
+                    {% for val in internationalTotalUnknownEdara %}
+                        {% if forloop.counter == 1 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 2 %}
+                        <td colspan="2" class="text-center">{{val}}</td>
+                        {% endif %}
+                        {% if forloop.counter == 3 %}
+                        <td colspan="2" class="text-end">{{val|floatformat:2}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        </tbody>
+        <tbody>
+            <tr class="fw-bold">
+                <td colspan="2" class="text-end">ОБЩИЙ ИТОГ:</td>
+                {% for val in itogoTotalUnknownEdara %}
+                    {% if forloop.counter == 1 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                    <td colspan="2" class="text-center">{{val}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                    <td colspan="2" class="text-center">{{val|floatformat:2}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+
+
+
+
+<style>
+    .digit_body td:not(:first-child) {
+        text-align: right;
+    }
+    @media print {
+        .my-page-break {
+            page-break-before: always;
+        }
+        .no-print { 
+            display: none;
+      }
+      td {
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 2px black solid;
+      }
+      th {
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 2px black solid;
+      }
+      
+    }
+
+</style>
+
+{% endblock %}

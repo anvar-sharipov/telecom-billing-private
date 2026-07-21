@@ -1,0 +1,290 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}InterPay{% endblock %}
+{% block content %}
+{% load addFloat %}
+
+<div style="padding: 0 40px 20px 40px;">
+    <div class="d-flex" style="width: 500px; margin-left: auto; margin-right: auto; color:  white; column-gap: 10px;">
+        <form action="" method="GET" class="d-flex" style="column-gap: 10px;" id="interpayFilterForm">
+            <div><div class="text-center">Дата начало</div><input type="date" name="start" class="form-control receiptMyInput" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+            <div><div class="text-center">Дата конец</div><input type="date" name="end"   class="form-control receiptMyInput" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+            <button class="btn btn-primary" style="margin-top: 25px;">Фильтр</button>
+        </form>
+        <form action="" id="inperpayChechBoxSave" method="POST" style="margin-left: 463px;">{% csrf_token %}
+            <button class="btn btn-danger" style="margin-top: 25px;">Сохранить</button>
+            <input type="hidden" value="{{start}}" name="start">
+            <input type="hidden" value="{{end}}" name="end">
+            <input type="hidden" name="allInputs" {% if kassirsInput %} value="allInputs" {% endif %}>
+
+            {% if allInputs %}
+                <input name="allinputs" value="yes" hidden>
+            {% endif %}
+            
+            {% if checkedKassirsPost %}
+                {% for kassir in checkedKassirsPost %}
+                    <input name="{{kassir}}" value="{{kassir}}" hidden>
+                {% endfor %}
+            {% else %}
+                {% for kassir in checkedKassirsGet %}
+                    <input name="{{kassir}}" value="{{kassir}}" hidden>
+                {% endfor %}
+            {% endif %}
+            
+        </form>
+    </div>
+{% if objs %}
+    <div class="mt-2" style="overflow-y:scroll; max-height: 600px;">
+
+        <table class="table" style="background-color: white;">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Номер</th>
+                    <th>Этрап</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Улица</th>
+                    <th>Дом</th>
+                    <th>Квартира</th>
+                    <th>Кассир</th>
+                    <th>Время оплаты</th>
+                    <th class="col7">Абонплата</th>
+                    <th class="col8">Интернет</th>
+                    <th class="col10">Alem TV</th>
+                    <th>Дата начисления</th>
+                    <th>Оператор</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objs %}       
+                <!-- Если есть хотя бы 1 из 3 платежей которые надо начислить в билинг то показать в таблице  -->
+
+                {% if obj.pay_history.telefon != 0 or obj.pay_history.slr != 0 or obj.pay_history.kod != 0 or obj.pay_history.zakaz != 0 or obj.pay_history.prochee != 0 or obj.pay_history.dop_uslugi != 0 or obj.pay_history.internet != 0 or obj.pay_history.alem %}
+                    <!-- Если все на данной итерации начислено и больше нет нечего начислять то BG делаем серым -->
+                    <tr 
+                    {% if obj.pay_history.telefon != 0 and obj.pay_history.slr != 0 and obj.pay_history.kod != 0 and obj.pay_history.zakaz != 0 and obj.pay_history.prochee != 0 and obj.pay_history.dop_uslugi != 0 and obj.is_checked_telefon == False or obj.pay_history.internet != 0 and obj.is_checked_internet == False or obj.pay_history.alem != 0 and obj.is_checked_alem == False %}
+                    
+                    {% else %}
+                    style="background-color: #C0C0C0" 
+                    {% endif %}
+                    >
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{forloop.counter}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.number}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.etrap}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.surname|slice:":15"}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.name|slice:":15"}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.street|slice:":15"}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.home|slice:":15"}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.abonent.flat|slice:":15"}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.kassir}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.pay_history.date|date:'d M: H:i:s'}}</td>
+
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button" {% if obj.pay_history.telefon != 0 and obj.pay_history.slr != 0 and obj.pay_history.kod != 0 and obj.pay_history.zakaz != 0 and obj.pay_history.prochee != 0 and obj.pay_history.dop_uslugi != 0 and obj.is_checked_telefon == False or obj.pay_history.internet != 0 and obj.is_checked_internet == False or obj.pay_history.alem != 0 and obj.is_checked_alem == False %} style="background-color: #90EE90" {% else %} style="background-color: #C0C0C0" {% endif %}>
+                            {% if obj.pay_history.telefon != 0 or obj.pay_history.slr != 0 or obj.pay_history.kod != 0 or obj.pay_history.zakaz != 0 or obj.pay_history.prochee != 0 or obj.pay_history.dop_uslugi != 0 %}
+                                <div class="d-flex justify-content-between interpayPadding">
+                                    <span class="fw-bold">{% add obj.pay_history.telefon obj.pay_history.slr obj.pay_history.kod obj.pay_history.zakaz obj.pay_history.prochee obj.pay_history.dop_uslugi %}</span>
+                                    {% if obj.is_checked_telefon %}
+                                    <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="telefonCheckBox" value="{{obj.pk}}" checked disabled>
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="telefonCheckBox" value="{{obj.pk}}">
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </td>
+                    
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button" {% if obj.pay_history.telefon != 0 and obj.pay_history.slr != 0 and obj.pay_history.kod != 0 and obj.pay_history.zakaz != 0 and obj.pay_history.prochee != 0 and obj.pay_history.dop_uslugi != 0 and obj.is_checked_telefon == False or obj.pay_history.internet != 0 and obj.is_checked_internet == False or obj.pay_history.alem != 0 and obj.is_checked_alem == False %} style="background-color: #FFC0CB" {% else %} style="background-color: #C0C0C0" {% endif %}>
+                            {% if obj.pay_history.internet %}
+                                <div class="d-flex justify-content-between interpayPadding">
+                                    <span class="fw-bold">{{obj.pay_history.internet}}</span>
+                                    {% if obj.is_checked_internet %}
+                                        <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="internetCheckBox" value="{{obj.pk}}" checked disabled >
+                                    {% else %}
+                                        <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="internetCheckBox" value="{{obj.pk}}">
+                                    {% endif %}
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button" {% if obj.pay_history.telefon != 0 and obj.pay_history.slr != 0 and obj.pay_history.kod != 0 and obj.pay_history.zakaz != 0 and obj.pay_history.prochee != 0 and obj.pay_history.dop_uslugi != 0 and obj.is_checked_telefon == False or obj.pay_history.internet != 0 and obj.is_checked_internet == False or obj.pay_history.alem != 0 and obj.is_checked_alem == False %} style="background-color: #CCCCFF" {% else %} style="background-color: #C0C0C0" {% endif %}>
+                            {% if obj.pay_history.alem %}
+                                <div class="d-flex justify-content-between interpayPadding">
+                                    <span class="fw-bold">{{obj.pay_history.alem}}</span>
+                                    {% if obj.is_checked_alem %}
+                                    <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="alemCheckBox" value="{{obj.pk}}" checked disabled >
+                                    {% else %}
+                                    <input type="checkbox" class="form-check-input {{forloop.counter}}" form="inperpayChechBoxSave" name="alemCheckBox" value="{{obj.pk}}">
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        {% if obj.billing_date_total %}
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.billing_date_total|date:'d M H:i:s'}}</td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button">{{obj.operator}}</td>
+                        {% else %}
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button"></td>
+                        <td class="{{forloop.counter}}" onclick="interpayChangeBg({{forloop.counter}})" role="button"></td>
+                        {% endif %} 
+
+                    </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    
+    </div>
+{% endif %}
+
+    <!-- Тут чекбоксы для имен кассиров -->
+    <div class="d-flex flex-column kassirsInputContainer mt-3" style="row-gap: 10px;">
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Dashoguz</div>
+            {% for kassir in dzKassirs %}
+                {% if checkedKassirsGet %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                    {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                        >
+                    </div>
+                {% else %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                        {% if log == 'Dashoguz' %} checked {% endif %}>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Akdepe</div>
+            {% for kassir in akKassirs %}
+                {% if checkedKassirsGet %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                    {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                        >
+                    </div>
+                {% else %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                        {% if log == 'Akdepe' %} checked {% endif %}>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Gorogly</div>
+            {% for kassir in gorKassirs %}
+                {% if checkedKassirsGet %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                    {% if kassir not in noneCheckeKassirs %} checked {% endif %}>
+                    </div>
+                {% else %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                        {% if log == 'Gorogly' %} checked {% endif %}>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Ruhubelent</div>
+            {% for kassir in ruhKassirs %}
+                {% if checkedKassirsGet %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                        {% if kassir not in noneCheckeKassirs %} checked {% endif %}>
+                    </div>
+                {% else %}
+                    <div class="d-flex kassirsInput {{kassir}}">
+                        <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                        <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+                        {% if log == 'Ruhubelent' %} checked {% endif %}>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">S.A.Nyyazow</div>
+            {% for kassir in nyyazKassirs %}
+            <div class="d-flex kassirsInput {{kassir}}">
+                <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+            {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                >
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">S.Turkmenbashy</div>
+            {% for kassir in turKassirs %}
+            <div class="d-flex kassirsInput {{kassir}}">
+                <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+            {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                >
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Boldumsaz</div>
+            {% for kassir in bolKassirs %}
+            <div class="d-flex kassirsInput {{kassir}}">
+                <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+            {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                >
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex my_column_gap10" style="background-color: #696969;">
+            <div class="text-light my_width200 pt-1" style="padding-left: 5px;">Koneurgench</div>
+            {% for kassir in koneKassirs %}
+            <div class="d-flex kassirsInput {{kassir}}">
+                <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+                <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+            {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+                >
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- {% for kassir in kassirs %}
+        <div class="d-flex kassirsInput {{kassir}}">
+            <label for="{{kassir}}" class="text-light" role="button">{{kassir}}</label>
+            <input type="checkbox" class="form-check-input interpayCheckBox" name="{{kassir}}" form="interpayFilterForm" id="{{kassir}}" onclick="InterpayKassirsChangeBG(this.id)"
+           {% if kassir not in noneCheckeKassirs %} checked {% endif %}
+            >
+        </div>
+        {% endfor %} -->
+
+    </div>
+
+   
+
+
+</div>
+
+<style>
+    td, th {
+        padding: 0 !important;
+    }
+</style>
+
+
+{% endblock %}

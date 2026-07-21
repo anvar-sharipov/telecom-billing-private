@@ -1,0 +1,129 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Подключения услуг{% endblock %}
+{% block content %}
+<!-- Старое не работает -->
+<div class="serviseFormsContainer">
+<!--Форма для поиска абонента-->
+  <form action="" class="service-form" method="POST"> {% csrf_token %}
+      <div class="service-container">
+          <select class="form-select" aria-label="Default select example" name="etrap">
+              {% for etr in etraps %}
+              {{etr}}
+              {% endfor %}
+              {% if log or etrap %}
+              {% else %}
+              <option selected value="">Этрап</option>
+              {% endif %}
+              {% for etr in etraps %}
+                  {% if etrap %}
+                      <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                  {% else %}
+                      <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                  {% endif %}
+              {% endfor %}
+          </select>
+          <input id="service_search_number" type="text" placeholder="Номер" class="form-control item" name="number" {% if number %} value={{number}} {% endif %} autocomplete="off">
+      </div>   
+  </form>
+
+  <!--Форма для сохранения услуг-->
+  {% if form %}
+  <form action="" method="POST" id="save-servise">{% csrf_token %}
+      {% for f in form %}
+      <div>
+        <div class="text-white" style="padding: 0; margin: 0;">{{f.label}}</div>
+        <div style="padding: 0; margin: 0;">{{f}}</div>
+      </div>
+      {% endfor %}
+      
+      
+
+
+  <!--Service form m2m -->
+<div class="btn-group" style="padding-top: 10px;">
+  <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: white; height: 40px;">
+    Услуги
+  </button>
+  <div class="dropdown-menu">
+    <div class="m2m_service_conteiner">
+      {% for service in services %}
+      <div>
+        {% if service.pk in active_service %}
+        <input type="checkbox" value="{{service.pk}}" name="{{service.service}}" checked>{{service.service}}
+        {% else %}
+        <input type="checkbox" value="{{service.pk}}" name="{{service.service}}">{{service.service}}
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+            
+    
+    <!-- Button trigger modal save-servise -->
+    <div class="mybtn btn" data-bs-toggle="modal" data-bs-target="#saveService">Сохранить</div>
+    <input type="hidden" value="{{etrap}}" name="etrap">
+    <input type="hidden" value="{{number}}" name="service_number">
+  </form>
+  {% endif %}
+</div>
+
+
+  <!-- Modal save-servise-->
+  <div class="modal fade" id="saveService" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body text-uppercase">
+            <div>Сохранить?</div>
+        </div>
+        <div class="modal-footer">
+            <div>Комментарий - задокументируйте ваши действия</div>
+            <textarea name="comment" id="comment" cols="55" rows="10" form="save-servise"></textarea>
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Отмена</button>
+            <input type="submit" value="Сохранить" class="btn btn-danger" form="save-servise">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <style>
+#service_search_number {
+    background-color: #00BFFF;
+    font-weight: bold;
+}
+  </style>
+
+<script>
+  /*автофокус + автовыделения input номера после загрузки страницы MATB + Service*/
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("service_search_number").select();
+});
+
+
+/*фецис (цере) между цифрами телефона при вводе номера matb-index*/
+(function () {
+  document
+    .getElementById("service_search_number")
+    .addEventListener("keydown", function (e) {
+      if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+          document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+          document.activeElement.value += "-";
+        }
+      }
+    });
+})();
+
+</script>
+
+
+{% if abonent %}
+{% include 'telekom/BaseNavbar/table.html' %}
+{% endif %}
+
+
+{% endblock %}

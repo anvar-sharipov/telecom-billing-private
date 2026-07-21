@@ -1,0 +1,11 @@
+{% load static %}
+<div class="right overflow-auto">
+    
+    {% include 'telekom/MATB/KabelNew/right/separateRight/add_new_user.html' %}
+
+    {% if users %}
+        {% include 'telekom/MATB/KabelNew/right/separateRight/cycleUser.html' %}
+    {% else %}
+        <div class="d-flex justify-content-center align-items-center" style="height: 200px; color: red; font-weight: bold;">Нет Данных</div>
+    {% endif %}
+</div>

@@ -1,0 +1,99 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Экзамен история{% endblock %}
+{% block content %}
+
+<div class="p-4">
+    {% if view %}
+    {% for q in examHistory %}
+    <div class="quiz-container">
+        <div class="question" >
+            <!-- {% if q.is_currect_answer %} style="background-color: #e0ffcd; " {% else %} style="background-color: #ffd5d5;" {% endif %} -->
+            <h3>{{forloop.counter}}. {{ q.question }}</h3>
+            <ol>
+                <li class="option">
+                    <input type="radio" id="1{{ q.answer1 }}" value="1{{ q.answer1 }}" name="answer{{forloop.counter}}" {% if q.choised_answer == 1 %} checked {% endif %} disabled>
+                    <label for="1{{ q.answer1 }}" {% if q.currect_answer == 1 %} style="background-color: #e0ffcd;" {% endif %} {% if q.choised_answer == 1 and q.choised_answer != q.currect_answer %} style="background-color: #ffd6d6 !important;" {% endif %}>{{ q.answer1 }}</label>
+                </li>
+
+                <li class="option">
+                    <input type="radio" id="2{{ q.answer2 }}" value="2{{ q.answer2 }}" name="answer{{forloop.counter}}" {% if q.choised_answer == 2 %} checked {% endif %} disabled>
+                    <label for="2{{ q.answer2 }}" {% if q.currect_answer == 2 %} style="background-color: #e0ffcd;" {% endif %} {% if q.choised_answer == 2 and q.choised_answer != q.currect_answer %} style="background-color: #ffd6d6 !important;" {% endif %}>{{ q.answer2 }}</label>
+                </li>
+                <li class="option">
+                    <input type="radio" id="3{{ q.answer3 }}" value="3{{ q.answer3 }}" name="answer{{forloop.counter}}" {% if q.choised_answer == 3 %} checked {% endif %} disabled>
+                    <label for="3{{ q.answer3 }}" {% if q.currect_answer == 3 %} style="background-color: #e0ffcd;" {% endif %} {% if q.choised_answer == 3 and q.choised_answer != q.currect_answer %} style="background-color: #ffd6d6 !important;" {% endif %}>{{ q.answer3 }}</label>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <hr>
+  {% endfor %}
+
+
+    {% else %}
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Этрап</th>
+                <th>Номер телефона</th>
+                <th>На каком языке вопросы</th>
+                <th>Всего вопросов</th>
+                <th>Правильные</th>
+                <th>Ошибки</th>
+                <th>Балл</th>
+                <th>Дата начало</th>
+                <th>Дата конец</th>
+                <th>Просмотр</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in scores_h %}
+            <tr>
+                <td>{{s.surname}}</td>
+                <td>{{s.name}}</td>
+                <td>{{s.etrap}}</td>
+                <td>{{s.sotowyy}}</td>
+                <td>{{s.q_lang}}</td>
+                <td>{{s.questions_count}}</td>
+                <td>{{s.currect_answer}}</td>
+                <td>{{s.error_answer}}</td>
+                <td>{{s.scores}}</td>
+                <td>{{s.start_time}}</td>
+                <td>{{s.date_of_passing}}</td>
+                <td>
+                    <form method="POST">{% csrf_token %}
+                        <input type="hidden" name="score_id" value="{{s.pk}}">
+                        <button class="btn btn-success btn-sm">Просмотр</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    
+    {% endif %}
+
+
+ 
+
+</div>
+
+
+<style>
+
+body{background-color:white ;}
+    .score_info_container {
+        width: 150px;
+        height:200px;
+        padding: 5px;
+        border-radius:5px;
+        background-color: #f0e9e9;
+    }
+</style>
+
+
+{% endblock %}

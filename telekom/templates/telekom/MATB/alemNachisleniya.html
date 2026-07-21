@@ -1,0 +1,178 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Alem начисления{% endblock %}
+{% block content %}
+<div class="alem_nachisleniya_string"><h2>Alem Начисления</h2></div>
+
+
+<div class="alemNachisleniyaContainer">
+    <form action="" method="GET" class="alemNachisleniyaForm">
+        <div>
+            <div>Месяц</div>
+            <select class="form-select alemNachisleniyaSearchMonth" name="month">
+                {% if get_month %}
+                {% else %}
+                <option selected value="">Месяц</option>
+                {% endif %}
+                {% for month in months %}
+                    <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+
+        <div>
+            <div>Год</div>
+            <select class="form-select alemNachisleniyaSearchYear" name="year">
+                {% for year in years %}
+                    <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+
+        <div>
+            <div>Этрап</div>
+            <select class="form-select alemNachisleniyaSearchEtrap" aria-label="Default select example" name="etrap">
+                {% for etr in etraps %}
+                    {% if etrap %}
+                    <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% else %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+                <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+            </select>
+        </div>
+
+        <div>
+            <div class="text-light">OFF</div>
+            <input type="checkbox" name="off" class="form-check-input" {% if off != 'False' %} checked {% endif %}>
+        </div>
+
+        <button class="btn alemNachisleniyaSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+        <!-- <input type="text" value="{{request.get_full_path }}" name="url_from"> -->
+
+    </form>
+
+
+    <div style="margin-top: 30px; display: flex; justify-content: space-around; width: 100%;">
+        <!-- Успешные платежи -->
+        <div>
+
+
+            <div style="background-color: #CCFFCC; height: 180px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+                {% if get_year and get_month and etrap and off %}
+                <div class="d-flex justify-content-between">
+
+                    {% if nothingNach %}
+                    <button class="btn btn-secondary" disabled>0 Начислений</button>
+                    {% elif alreadyNach or alreadyallNach %}
+                    <button class="btn btn-secondary" disabled>Начислено</button>
+                    {% elif alreadySeparateNach %}
+                    <button class="btn btn-secondary" disabled>Частично начислено</button>
+                    {% else %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#alemNachisleniyaBtnModal">Начислить</button>
+                    {% endif %}
+                    
+                    <div class="text-center" >Успешно</div>
+                    <div><a href="{% url 'alem-nachisleniya-success-txt' get_year get_month etrap off %}"><button class="btn btn-primary">Скачать .txt</button></a></div>  
+                </div>
+                {% endif %}
+                
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Найдены В БД</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{dogoworSuccess}}</div>
+                </div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Cумма платежа</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{dogoworSuccessPrice|floatformat:2}}</div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Ошибки -->
+        <div>
+            <div style="background-color: #FFCCCC; height: 180px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">
+                
+                <div class="d-flex">
+                    <div style="width: 190px;"><a href="{% url 'alem-nachisleniya-error-txt' get_year get_month etrap off %}"><button class="btn btn-primary">Скачать .txt</button></a></div>
+                    <div class="text-center" >Ошибка</div>
+                </div>
+                
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Не найдены в БД</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{error}}</div>
+                </div>
+
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Сумма платежа</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{errorPrice|floatformat:2}}</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Общая информация -->
+        <div>
+            <div style="background-color: #CCCCCC; height: 180px; border-radius: 10px; width: 500px; color: black; padding: 20px; display: flex; flex-direction: column; row-gap: 10px;">  
+                <div class="text-center" >Общая информация</div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">Всего начислений</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalPayCount}}</div>
+                </div>
+                <div class="d-flex" >
+                    <div style="background-color: #99CCFF; padding: 5px; border-radius: 5px; width: 500px;">    Сумма платежа</div>
+                    <div style="background-color: white; padding: 5px; width: 200px;">{{totalPayPrice|floatformat:2}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="alemNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-body">
+        <h5>Начисления за {{get_month}} {{get_year}} год</р>
+        <h5>Начислить?</h5>
+        </div>
+        <div class="modal-footer">
+            <form action="" method="POST">{% csrf_token %}
+                <div>Комментарий</div>
+                <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+                <input type="hidden" value="{{get_year}}" name="year">
+                <input type="hidden" value="{{get_month}}" name="month">
+                <input type="hidden" value="{{request.get_full_path}}" name="url_from">
+                <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Начислить</button>
+            </form>
+        </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+
+.alemNachisleniyaContainer {
+   color: white;
+   margin: 20px 40px;
+}
+ .alemNachisleniyaSearchMonth, .alemNachisleniyaSearchYear, .alemNachisleniyaSearchEtrap{
+   width: 160px;
+   background-color: #FFD700;
+}
+.alemNachisleniyaForm {
+   display: flex;
+   column-gap: 10px;
+   align-items: flex-end;
+   margin-left: auto;
+   margin-right: auto;
+   width: 570px;
+}
+.alemNachisleniyaSearchSubmit {
+   height: fit-content;
+   background-color: #FFD700;
+   color: black;
+}
+</style>
+
+{% endblock %}

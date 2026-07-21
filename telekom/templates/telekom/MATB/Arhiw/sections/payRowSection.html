@@ -1,0 +1,127 @@
+<div class="d-flex justify-content-between" style="column-gap: 5px; margin-left: 20px; width: 1180px;" >
+    <!--input Вклад-->
+    <div class="d-flex"><div class="input_label">Вклад</div><div><input type="text" class="wklad_input" id="wklad_input" onkeyup="cloneWklad()" onclick="onClickOnWkladKassa()" disabled></div></div>
+
+    <!--input К оплате-->
+    <div class="d-flex"><div class="input_label">К оплате</div><div><input type="text" class="kassa_second_row" disabled id="k_oplate_pay_row"></div></div>
+
+    <!--input Сумма к откл.-->
+    <div class="d-flex"><div class="input_label">Сумма к откл.</div><div><input type="text" class="kassa_second_row" disabled id="summa_k_otkl_payRow"></div></div>
+
+    <!--input Баланс-->
+    <div class="d-flex"><div class="input_label">Баланс</div><div><input type="text" class="kassa_second_row" disabled id="kassa_balance_in_pay_row"></div></div>
+
+    <!--input Задолженность-->
+    <div class="d-flex"><div class="input_label">Задолжность</div><div><input type="text" class="kassa_second_row" disabled id="kassa__zadol_pay_row"></div></div>
+
+    <!-- Кабель фильтр поиск -->
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          Кабель
+        </button>
+        <div class="dropdown-menu dropdown-dark" aria-labelledby="dropdownMenuButton1">
+          <div class="dropdown-item" style="max-width: 1500px;">
+            <form method="POST">{% csrf_token %}
+                <div class="d-flex my_column_gap10">
+                    <select class="form-select bg-gold my_width150 mt-4" aria-label="Default select example" name="etrap" style="height: fit-content;">
+                        {% for etr in etraps %}
+                            {% if kabelFilterEtrap %}
+                                <option {% if etr == kabelFilterEtrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% else %}
+                                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div>
+                        <div>Фамилия</div>
+                        <input type="text" class="form-control my_width150" name="surname" value="{{kabelFilterSurname}}" autocomplete="off">
+                    </div>
+                    <div>
+                        <div>Имя</div>
+                        <input type="text" class="form-control my_width150" name="name" value="{{kabelFilterName}}" autocomplete="off">
+                    </div>
+                    <div>
+                        <div>Улица</div>
+                        <input type="text" class="form-control my_width150" name="street" value="{{kabelFilterStreet}}" autocomplete="off">
+                    </div>
+                    <div>
+                        <div>Дом</div>
+                        <input type="text" class="form-control my_width150" name="home" value="{{kabelFilterHome}}" autocomplete="off">
+                    </div>
+                    <div>
+                        <div>Кв.</div>
+                        <input type="text" class="form-control my_width150" name="flat" value="{{kabelFilterFlat}}" autocomplete="off">
+                    </div>
+                    <div>
+                        <div>Сотовый</div>
+                        <input type="text" class="form-control my_width150" name="sotowyy" value="{{kabelFilterSotowyy}}" autocomplete="off">
+                    </div>
+                    <input type="hidden" name="kabelDropdownFilter">
+                    <input type="hidden" name="search_number" value="{{serach_number}}">
+                    <button class="btn btn-success mt-4" style="height: fit-content;">Поиск</button>
+                </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <!-- Инфа о удалении/востановлении/снятии -->
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="informations" data-bs-toggle="dropdown" aria-expanded="false">
+            Информация
+        </button>
+        <div class="dropdown-menu dropdown-dark" aria-labelledby="informations">
+            <div class="dropdown-item" style="max-width: 1500px;">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Дата Снятия</td>
+                                <td>Дата Востановления</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{abonent.snyat_date}}</td>
+                                <td>{% if abonent.wost_date %}{{abonent.wost_date}}{% else %}Не востановлен{% endif %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input оплатить Button trigger modal для окна оплаты -->
+    <input class="oplata_div" id="oplata_input" value="Оплатить" type="button" data-bs-toggle="modal" data-bs-target="#oplataModal" hidden>
+
+
+
+
+
+    
+
+    
+</div>  
+
+<script>
+    try {
+(function () {
+document
+.getElementById("numberPerekidkaAbonenta")
+.addEventListener("keydown", function (e) {
+if (e.keyCode !== 8 && e.keyCode !== 46) {
+    if (document.activeElement.value.length == 1) {
+    document.activeElement.value += "-";
+    }
+    if (document.activeElement.value.length == 4) {
+    document.activeElement.value += "-";
+    }
+}
+});
+})();
+
+} catch (err) {
+// обработка ошибки
+}
+</script>

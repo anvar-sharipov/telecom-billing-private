@@ -1,0 +1,158 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Pays{% endblock %}
+{% block content %}
+
+<h1 class="text-light text-center mt-3">Платежи с комментариями</h1>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="justify-content: space-around; align-items: center;">
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap" required>
+                {% if request.user.is_superuser %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Номер</label>
+            <input type="text" class="form-control" id="number" placeholder="Номер абонента" required autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+        </div>
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+</div>
+
+{% if user_table or user_kabel %}
+
+{% if user_table %}
+    <h5 class="text-light text-center mt-5">Абонент</h5>
+    <div class="container">
+        <table class="table table-bordered table-success">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Номер</th>
+                    <th>Этрап</th>
+                    <th>Адрес</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{user_table.surname}}</td>
+                    <td>{{user_table.name}}</td>
+                    <td>{{user_table.number}}</td>
+                    <td>{{user_table.etrap}}</td>
+                    <td>{{user_table.street}}, {{user_table.home}}, {{user_table.flat}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% if user_kabel %}
+    <h5 class="text-light text-center mt-5">Кабельное</h5>
+    <div class="container">
+        <table class="table table-bordered table-primary">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Номер</th>
+                    <th>Адрес</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{user_kabel.surname}}</td>
+                    <td>{{user_kabel.name}}</td>
+                    <td>{{user_kabel.number}}</td>
+                    <td>{{user_kabel.street}}, {{user_kabel.home}}, {{user_kabel.flat}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+
+<div class="container mt-5 text-light">
+    <form method="POST">{% csrf_token %}
+
+        <div class="mb-3">
+            <label for="type" class="form-label">Тип</label>
+            <select class="form-select" id="type" name="type" required>
+                {% if user_table %}
+                    <option value="" disabled selected>Куда оплатить</option>
+                    <option value="prochee">Telefoniya</option>
+                    <option value="internet">Inrternet</option>
+                    <option value="alem">Alem</option>
+                {% endif %}
+                {% if user_kabel %}
+                    <option value="kabel">Kabel</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Сумма платежа</label>
+            <input type="text" class="form-control" id="price" placeholder="Введите сумму начисления" required autocomplete="off" name="price" oninput="priceInputed(event)">
+        </div>
+
+
+        <div class="mb-3">
+            <label for="customDate" class="form-label">Выберите дату</label>
+            <input type="date" class="form-control" id="customDate" name="customDate">
+        </div>
+       
+        <hr>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Введите комментарий" required autocomplete="off" name="comment" value="{{formatted_date}} ">
+        </div>
+
+        <!-- <button type="submit" class="btn btn-primary">Отправить</button> -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                Оплатить
+            </button>
+        </div>
+
+        <!-- Модальное окно -->
+        <div class="modal fade text-dark" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Вы уверены?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Да</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+
+<script>
+    // Получаем текущую дату
+    const today = new Date();
+    
+    // Форматируем дату в формат YYYY-MM-DD, который требуется для input type="date"
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Месяцы от 0 до 11
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    const formattedDate = `${year}-${month}-${day}`;
+    
+    // Устанавливаем значение поля ввода
+    document.getElementById('customDate').value = formattedDate;
+</script>
+
+
+{% endblock content %}

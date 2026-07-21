@@ -1,0 +1,41 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load humanize %}
+{% block title %}Проверка договоров {% endblock %}
+{% block content %}
+<h1 class="text-light mt-5 text-center">Проверка договоров с внешних платежей</h1>
+
+<div class="container">
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        <div class="mb-3">
+            <label for="etrapSelect" class="form-label">Выберите этрап</label>
+            <select class="form-select" id="etrapSelect" name="etrap" required>
+                <option value="no" selected>Выберите этрап</option>
+                {% for e in etraps %}
+                    <option value="{{ e }}" {% if e == etrap %} selected {% endif %}>{{ e }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        
+        <div class="mb-3">
+            <label for="xlsxFile" class="form-label">Выберите XLSX файл</label>
+            <input class="form-control" type="file" id="xlsxFile" name="xlsx_file" accept=".xlsx" required>
+        </div>
+        
+    
+        
+        
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary" id="submitButton" onclick = "this.form.submit(); this.disabled=true;">Проверить</button>
+        </div>
+    </form>
+
+</div>
+
+
+
+{% endblock content %}

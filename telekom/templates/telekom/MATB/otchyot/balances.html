@@ -1,0 +1,79 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Балансы{% endblock %}
+{% block content %}
+
+
+
+<div class="my_width800 my_block_center pt-4">
+    <form method="GET">
+        <select name="etrap" class="form-select">
+            {% for etr in etraps %}
+
+                {% if etrap in etraps %}
+                    <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                {% elif log in etrpas %}
+                    <option value="{{etr}}" {% if log == etr %} selected {% endif %}>{{etr}}</option>
+                {% else %}
+                    <option value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            
+            {% endfor %}
+        </select>
+        <br>
+        <select name="year" class="form-select">
+            {% for y in years %}
+                <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <select name="month" class="form-select">
+            {% for m in months %}
+                <option value="{{m}}" {% if m == month %} selected {% endif %}>{{m}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-success btn-sm">Поиск</button>
+        </div>
+
+    </form>
+</div>
+
+<div class="my_width800 my_block_center pt-4">
+    <ul class="list-group" id="myList">
+       
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="all_balance">
+                <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} баланс, {% if etrap %} {{etrap}} {% endif %}
+        </li>
+
+    </ul>
+</div>
+
+
+
+
+<script>
+    function makeActive(element) {
+    // Удаление класса "active" у всех элементов списка
+    var listItems = document.getElementById("myList").getElementsByTagName("li");
+    for (var i = 0; i < listItems.length; i++) {
+        listItems[i].classList.remove("active");
+    }
+
+    // Добавление класса "active" к кликнутому элементу
+    element.classList.add("active");
+}
+
+</script>
+
+
+
+
+
+
+{% endblock %}

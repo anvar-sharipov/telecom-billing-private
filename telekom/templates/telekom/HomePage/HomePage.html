@@ -1,0 +1,88 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}База Абонентов{% endblock %}
+{% block content %}
+<h1>home Page</h1>
+
+<form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">{% csrf_token %} 
+    <div class="d-flex importInternetPlatejiContainer justify-content-between">
+        <div class="file-input">
+            <input type="file" id="file" class="file" name="my_file">
+            <label for="file">
+            Выберите Файл
+            </label>
+            
+        </div>
+        <div style="background-color: white; width: 770px; height: 38px; border-radius: 5px;"><p class="file-name"></p></div>
+        <input type="hidden" name="importDZdogowor">
+
+
+        
+        
+        <button class="btn btn-primary">Сохранить</button>
+        
+    </div>
+</form>
+
+
+<style>
+      .file, .file2, .file3 {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+  }
+  
+  .file-input label, .file2-input label, .file3-input label {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 37px;
+    border-radius: 5px;
+    background: linear-gradient(40deg,#ff6ec4,#7873f5);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+  }
+  
+  .file-name, .file2-name, .file3-name {
+    padding-top: 8px;
+    color: black;
+    text-align: center;
+  }
+  
+  input:hover + label,
+  input:focus + label {
+    transform: scale(1.02);
+  }
+  
+  /* Adding an outline to the label on focus */
+  input:focus + label {
+    outline: 1px solid #000;
+    outline: -webkit-focus-ring-color auto 2px;
+  }
+</style>
+
+
+<script>
+    const file = document.querySelector('#file');
+file.addEventListener('change', (e) => {
+  // Get the selected file
+  const [file] = e.target.files;
+  // Get the file name and size
+  const { name: fileName, size } = file;
+  // Convert size in bytes to kilo bytes
+  const fileSize = (size / 1000).toFixed(2);
+  // Set the text content
+  const fileNameAndSize = `${fileName} - ${fileSize}KB`;
+  document.querySelector('.file-name').textContent = fileNameAndSize;
+});
+</script>
+
+
+
+{% endblock %}

@@ -1,0 +1,216 @@
+
+
+<table class="kassa-receipt-history-table" style="background-color: white; width: 350px;" >
+    <thead>
+        <tr>
+            <th>Услуга</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Кассир</th>
+            <th>К?</th>
+            {% if KassaMTB %}
+            <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Для показа платежей с новой базы KabelTvNew  -->
+        {% if kabel_pays %}
+            {% for p in kabel_pays %}
+                <tr class="col9">
+                    <td>Кабель</td>
+                    <td>{{p.pay_date|date:'d.m.Y'}}</td>
+                    <td>{{p.pay|floatformat:2}}</td>
+                    <td>{{p.pay_kassir}}</td>
+                    <td>
+                        {% if p.card %}
+                        <input type="checkbox" disabled checked class="form-check-input">
+                        {% else %}
+                        <input type="checkbox" disabled class="form-check-input">
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+        <!-- Для показа платежей с новой базы KabelTvNew END -->
+
+        {% for lastPay in lastPays %}
+
+            {% if lastPay.telefon != 0%}
+            <tr class="col2">
+                <td>Абон</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.telefon|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if lastPay.slr != 0%}
+            <tr class="col3">
+                <td>СЛР</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.slr|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if lastPay.kod != 0%}
+            <tr class="col4">
+                <td>Код</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.kod|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if lastPay.zakaz != 0%}
+            <tr class="col5">
+                <td>Зак</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.zakaz|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if lastPay.prochee != 0%}
+            <tr class="col6">
+                <td>Телефония</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.prochee|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if lastPay.dop_uslugi != 0%}
+            <tr class="col7">
+                <td>Усл</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.dop_uslugi|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            
+            {% if lastPay.internet != 0%}
+            <tr class="col8">
+                <td>Инт</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.internet|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            <!-- {% if lastPay.kabel != 0%}
+            <tr class="col9">
+                <td>Кабель</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.kabel|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %} -->
+            {% if lastPay.alem != 0%}
+            <tr class="col10">
+                <td>Alem</td>
+                <td>{{lastPay.date|date:'d.m.Y'}}</td>
+                <td>{{lastPay.alem|floatformat:2}}</td>
+                <td>{{lastPay.kassir}}</td>
+                <td>
+                    {% if lastPay.is_card %}
+                    <input type="checkbox" disabled checked class="form-check-input">
+                    {% else %}
+                    <input type="checkbox" disabled class="form-check-input">
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            <!-- <td style="height: 2px; background-color: black;"></td>
+            <td style="height: 2px; background-color: black;"></td>
+            <td style="height: 2px; background-color: black;"></td>
+            <td style="height: 2px; background-color: black;"></td> -->
+        {% endfor %}
+
+    </tbody>
+
+<script>
+
+try {
+
+    (function () {
+document
+    .getElementById("numberPerekidka")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    });
+})();
+
+} catch (err) {
+
+// обработка ошибки
+
+}
+
+
+
+</script>
+</table>
+
+
+
+
+

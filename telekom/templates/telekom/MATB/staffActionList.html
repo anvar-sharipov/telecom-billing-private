@@ -1,0 +1,122 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Журнал действий персонала{% endblock %}
+{% block content %}
+
+
+<form action="" method="GET" class="staffActionForm">
+    <div>
+        <label for="">Ключевое слово</label>
+        <input type="text" class="form-control bg-gold" name="comment" {% if comment %} value={{comment}} {% endif %}>
+    </div>
+
+    <div>
+        <div>Операторы</div>
+        <select class="form-select bg-gold" aria-label="Default select example" name="operator"> 
+            <option value="operatorAll" {% if operatorAll %} selected {% endif %}>Все</option>
+            {% for u in users %}
+                <option {% if u == operator %} selected {% endif %} value="{{u}}">{{u}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <div>Действия</div>
+        <select class="form-select bg-gold" aria-label="Default select example" name="action"> 
+            <option value="actionAll" {% if actionAll %} selected {% endif %}>Все</option>
+            {% for t in types %}
+                <option {% if  t == type_ %} selected {% endif %} value="{{t}}">{{t}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <div>Акт, рапорт</div>
+        <select class="form-select bg-gold" aria-label="Default select example" name="akt"> 
+            <option value="aktAll" {% if aktAll %} selected {% endif %}>Все</option>
+            {% for t in akt %}
+                <option {% if  t == akt_get %} selected {% endif %} value="{{t}}">{{t}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div><span>Дата начало</span><input type="date" name="start" class="form-control bg-gold" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+    <div><span>Дата конец</span><input type="date" name="end"   class="form-control bg-gold" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+
+    
+    <button class="btn btn-success" style="margin-top: 25px; height: fit-content;">Поиск</button>
+</form>
+
+<!-- staffActionTable -->
+<div class="m-3" style="margin-right: 50px;">
+    <table class="table table-hover table-light table-bordered">
+        <thead>
+            <tr>
+                <th>№</th>
+                {% comment %}<th>id</th>{% endcomment %}
+                <th class="my_LightGoldenrodYellow">Оператор</th>
+                <th>Действия</th>
+                <th class="my_LightGoldenrodYellow">Комментарий</th>
+                <th>Дата</th>
+                <th>Акт, рапорт</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in objs %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                {% comment %}<td>{{obj.pk}}</td>{% endcomment %}
+                <td class="my_LightGoldenrodYellow">{{obj.user}}</td>
+                <td>{{obj.action}}</td>
+                <td class="my_LightGoldenrodYellow">{{obj.comment}}</td>
+                <td>{{obj.date}}</td>
+                <td>{{obj.akt_raport}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+
+.my_LightGoldenrodYellow {background-color: #FAFAD2 !important;}
+
+.staffActionForm {
+    display: flex;
+    column-gap: 10px;
+    color: white;
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.staffActionTable {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    background-color: white;
+}
+
+.staffActionTable th:nth-of-type(1), .staffActionTable td:nth-of-type(1){width: 40px; border: 1px black solid;}
+.staffActionTable th:nth-of-type(2), .staffActionTable td:nth-of-type(2){width: 40px; border: 1px black solid;}
+.staffActionTable th:nth-of-type(3), .staffActionTable td:nth-of-type(3){width: 100px; border: 1px black solid;}
+.staffActionTable th:nth-of-type(4), .staffActionTable td:nth-of-type(4){width: 200px; border: 1px black solid;}
+.staffActionTable th:nth-of-type(5), .staffActionTable td:nth-of-type(5){width: 500px; border: 1px black solid;}
+.staffActionTable th:nth-of-type(6), .staffActionTable td:nth-of-type(6){width: 150px; border: 1px black solid;}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

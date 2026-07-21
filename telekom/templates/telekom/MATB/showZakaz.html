@@ -1,0 +1,110 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Просмотр заказных звонков{% endblock %}
+{% block content %}
+
+
+<div style="width: 800px; position: fixed; left: 30%;" class="my_block_center text-light mt-3">
+    <form action="" method="GET" class="d-flex my_column_gap10">
+
+            <select class="form-select my_width200 bg-gold" aria-label="Default select example" name="etrap">
+                {% for etr in etraps %}
+                <option value="{{etr}}" {% if etrap %}{% if etr == etrap %} selected {% endif %}{% elif log %} {% if etr == log %} selected {% endif %}{% endif %}>{{etr}}</option>
+                {% endfor %}
+                <option value="" {% if etrap not in etraps and log not in etraps %} selected {% endif %}>Этрап</option>
+            </select>
+
+
+
+            <select class="form-select my_width200 bg-gold" aria-label="Default select example" name="action">
+                {% for act in actions %}
+                <option value="{{act}}" {% if act == action %} selected {% endif %}>{{act}}</option>
+                {% endfor %}
+                <option value="" {% if action == '' %} selected {% endif %}>Все</option>
+            </select>
+
+
+        <div><input type="date" name="start" class="form-control my_width200 bg-gold" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+        <div><input type="date" name="end"   class="form-control my_width200 bg-gold" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+</div>
+<br><br><br>
+<div style="width: 1500px;" class="my_block_center">
+
+    <div class=" p-3 bg-white">
+        {% if ZakazCalls %}
+        <table class="table table-light zakazCallsTable">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата/время</th>
+                    <th>Кто</th>
+                    <th>Этрап</th>
+                    <th>Куда</th>
+                    <th>Страна/город</th>
+                    <th style="background-color: #ADD8E6;">Время</th>
+                    <th>Мин</th>
+                    <th>Цена за мин. без проц.</th>
+                    <th>Цена за мин с проц.</th>
+                    <th>Общая цена без проц.</th>
+                    <th>Общая цена с проц.</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for call in ZakazCalls %}
+                    <tr>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{forloop.counter}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.DATE|date:'d M Y H:i:s'}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_A}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.etrap}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_B}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_LOCATIONS}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button" style="background-color: #ADD8E6;" class="fw-bold">{{call.DUR}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.MT != '0' %}{{call.MT}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.price != '0' %}{{call.price|floatformat:2}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.priceProc != '0' %}{{call.priceProc|floatformat:2}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.total_price != '0' %}{{call.total_price|floatformat:2}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.total_priceProc != '0' %}{{call.total_priceProc|floatformat:2}}{% endif %}</td>
+
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.action}}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        {% else %}
+        <h5 class="text-danger text-center mt-3">Нет Данных</h5>
+        {% endif %}
+    </div>
+
+    <div style="height: 20px; background-color: #A9A9A9;" class="d-flex text-light fw-bold">
+        <div style="padding-left: 30px;">{{lenZakazCalls}}</div>
+        <div style="padding-left: 1070px;">{{totalSum|floatformat:2}}</div>
+        <div style="padding-left: 38px;">{{totalSumProc|floatformat:2}}</div>
+    </div>
+
+    
+</div>
+
+
+<style>
+  
+th, td {
+    border: black solid 1px;
+    padding: 0;
+    margin: 0;
+}
+    
+    
+.zakazCallsTable th:nth-of-type(9) {width: 80px;}
+.zakazCallsTable th:nth-of-type(10) {width: 80px;}
+.zakazCallsTable th:nth-of-type(11) {width: 80px;}
+.zakazCallsTable th:nth-of-type(12) {width: 80px;}
+.zakazCallsTable th:nth-of-type(13) {width: 200px;}
+
+</style>
+
+
+{% endblock %}

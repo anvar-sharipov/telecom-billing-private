@@ -1,0 +1,305 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Перекидка {{abonent1.number}}-{{abonent2.number}}{% endblock %}
+{% block content %}
+{% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/modals.html' %}
+{% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/modals.html' %}
+
+
+
+
+
+<div style="margin: 10px;">
+    <form method="GET" class="">
+        <div class="d-flex justify-content-between">
+            <div class="d-flex my_column_gap10 mt-2">
+
+                <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrap1">
+                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+                        {% for etr in etraps %}
+                            {% if etrap1 in etraps %}
+                                <option {% if etr == etrap1 %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% else %}
+                                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <option value="{{log}}">{{log}}</option>
+                    {% endif %}
+                </select>
+                <input type="text" class="form-control my_width200" id="perekidkaNumber1" name="number1" value="{% if number1 %}{{number1}}{% endif %}">
+
+                <div style="transform: rotate(-90deg); margin-left: 35px;"> 
+                    <div class="arrow-7">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>  
+                </div>
+
+            </div>
+
+            <div class="d-flex my_column_gap10 mt-2">
+                <div style="transform: rotate(-90deg); margin-left: 50px;"> 
+                    <div class="arrow-7">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>  
+                </div>
+
+                <select class="form-select bg-gold my_width200 height_fit_content" aria-label="Default select example" name="etrap2">
+                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+                        {% for etr in etraps %}
+                            {% if etrap2 in etraps %}
+                                <option {% if etr == etrap2 %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% else %}
+                                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <option value="{{log}}">{{log}}</option>
+                    {% endif %}
+                </select>
+
+                <input type="text" class="form-control my_width200 height_fit_content" id="perekidkaNumber2" name="number2" value="{% if number2 %}{{number2}}{% endif %}">
+
+                <button class="btn btn-primary height_fit_content">Поиск</button>
+            </div>
+
+        </div>
+    </form>
+
+    <div class="d-flex my_column_gap10"> 
+        <div >
+            <!--строка поиска, Ф.И.О, адреса -->
+            <div style="margin: 0 !important; padding: 0 !important;">{% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/FAAsection.html' %}</div>
+            <div class="kassa-main-container" style="margin: 0 !important; padding: 0 !important;">
+                    <!--Таблица начислений и баланса абонента-->
+                    <div>{% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/tableSection.html' %}</div>
+                    <!--Таблица историй последних оплат-->
+                    {% if lastPays1 %}
+                    <div>
+                        <div style="max-height: 640px; overflow-y: auto;">
+                            {% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/receipt.html' %}
+                        </div>
+                    </div>
+                    {% endif %}
+            </div>
+        </div>
+        <div>
+            <!--строка поиска, Ф.И.О, адреса -->
+            <div style="margin: 0 !important; padding: 0 !important;">{% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/FAAsection.html' %}</div>
+            <div class="kassa-main-container" style="margin: 0 !important; padding: 0 !important;">
+                    <!--Таблица начислений и баланса абонента-->
+                    <div>{% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/tableSection.html' %}</div>
+                    {% if lastPays2 %}
+                    <div>
+                        <div style="max-height: 640px; overflow-y: auto;">
+                            {% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/receipt.html' %}
+                        </div>
+                    </div>
+                    {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+    <div class="d-flex my_column_gap30">
+        <div class="d-flex my_column_gap30 border border-light">
+            <div class="text-light pt-2">опции при перекидки всех данных</div>
+            <div class="btn btn-secondary d-flex my_column_gap10" onclick="perekidkaAllCheckboxInputBox()">
+                <div>Со всеми данными?</div>
+                <input type="checkbox" name="perkidkaAll" form="PerekidkaForm" class="form-check-input" id="perekidkaAllCheckboxInput">
+            </div>
+            <div class="btn btn-secondary d-none my_column_gap10" onclick="num2EdaraCheckboxInputBox()" id="num2EdaraCheckboxInputBoxId">
+                <div>Абонент №2 сделать эдара?</div>
+                <input type="checkbox" name="num2Edara" form="PerekidkaForm" class="form-check-input" id="num2EdaraCheckboxInput">
+            </div>
+            <div class="btn btn-secondary d-none my_column_gap10" id="perekidkaHBSelectBox">
+                <div>Hoz или Bud?</div>
+                <select name="hOrb" form="PerekidkaForm">
+                    <option value="">---</option>
+                    <option value="H">H</option>
+                    <option value="B">B</option>
+                </select>
+                <!-- <input type="checkbox" name="num2Edara" form="PerekidkaForm" class="form-check-input" id="num2EdaraCheckboxInput"> -->
+            </div>
+        </div>
+        {% if abonent1 and abonent2 %}
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#PerekidkaFormModal">Перекинуть</button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="PerekidkaFormModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-footer">
+                    <div>Комментарий</div>
+                    <textarea name="comment" id="comment" cols="55" rows="10" form="PerekidkaForm"></textarea>
+                    <div class="d-flex justify-content-between my_width500">
+                        <div class="pt-2 fw-bold text-danger">Перекинкуть <span id="putAllOrBalanceText">только баланс</span></div>
+                        <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;" form="PerekidkaForm">Перекинуть</button></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+
+.arrow-7 span {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-bottom: 5px solid #337AB7;
+    border-right: 5px solid #337AB7;
+    transform: rotate(45deg);
+    margin: -16px 0;
+    animation: arrow-7 2s infinite;
+}
+.arrow-7 span:nth-child(2){
+    animation-delay: -0.2s;
+}
+.arrow-7 span:nth-child(3){
+    animation-delay: -0.4s;
+}
+@keyframes arrow-7 {
+    0%{
+        opacity: 0;
+        transform: translate(0,-20px) rotate(45deg);
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+        transform: translate(0,20px) rotate(45deg);
+    }
+}
+
+/* .rotate-arrow {
+    transform: rotate(-90deg); position: relative; bottom: 680px; right:10px; width:200px; height:200px;
+} */
+
+.height_fit_content {
+    height: fit-content;
+}
+    
+</style>
+
+<script>
+
+/*дефис (цере) между цифрами телефона при вводе номера kassa-receipt*/
+(function () {
+document
+    .getElementById("perekidkaNumber1")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    if (e.keyCode === 39) {
+            console.log('left')
+        document.getElementById('perekidkaNumber2').select()
+    }
+    });
+})();
+
+(function () {
+document
+    .getElementById("perekidkaNumber2")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    if (e.keyCode === 37) {
+            console.log('right')
+        document.getElementById('perekidkaNumber1').select()
+    }
+    });
+})();
+
+var perekidkaAllCheckboxInput = document.getElementById('perekidkaAllCheckboxInput')
+var num2EdaraCheckboxInput = document.getElementById('num2EdaraCheckboxInput')
+var perekidkaHBSelectBox = document.getElementById('perekidkaHBSelectBox')
+var num2EdaraCheckboxInputBoxId = document.getElementById('num2EdaraCheckboxInputBoxId')
+
+perekidkaAllCheckboxInput.addEventListener("click", function() {
+    if (perekidkaAllCheckboxInput.checked) {
+    perekidkaAllCheckboxInput.checked = false;
+    num2EdaraCheckboxInputBoxId.classList.add('d-none')
+    num2EdaraCheckboxInputBoxId.classList.remove('d-flex')
+    document.getElementById('putAllOrBalanceText').innerHTML = 'только баланс'
+ } else {
+    perekidkaAllCheckboxInput.checked = true;
+    num2EdaraCheckboxInputBoxId.classList.add('d-flex')
+    num2EdaraCheckboxInputBoxId.classList.remove('d-none')
+    document.getElementById('putAllOrBalanceText').innerHTML = 'все данные'
+ }
+  });
+
+function perekidkaAllCheckboxInputBox(){
+ if (perekidkaAllCheckboxInput.checked) {
+    perekidkaAllCheckboxInput.checked = false;
+    num2EdaraCheckboxInputBoxId.classList.add('d-none')
+    num2EdaraCheckboxInputBoxId.classList.remove('d-flex')
+    document.getElementById('putAllOrBalanceText').innerHTML = 'только баланс'
+ } else {
+    perekidkaAllCheckboxInput.checked = true;
+    num2EdaraCheckboxInputBoxId.classList.add('d-flex')
+    num2EdaraCheckboxInputBoxId.classList.remove('d-none')
+    document.getElementById('putAllOrBalanceText').innerHTML = 'все данные'
+ }
+}
+// ####################################################################
+
+num2EdaraCheckboxInput.addEventListener("click", function() {
+    if (num2EdaraCheckboxInput.checked) {
+    num2EdaraCheckboxInput.checked = false;
+    perekidkaHBSelectBox.classList.add('d-none')
+    perekidkaHBSelectBox.classList.remove('d-flex')
+ } else {
+    num2EdaraCheckboxInput.checked = true;
+    perekidkaHBSelectBox.classList.add('d-flex')
+    perekidkaHBSelectBox.classList.remove('d-none')
+ } 
+})
+
+function num2EdaraCheckboxInputBox() {
+ if (num2EdaraCheckboxInput.checked) {
+    num2EdaraCheckboxInput.checked = false;
+    perekidkaHBSelectBox.classList.add('d-none')
+    perekidkaHBSelectBox.classList.remove('d-flex')
+ } else {
+    num2EdaraCheckboxInput.checked = true;
+    perekidkaHBSelectBox.classList.add('d-flex')
+    perekidkaHBSelectBox.classList.remove('d-none')
+ }
+}
+
+
+
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}

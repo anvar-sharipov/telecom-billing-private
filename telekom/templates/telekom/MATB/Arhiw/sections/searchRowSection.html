@@ -1,0 +1,27 @@
+<div class="d-flex container1">
+    <!--форма для поиска абонента по номеру и select etraps-->
+    <form action="" method="POST" class="kassa-serch-form">{% csrf_token %}
+        <div class="d-flex" style="column-gap: 5px;">       
+            <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrap">
+                {% if request.user.is_superuser and request.user.username == 'admin1' %}
+                    {% for etr in etraps %}
+                        <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{log}}">{{log}}</option>
+                {% endif %}
+            </select>
+            <input type="search" name="search_number" onclick="onClickOnSerachKassa()" value="{% if serach_number %}{{serach_number}}{% endif %}" id="search_number" class="item fw-bold" autocomplete="off">
+        </div>
+    </form>
+
+    <!--ФИО-->
+    <div class="kassa_name_surname d-flex justify-content-around">
+        <span id="kassa_surname_input">{{abonent.surname}}</span> <span id="kassa_name_input">{{abonent.name}}</span>
+    </div>
+
+    <!--адрес-->
+    <div class="kassa_name_surname kassa_adress">
+        <div class="d-flex justify-content-around"><span>{{abonent.street}}</span><span>{{abonent.home}}</span><span>{{abonent.flat}}</span></div>
+    </div>
+</div>

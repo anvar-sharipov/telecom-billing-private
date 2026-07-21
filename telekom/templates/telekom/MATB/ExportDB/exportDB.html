@@ -1,0 +1,394 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Экспорт Базы Данных{% endblock %}
+{% block content %}
+
+
+
+<div class="text-light p-3 mt-3">
+
+    <form method="GET">
+
+        <div class="d-flex my_column_gap10">
+            <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrap">
+                {% for etr in etraps %}
+                    {% if etrap in etraps or etrap == 'all' %}
+                        <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% else %}
+                        <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+                <option value="all" {% if etrap == 'all' %} selected {% endif %}>Все</option>
+            </select>
+            <button class="btn btn-primary">OK</button>
+        </div>
+
+        
+    </form>
+
+
+    {% if etrap %}
+    <!-- 
+    #############
+    Скачать БД ##
+    #############
+    -->
+    <div class="d-flex my_column_gap10 mt-5">
+        <div class="mt-2 my_width500">Скачать Базу данных для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="" method="POST" class="d-flex my_column_gap10">{% csrf_token %}
+            <input type="hidden" name="allDB">
+            <button class="btn btn-primary">Скачать</button>
+        </form>
+    </div>
+    <!-- 
+    #################
+    Скачать БД END ##
+    #################
+    -->
+    
+    <!-- 
+    #####################################
+    Скачать Абонплата минус по месяцам ##
+    #####################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями абонплаты для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-abonplata' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="abon6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+
+    </div>
+    <!-- 
+    #########################################
+    Скачать Абонплата минус по месяцам END ##
+    #########################################
+    -->
+    <!-- 
+    ###############################
+    Скачать СЛР минус по месяцам ##
+    ###############################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями СЛР для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-slr' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="slr6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    ###################################
+    Скачать СЛР минус по месяцам END ##
+    ###################################
+    -->
+        <!-- 
+    ###############################
+    Скачать КОД минус по месяцам ##
+    ###############################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями КОД для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-kod' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kod6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    ###################################
+    Скачать КОД минус по месяцам END ##
+    ###################################
+    -->
+    <!-- 
+    #################################
+    Скачать zakaz минус по месяцам ##
+    #################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Заказ для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-zakaz' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="zakaz6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    #####################################
+    Скачать zakaz минус по месяцам END ##
+    #####################################
+    -->
+    <!-- 
+    ###################################
+    Скачать prochee минус по месяцам ##
+    ###################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Прочее для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-prochee' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="prochee6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    #######################################
+    Скачать prochee минус по месяцам END ##
+    #######################################
+    -->
+    <!-- 
+    ######################################
+    Скачать dop_uslugi минус по месяцам ##
+    ######################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Доп. услуги для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-dop_uslugi' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="dop_uslugi6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    ##########################################
+    Скачать dop_uslugi минус по месяцам END ##
+    ##########################################
+    -->
+    <!-- 
+    ######################################
+    Скачать internet минус по месяцам ##
+    ######################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Интернет для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-internet' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="internet6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    ##########################################
+    Скачать internet минус по месяцам END ##
+    ##########################################
+    -->
+    <!-- 
+    ######################################
+    Скачать kabel минус по месяцам ##
+    ######################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Kabel Tv для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-kabel' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="kabel6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    #####################################
+    Скачать kabel минус по месяцам END ##
+    #####################################
+    -->
+        <!-- 
+    ################################
+    Скачать alem минус по месяцам ##
+    ################################
+    -->
+    <div class="d-flex my_column_gap10 mt-3">
+        <div class="mt-2 my_width500">Абоненты с задолжностями Alem Tv для {% if etrap in etraps %} {{ etrap }} {% else %} всех {% endif %}</div>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem1Month">
+            <button class="btn btn-primary">1 месяц</button>
+        </form>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem2Month">
+            <button class="btn btn-primary">2 месяца</button>
+        </form>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem3Month">
+            <button class="btn btn-primary">3 месяца</button>
+        </form>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem4Month">
+            <button class="btn btn-primary">4 месяца</button>
+        </form>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem5Month">
+            <button class="btn btn-primary">5 месяца</button>
+        </form>
+        <form action="{% url 'export-alem' etrap %}" method="POST">{% csrf_token %}
+            <input type="hidden" name="alem6Month">
+            <button class="btn btn-primary">6 месяца</button>
+        </form>
+    </div>
+    <!-- 
+    ####################################
+    Скачать alem минус по месяцам END ##
+    ####################################
+    -->
+
+
+
+
+
+    {% endif %}
+
+</div>
+
+
+
+
+{% endblock %}

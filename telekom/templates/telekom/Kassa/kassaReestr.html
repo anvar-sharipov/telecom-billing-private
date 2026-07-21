@@ -1,0 +1,1813 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Реестр{% endblock %}
+{% block content %}
+
+
+
+<div class="reestr-container" style="font-size: 12px;">
+    <form action="" method="GET" class="d-flex" style="margin-left: auto; margin-right: auto; width: 600px; column-gap: 10px;">
+        <div class="PrintNone"><span>Дата начало</span><input type="date" name="start" class="form-control receiptMyInput" {% if start %} value="{{start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+        <div class="PrintNone"><span>Дата конец</span><input type="date" name="end"   class="form-control receiptMyInput" {% if end %}   value="{{end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+        <div class="PrintNone">
+            <span>Кассир</span>
+            <select class="form-select receiptMyInput" aria-label="Default select example" name="kassa">
+                {% for k in kassas %}
+                <option {% if getKassaName == k %} selected {% endif %} value="{{k}}">{{k}}</option>
+                {% endfor %}
+                {% if getKassaName == None %}
+                <option selected value="">Выберитк Кассу</option>
+                {% endif %}
+            </select>
+        </div>
+        <button class="btn btn-primary PrintNone" style="margin-top: 25px;">Фильтр</button>
+    </form>
+
+    {% if pays %}
+    <div class="text-dark PrintNone" style="margin-left: auto; margin-right: auto; width: 100px; margin-top: 50px;"><button class="btn btn-success" onclick="window.print()">CTRL + P</button></div>
+        <div class="haveReestr my_width600 my_block_center">
+            
+            <div class="text-dark" style="background-color: white;">
+                <div class="text-center mt-3">WEAK {{getKassaName}}</div>
+                <div class="text-center">РЕЕСТР</div>
+                <div class="text-center">{{getKassaName}}: {{start}} - {{end}}</div>
+            </div>
+            <div class="text-dark" style="background-color: white;">
+                <div class="text-center">Dashoguz s.</div>
+                <div class="text-center">Оплачено наличием</div>
+            </div>
+            <table class="table table-success">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Абонент</th>
+                        <th>Вклад</th>
+                        <th>Оплата за</th>
+                        <th>Кв №</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    {% if paysDaNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Dashoguz s.</td>
+                        </tr>
+                        {% for p in paysDaNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефония</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="dashoguzFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysAkNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Akdepe</td>
+                        </tr>
+                        {% for p in paysAkNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефония</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="AkdepeFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysGoNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Gorogly</td>
+                        </tr>
+                        {% for p in paysGoNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефония</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="GoroglyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysRuNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Ruhubelent</td>
+                        </tr>
+                        {% for p in paysRuNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефония</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="RuhubelentFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysNyNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">S.A.Nyyazow</td>
+                        </tr>
+                        {% for p in paysNyNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="NyyazowFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysTuNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">S.Turkmenbashy</td>
+                        </tr>
+                        {% for p in paysTuNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysBoNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Boldumsaz</td>
+                        </tr>
+                        {% for p in paysBoNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="BoldumsazFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysKoNal %}
+                        <tr>
+                            <td colspan="6" class="text-center">Koneurgench</td>
+                        </tr>
+                        {% for p in paysKoNal %}
+                            {% if p.is_card == False %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchFalseincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div style="background-color: white; border: 3px black solid;" class="text-dark">
+                <div class="text-center">Всего вкладов <span id="incrementTotalCount"></span></div>
+
+                <div class="d-flex" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За абонплату:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalT|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Сверхлимит:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalS|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За АМТС:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalKod|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За заказы:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalZ|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Телефонию:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalP|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За доп. услуги:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalD|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Интернет:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalI|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Кабель TV:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalK|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Alem TV:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalNalA|floatformat:2}}</div>
+                </div>
+
+                <div>Всего: Dashoguz s. - (оплачено наличием): <span style="margin-left: 75px;">{{totalNal|floatformat:2}} ман.</span></div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <div class="text-dark" style="background-color: white;">
+                <div class="text-center">Dashoguz s.</div>
+                <div class="text-center">Оплачено катрой</div>
+            </div>
+
+            <table class="table table-success">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Абонент</th>
+                        <th>Вклад</th>
+                        <th>Оплата за</th>
+                        <th>Кв №</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    {% if paysDaCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Dashoguz s.</td>
+                        </tr>
+                        {% for p in paysDaCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="dashoguzTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysAkCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Akdepe etr.</td>
+                        </tr>
+                        {% for p in paysAkCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="AkdepeTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysGoCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Gorogly etr.</td>
+                        </tr>
+                        {% for p in paysGoCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="GoroglyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysRuCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Ruhubelent etr.</td>
+                        </tr>
+                        {% for p in paysRuCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="RuhubelentTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysNyCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">S.A.Nyyazow etr.</td>
+                        </tr>
+                        {% for p in paysNyCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="NyyazowTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysTuCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">S.Turkmenbashy etr.</td>
+                        </tr>
+                        {% for p in paysTuCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="TurkmenbashyTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysBoCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Boldumsaz etr.</td>
+                        </tr>
+                        {% for p in paysBoCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="BoldumsazTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if paysKoCard %}
+                        <tr>
+                            <td colspan="6" class="text-center">Koneurgench etr.</td>
+                        </tr>
+                        {% for p in paysKoCard %}
+                            {% if p.is_card == True %}
+                                {% if p.telefon != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.telefon}}</td>
+                                    <td>Abonplata</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.slr != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.slr}}</td>
+                                    <td>SLR</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kod != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kod}}</td>
+                                    <td>KOD</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.zakaz != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.zakaz}}</td>
+                                    <td>Zakaz</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.prochee != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.prochee}}</td>
+                                    <td>Телефиния</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.dop_uslugi != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.dop_uslugi}}</td>
+                                    <td>Dop Uslugi</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.internet != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.internet}}</td>
+                                    <td>Internet</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.kabel != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.kabel}}</td>
+                                    <td>Kabel</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                                {% if p.alem != 0 %}
+                                <tr>
+                                    <td class="KoneurgenchTrueincrement"></td>
+                                    <td>{{p.abonent.number}}</td>
+                                    <td>{{p.alem}}</td>
+                                    <td>Alem</td>
+                                    <td>{{p.pk}}</td>
+                                    <td>{{p.date|date:'d M H:i:s'}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div style="background-color: white; border: 3px black solid;" class="text-dark">
+                <div class="text-center">Всего вкладов <span id="incrementCardTotalCount"></span></div>
+
+                <div class="d-flex" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За абонплату:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardT|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Сверхлимит:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardS|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За АМТС:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardKod|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За заказы:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardZ|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Телефонию:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardP|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За доп. услуги:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardD|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Интернет:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardI|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Кабель TV:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardK|floatformat:2}}</div>
+                </div>
+
+                <div class="d-flex justify-content-center" style="width: 200px; margin-left: auto; margin-right: auto;">
+                    <div style="width: 200px; border-bottom: 2px black solid;">За Alem TV:</div>
+                    <div style="border-bottom: 2px black solid;">{{totalCardA|floatformat:2}}</div>
+                </div>
+
+                <div>Всего: Dashoguz s. - (оплачено картой): <span style="margin-left: 75px;">{{totalCard|floatformat:2}} ман.</span></div>
+            </div>
+            <br>
+
+            <div class="d-flex text-dark bg-light justify-content-between">
+                <div>Распечатано {{current_date_time}}</div>
+                <div>Итого</div>
+                <div>{{umumyTotal|floatformat:2}} Манат</div>
+            </div>
+    
+            <div class="mt-4 text-dark">Кассир ОДР:_______________________________</div>
+            <div class="mt-4 text-dark">Начальник ОДР:_______________________________</div>
+
+
+            
+
+
+
+        </div>
+
+
+    {% else %}
+        <h1 class="text-center mt-3">Нет Данных</h1>
+    {% endif %}
+
+<style>
+    th, td {
+        padding: 0 !important;
+    }
+    @media print {
+    .gg{display:none;}
+  }
+</style>
+
+
+
+
+{% endblock %}

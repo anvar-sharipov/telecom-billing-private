@@ -1,0 +1,85 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Квитанция{% endblock %}
+{% block content %}
+<div style="padding: 20px 40px;" class="receipts-container">
+<form action="" method="GET">
+    <div>
+        <span>Этрап</span>
+        <select class="form-select receiptMyInput" aria-label="Default select example" name="etrap">
+            {% for etr in etraps %}
+            {% if etrap %}
+            <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% else %}
+            <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div><span>Номер</span><input type="text" name="number"  class="form-control receiptMyInput" id="search_number_receipt" {% if number %} value="{{number}}"{% endif %}></div>
+    <div><span>Имя</span><input type="text" name="name"        class="form-control receiptMyInput" {% if name %}    value="{{name}}"   {% endif %}></div>
+    <div><span>Фамилия</span><input type="text" name="surname"     class="form-control receiptMyInput" {% if surname %} value="{{surname}}"{% endif %}></div> 
+    <div><span>Улица</span><input type="text" name="street"      class="form-control receiptMyInput" {% if street %}  value="{{street}}" {% endif %}></div>
+    <div><span>Дом</span><input type="text" name="home"        class="form-control receiptMyInput" {% if home %}    value="{{home}}"   {% endif %}></div>
+    <div><span>Квартира</span><input type="text" name="flat"        class="form-control receiptMyInput" {% if flat %}    value="{{flat}}"   {% endif %}></div>
+    
+    <div>
+        <span>Кассир</span>
+        <select class="form-select receiptMyInput" aria-label="Default select example" name="kassir">
+            <option {% if get_kassir == kassir %} selected {% endif %} value="">Все</option>
+            {% for kassir in kassirs %}
+            <option {% if get_kassir == kassir %} selected {% endif %} value="{{kassir}}">{{kassir}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div><span>Дата начало</span><input type="date" name="date_start" class="form-control receiptMyInput" {% if date_start %} value="{{date_start}}" {% else %} value="{{current_date}}" {% endif %}></div>
+    <div><span>Дата конец</span><input type="date" name="date_end"   class="form-control receiptMyInput" {% if date_end %}   value="{{date_end}}" {% else %} value="{{current_date}}" {% endif %}></div>
+    <input type="submit" hidden>
+</form>
+
+<div class="receipts-blanks-container">
+    {% for obj in objs %}
+    <div class="receipts-blank">
+        <div class="d-none"><span class="{{forloop.counter}}">{{obj.abonent.etrap}}</span> WEAK</div>
+        <div class="fw-bold d-flex justify-content-between"><span class="{{forloop.counter}}">Kwitansiya №{{obj.pk}}</span> <span id="{{forloop.counter}}" class="printHover" onclick="rePrint(this.id)" style="color: red;">print</span></div>
+
+        <div class="fw-bold {{forloop.counter}}">{{obj.date|date:'d M: H:i:s'}} </div>
+        <div class="fw-bold {{forloop.counter}}">{{obj.abonent.surname}} {{obj.abonent.name}} {{obj.abonent.number}}</div>
+        <div class="d-flex" style="border-top: 1px black dashed; border-bottom: 1px  dashed black;"><span style="margin-left: 70px;">Tolenen</span><span style="margin-left: 20px;">Galany</span></div>
+  
+
+        <div {% if obj.telefon %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;">Абонплата</span><span  class="{{forloop.counter}}">{{obj.telefon}}</span></div>
+     
+        <div {% if obj.slr %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >СЛР</span><span class="{{forloop.counter}}">{{obj.slr}}</span></div>
+    
+
+        <div {% if obj.kod %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >КОД</span><span class="{{forloop.counter}}">{{obj.kod}}</span></div>
+
+
+        <div {% if obj.zakaz %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Заказ</span><span class="{{forloop.counter}}">{{obj.zakaz}}</span></div>
+
+
+        <div {% if obj.prochee %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Прочее</span><span class="{{forloop.counter}}">{{obj.prochee}}</span></div>
+
+       
+        <div {% if obj.alem %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Alem TV</span><span class="{{forloop.counter}}">{{obj.alem}}</span></div>
+    
+
+        <div {% if obj.internet %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Интернет</span><span class="{{forloop.counter}}">{{obj.internet}}</span></div>
+   
+
+        <div {% if obj.dop_uslugi %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Доп. Усл</span><span class="{{forloop.counter}}">{{obj.dop_uslugi}}</span></div>
+ 
+       
+        <div {% if obj.kabel %} class="d-flex" {% else %} class="d-flex d-none" {% endif %}><span style="width: 70px;" >Кабель TV</span><span class="{{forloop.counter}}">{{obj.kabel}}</span></div>
+
+        <div style="border-top: 1px black dashed;" class="fw-bold d-flex"><span style="width: 70px;">Jemi:</span> <span class="{{forloop.counter}}">{{obj.total}}</span></div>
+        <div class="fw-bold {{forloop.counter}}">Maglumat: {{obj.kassir}}</div>
+        <br class="d-none">
+        <div class="d-none">Gaznachy________________________</div>
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

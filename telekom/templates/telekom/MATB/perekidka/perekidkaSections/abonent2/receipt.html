@@ -1,0 +1,191 @@
+
+
+<table class="kassa-receipt-history-table" style="background-color: white; width: 350px;" >
+    <thead>
+        <tr>
+            <th>Услуга</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Кассир</th>
+            {% if KassaMTB %}
+            <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for lastPay in lastPays2 %}
+
+        {% if lastPay.telefon != 0%}
+        <tr class="col2">
+            <td>Абонплата</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.telefon|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.slr != 0%}
+        <tr class="col3">
+            <td>СЛР</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.slr|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.kod != 0%}
+        <tr class="col4">
+            <td>Код</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.kod|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.zakaz != 0%}
+        <tr class="col5">
+            <td>Заказ</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.zakaz|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.prochee != 0%}
+        <tr class="col6">
+            <td>Прочее</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.prochee|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.dop_uslugi != 0%}
+        <tr class="col7">
+            <td>Доп. усл</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.dop_uslugi|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        
+        {% if lastPay.internet != 0%}
+        <tr class="col8">
+            <td>Интернет</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.internet|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %} 
+        {% if lastPay.kabel != 0%}
+        <tr class="col9">
+            <td>Кабель TV</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.kabel|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.alem != 0%}
+        <tr class="col10">
+            <td>Alem TV</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.alem|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        <!-- <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td> -->
+        {% if KassaMTB %}
+        <!-- Btn Modal  cancelPayBtnModal-->
+        <td style="border: none; padding: 0;"><button style="margin-bottom: 10px;" type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelPayBtnModal{{lastPay.pk}}">Удалить платеж</button></td>
+        <!-- Btn Modal  perekidkaPayBtnModal-->
+        <td style="border: none; padding: 0;"><button style="margin-bottom: 10px;" type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#perekidkaPayBtnModal{{lastPay.pk}}">Перекидка платежа</button></td>
+        <!-- Modal  cancelPayBtnModal-->
+        <div class="modal fade" id="cancelPayBtnModal{{lastPay.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <form action="" method="POST" id="">{% csrf_token %}
+                            <div>Комментарий</div>
+                            <textarea name="cancelPayComment" cols="45" rows="10" placeholder="Объязательно Оставьте Комментарий"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <div class="pt-2 fw-bold text-danger">Удалить безвозвратно платеж?</div>
+                                <input type="hidden" name="etrap" value="{{abonent.etrap}}">
+                                <input type="hidden" name="search_number" value="{{serach_number}}">
+                                <input type="hidden" name="payPkCancelPay" value="{{lastPay.pk}}">
+                                <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Удалить</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal  perekidkaPayBtnModal-->
+        <div class="modal fade" id="perekidkaPayBtnModal{{lastPay.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <form action="" method="POST" id="">{% csrf_token %}
+                            <div class="d-flex my_column_gap10">
+                                <div class="pt-2">Перекинуть в</div>
+                                <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrapPerekidka">
+                                    {% for etr in etraps %}
+                                        {% if etrap in etraps %}
+                                            <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                                        {% else %}
+                                            <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <input type="text" name="numberPerekidka" class="form-control my_width100" id="numberPerekidka" placeholder="номер">
+                            </div>
+                            <textarea name="perekidkaComment" cols="45" rows="10" placeholder="Объязательно Оставьте Комментарий"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <div class="pt-2 fw-bold text-danger">Перекинуть платеж?</div>
+                                <input type="hidden" name="etrap" value="{{abonent.etrap}}">
+                                <input type="hidden" name="search_number" value="{{serach_number}}">
+                                <input type="hidden" name="payPkPerekidka" value="{{lastPay.pk}}">
+                                <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Перекинуть</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+
+    </tbody>
+
+<script>
+
+try {
+
+    (function () {
+document
+    .getElementById("numberPerekidka")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    });
+})();
+
+} catch (err) {
+
+// обработка ошибки
+
+}
+
+
+
+</script>
+</table>
+
+
+
+

@@ -1,0 +1,403 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Вход{% endblock %}
+
+
+{% block content %}
+<style>
+    .login-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .autocomplete-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-control-custom {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .form-control-custom:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background: white;
+    }
+    
+    .autocomplete-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .autocomplete-suggestion {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f7fafc;
+        transition: background-color 0.2s ease;
+        font-size: 0.95rem;
+    }
+    
+    .autocomplete-suggestion:hover,
+    .autocomplete-suggestion.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .autocomplete-suggestion:last-child {
+        border-bottom: none;
+        border-radius: 0 0 10px 10px;
+    }
+    
+    .btn-login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        width: 100%;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    }
+    
+    .btn-login:active {
+        transform: translateY(0);
+    }
+    
+    .alert-custom {
+        border-radius: 12px;
+        border: none;
+        margin-top: 1rem;
+        padding: 1rem 1.25rem;
+        font-weight: 500;
+    }
+    
+    .alert-danger-custom {
+        background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+        color: #742a2a;
+    }
+    
+    .alert-success-custom {
+        background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+        color: #22543d;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .icon-user, .icon-lock {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        z-index: 10;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-with-icon input {
+        padding-left: 3rem;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <span style="color: red;">“Ýyllyk hasabatlary tabşyrmaly, administrator bilen habarlaşyň: +993 63 99 40 05.”</span>
+        <h2 class="login-title">
+            <i class="fas fa-user-circle me-2" style="color: #667eea;"></i>
+            Вход в систему 
+        </h2>
+        
+        
+        <form method="POST" class="d-flex flex-column gap-3">
+            {% csrf_token %}
+            
+            <div>
+                <label for="operatorInput" class="form-label">Оператор</label>
+                <div class="autocomplete-container">
+                    <div class="input-with-icon">
+                        <i class="fas fa-user icon-user"></i>
+                        <input 
+                            type="text" 
+                            name="operator" 
+                            id="operatorInput"
+                            class="form-control form-control-custom" 
+                            placeholder="Начните вводить имя оператора..."
+                            autocomplete="off"
+                            value="{% if userName %}{{ userName }}{% endif %}"
+                        >
+                    </div>
+                    <div class="autocomplete-suggestions" id="suggestions"></div>
+                </div>
+            </div>
+
+            <div>
+                <label for="parolInput" class="form-label">Пароль</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock icon-lock"></i>
+                    <input 
+                        type="password" 
+                        id="parolInput"
+                        class="form-control form-control-custom" 
+                        name="parol" 
+                        autocomplete="off" 
+                        placeholder="Введите пароль"
+                    >
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-login mt-3">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Войти
+            </button>
+        </form>
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-custom alert-danger-custom" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-custom alert-success-custom" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Список операторов из Django контекста
+    const operators = [
+        {% for operator in operators %}
+            '{{ operator.username }}'{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const input = document.getElementById('operatorInput');
+    const suggestionsContainer = document.getElementById('suggestions');
+    let currentSelection = -1;
+
+    // Функция для фильтрации операторов
+    function filterOperators(query) {
+        if (!query) return operators.slice(0, 10); // Показываем только первые 10
+        return operators.filter(operator => 
+            operator.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 10);
+    }
+
+    // Функция для отображения предложений
+    function showSuggestions(suggestions) {
+        suggestionsContainer.innerHTML = '';
+        
+        if (suggestions.length === 0) {
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+
+        suggestions.forEach((suggestion, index) => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-suggestion';
+            
+            // Подсветка совпадений
+            const query = input.value.toLowerCase();
+            const suggestionText = suggestion;
+            const matchIndex = suggestionText.toLowerCase().indexOf(query);
+            
+            if (matchIndex !== -1 && query) {
+                const beforeMatch = suggestionText.substring(0, matchIndex);
+                const match = suggestionText.substring(matchIndex, matchIndex + query.length);
+                const afterMatch = suggestionText.substring(matchIndex + query.length);
+                div.innerHTML = `${beforeMatch}<strong>${match}</strong>${afterMatch}`;
+            } else {
+                div.textContent = suggestion;
+            }
+            
+            div.addEventListener('click', () => {
+                input.value = suggestion;
+                suggestionsContainer.style.display = 'none';
+                currentSelection = -1;
+                // Фокус на поле пароля после выбора
+                document.getElementById('parolInput').focus();
+            });
+            suggestionsContainer.appendChild(div);
+        });
+
+        suggestionsContainer.style.display = 'block';
+        currentSelection = -1;
+    }
+
+    // Обработчик ввода текста с задержкой
+    let searchTimeout;
+    input.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value;
+        
+        searchTimeout = setTimeout(() => {
+            const suggestions = filterOperators(query);
+            showSuggestions(suggestions);
+        }, 100); // Небольшая задержка для оптимизации
+    });
+
+    // Обработчик клавиш для навигации
+    input.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentSelection = Math.min(currentSelection + 1, suggestions.length - 1);
+            updateSelection(suggestions);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentSelection = Math.max(currentSelection - 1, -1);
+            updateSelection(suggestions);
+        } else if (e.key === 'Enter') {
+            if (suggestions.length > 0 && currentSelection >= 0) {
+                e.preventDefault();
+                const selectedText = suggestions[currentSelection].textContent;
+                input.value = selectedText;
+                suggestionsContainer.style.display = 'none';
+                currentSelection = -1;
+                document.getElementById('parolInput').focus();
+            }
+        } else if (e.key === 'Escape') {
+            suggestionsContainer.style.display = 'none';
+            currentSelection = -1;
+        } else if (e.key === 'Tab') {
+            suggestionsContainer.style.display = 'none';
+            currentSelection = -1;
+        }
+    });
+
+    // Функция для обновления выделения
+    function updateSelection(suggestions) {
+        suggestions.forEach((suggestion, index) => {
+            suggestion.classList.toggle('active', index === currentSelection);
+        });
+        
+        // Прокрутка к выбранному элементу
+        if (currentSelection >= 0) {
+            suggestions[currentSelection].scrollIntoView({
+                block: 'nearest',
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // Скрытие предложений при клике вне элемента
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.style.display = 'none';
+            currentSelection = -1;
+        }
+    });
+
+    // Показать предложения при фокусе
+    input.addEventListener('focus', function() {
+        if (operators.length > 0) {
+            const query = this.value;
+            const suggestions = filterOperators(query);
+            showSuggestions(suggestions);
+        }
+    });
+
+    // Анимация для формы
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginCard = document.querySelector('.login-card');
+        loginCard.style.opacity = '0';
+        loginCard.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            loginCard.style.transition = 'all 0.6s ease';
+            loginCard.style.opacity = '1';
+            loginCard.style.transform = 'translateY(0)';
+        }, 100);
+        
+        // Фокус на первом поле
+        input.focus();
+    });
+
+    // Улучшенная валидация формы
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const operatorValue = input.value.trim();
+        const passwordValue = document.getElementById('parolInput').value.trim();
+        
+        if (!operatorValue) {
+            e.preventDefault();
+            input.focus();
+            input.style.borderColor = '#e53e3e';
+            setTimeout(() => {
+                input.style.borderColor = '#e2e8f0';
+            }, 2000);
+            return;
+        }
+        
+        if (!passwordValue) {
+            e.preventDefault();
+            document.getElementById('parolInput').focus();
+            document.getElementById('parolInput').style.borderColor = '#e53e3e';
+            setTimeout(() => {
+                document.getElementById('parolInput').style.borderColor = '#e2e8f0';
+            }, 2000);
+            return;
+        }
+    });
+</script>
+
+
+{% endblock %}

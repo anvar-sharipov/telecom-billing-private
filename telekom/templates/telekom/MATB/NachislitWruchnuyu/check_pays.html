@@ -1,0 +1,452 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load humanize %}
+{% block title %}Сверка платежей {% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light">
+    <h1 class="text-center">Сверка платежей</h1>
+
+    <form method="GET" class="mb-4" id="optionsForm">
+        <div class="row">
+            <div class="col">
+                <label for="etrap" class="form-label">Этрап</label>
+                <select class="form-select" id="etrap" name="etrap">
+                    {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" 
+                                {% if etrap == request.GET.etrap %}selected{% endif %}>
+                            {{ etrap }}
+                        </option>
+                    {% endfor %}
+                    {% else %}
+                        <option value="{{ request_user_etrap }}" selected>
+                            {{ request_user_etrap }}
+                        </option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col">
+                <label for="date_from" class="form-label">Дата от</label>
+                <input type="date" class="form-control" id="date_from" name="date_from" 
+                        value="{{ request.GET.date_from }}">
+            </div>
+            <div class="col">
+                <label for="date_to" class="form-label">Дата до</label>
+                <input type="date" class="form-control" id="date_to" name="date_to" 
+                        value="{{ request.GET.date_to }}">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="options" id="po_kassiram" value="po_kassiram" {% if options == 'po_kassiram' %}checked{% endif %} {% if options != 'po_kassiram' and options != 'po_abonentam' %} checked {% endif %}>
+                <label class="form-check-label" for="po_kassiram">
+                    Сортировка этрапа по кассирам
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="options" id="po_abonentam" value="po_abonentam" {% if options == 'po_abonentam' %}checked{% endif %}>
+                <label class="form-check-label" for="po_abonentam">
+                    Сортировка этрапа по абонентам
+                </label>
+            </div>
+        </div>
+
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-primary">Применить фильтр</button>
+        </div>
+    </form>
+
+
+
+
+
+
+
+    {% if dict_ %}
+    <hr>
+    <div class="container mt-5">
+        <h1 class="text-center">Данные платежей</h1>
+        <table class="table table-hover table-primary">
+            <thead>
+                <tr>
+                    <th scope="col">Кассир</th>
+                    <th scope="col">Телефония</th>
+                    <th scope="col">Интернет</th>
+                    <th scope="col">Алем</th>
+                    <th scope="col">Кабель</th>
+                    <th scope="col" style="background-color: rgb(255, 241, 192);">Всего</th>
+                    <th>Download</th>
+                    <th>Проверено</th>
+                    {% if request.user.is_superuser and request.user.username == 'admin1' and len_date_list == 1 and options == 'po_kassiram' %}
+                        <th>Удалить</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for kassir, payments in dict_.items %}
+                <tr>
+                    <td>{{ kassir }}</td>
+                    <td>{{ payments.telefoniya|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.internet|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.alem|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.kabel|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ payments.total_kassir|floatformat:"-2"|intcomma }}</td>
+                    <td>
+                        <form method="POST">{% csrf_token %}
+                            <input type="hidden" name="download_pays">
+                            <input type="hidden" name="manager" value="{{ kassir }}">
+                            <button class="btn btn-info" onclick="this.form.submit(); this.disabled=true; setTimeout(() => {this.disabled=false}, 3000);">Скачать</button>
+                        </form>
+                        
+                    </td>
+                    <td>
+                        <input type="checkbox" class="form-check-input" {% if len_date_list == 1 and kassir not in dont_checked_managers_name %} checked {% endif %} disabled>
+                    </td>
+                    {% if request.user.is_superuser and request.user.username == 'admin1' and len_date_list == 1 and options == 'po_kassiram' %}
+                    <td>         
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletePaysModal{{forloop.counter}}">Удалить</button>
+                        <form method="POST">{% csrf_token %}
+                            <!-- Модальное окно Для удаление платежей-->
+                            <div class="modal fade text-dark" id="deletePaysModal{{forloop.counter}}" tabindex="-1" aria-labelledby="deletePaysLabel{{forloop.counter}}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deletePaysLabel{{forloop.counter}}">Удалить платежи для {{kassir}}</h5>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="hidden" name="delete_pays">
+                                            <input type="hidden" name="kassir_for_delete" value="{{kassir}}">
+                                            <input type="hidden" name="date_delete" value="{{ request.GET.date_from }}">
+                                            <input type="text" class="form-control" name="comment_for_delete" placeholder="Комментарий не должен быть пустым" autocomplete="off">
+                                            <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" style="background-color: rgb(255, 241, 192);">Итого</th>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.telefoniya|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.internet|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.alem|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.kabel|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.umumy|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">
+                        {% if len_date_list == 1 and not dont_cheked_days and options == 'po_kassiram'%}
+                            {% if day_is_closed %}
+                                <button class="btn btn-success btn-sm"  disabled>День закрыт</button>
+                            {% else %}
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ClosaDayPaysModal">Закрыть день</button>
+                                <form method="POST">{% csrf_token %}
+                                    <!-- Модальное окно Для закрытие дня -->
+                                    <div class="modal fade text-dark" id="ClosaDayPaysModal" tabindex="-1" aria-labelledby="ClosaDayPaysLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ClosaDayPaysLabel">Закрыть день?</h5>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input type="hidden" name="close_day">
+                                                    <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td style="background-color: rgb(255, 241, 192);">
+                        {% if len_date_list == 1 and not dont_cheked_days%}
+                        <input type="checkbox" class="form-check-input" {% if day_is_closed %} checked {% endif %} disabled >
+                        {% endif %}
+                    </td>
+                    {% if request.user.is_superuser and request.user.username == 'admin1' and len_date_list == 1 %}
+                        <td style="background-color: rgb(255, 241, 192);"></td>
+                    {% endif %}
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <br><br>
+
+    
+    {% if options == 'po_kassiram' %}
+    <hr>
+    <div class="d-flex justify-content-around">
+      
+        {% comment %}
+        <div>
+            {% if cheked_days %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Проверенные даты</div>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#openChekedDaysModal">Просмотр</button>
+                </div>
+                
+                <!-- Модальное окно -->
+                <div class="modal fade text-dark" id="openChekedDaysModal" tabindex="-1" aria-labelledby="openChekedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(207, 234, 207);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="openChekedDaysLabel">Проверенные дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for obj in check_pays_obj %}
+                                <div class="card my-3">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <div style="font-size: 12px;">Проверено: {{obj.checked_date}} == {{obj.checked_kassir}}</div>
+                                            <div style="font-size: 12px;">Проверил: {{obj.operator}}</div>
+                                            <div style="font-size: 12px;">Дата проверки: {{obj.date}}</div></p>
+                                        <!-- <p><pre style="font-size: 12px;">{{ obj.comment }}</pre></p> -->
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        {% endcomment %}
+
+        <div>
+            {% if closed_days_dict %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Закрытые дни</div>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closedDaysModal">Просмотр</button>
+                </div>
+                
+                <!-- Модальное окно -->
+                <div class="modal fade text-dark" id="closedDaysModal" tabindex="-1" aria-labelledby="closedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(207, 234, 207);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="closedDaysLabel">Закрытые дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for d, u in closed_days_dict.items %}
+                                <div class="card my-3">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <div class="d-flex justify-content-around">
+                                                <div style="font-size: 12px;">{{d}}</div>
+                                                <div style="font-size: 12px;">{{u}}</div>
+                                            </div>   
+                                        </p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            {% if opened_days_list %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Открытые дни</div>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#openedDaysModal">Просмотр</button>
+                </div>
+                
+                <!-- Модальное окно -->
+                <div class="modal fade text-dark" id="openedDaysModal" tabindex="-1" aria-labelledby="openedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(207, 234, 207);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="openedDaysLabel">Открытые дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for d in opened_days_list %}
+                                <div class="card my-3">
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <div style="font-size: 12px;">{{d}}</div>
+                                        </p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    
+        {% comment %}
+        <div>
+            {% if dont_cheked_days %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Не проверенные даты</div>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#openDontChekedDaysModal">Просмотр</button>
+                </div>
+                    
+                <!-- Модальное окно -->
+                <div class="modal fade text-dark" id="openDontChekedDaysModal" tabindex="-1" aria-labelledby="openDontChekedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(236, 194, 194);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="openDontChekedDaysLabel">Не проверенные дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for day, dict in dont_cheked_days_dict.items %}
+                                    {% for key, managers_names in dict.items %}
+                                        <div>
+                                            <div>{{day}}:</div>
+                                            {% for m in managers_names %}
+                                                <div class="d-flex" style="padding-left: 50px; column-gap: 5px;">
+                                                    <div>{{forloop.counter}})</div>
+                                                    <div>{{m}}</div>
+                                                </div>   
+                                            {% endfor %}
+                                        </div>
+                                        <br>
+                                        
+                                    {% endfor %}
+                                {% endfor %}
+                                <!-- {% for day in dont_cheked_days %}
+                                <div class="text-center">{{day}}</div>
+                                {% endfor %} -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        {% endcomment %}
+    </div>
+    {% endif %}
+
+
+
+
+
+
+
+    <br>
+    {% if mojno_nachislyat and dont_cheked_days and options == 'po_kassiram' and allow_podtwerdit %}
+    <hr>
+        {% if len_date_list == 1 %}
+            <h3 class="text-center text-light mt-5">Подтверждение Проверки</h3>
+
+            <label for="type" class="form-label">Кассир</label>
+            <select class="form-select" id="type" name="kassir" required form="postForm1">
+                <option value="">Выерите кассира</option>
+                {% for k in managers_list %}
+                    <option value="{{k}}" {% if k not in dont_checked_managers_name %} disabled {% endif %}>{{k}} {% if k not in dont_checked_managers_name %} (ПРОВЕРЕНО) {% endif %}</option>
+                {% endfor %}
+            </select>
+
+            
+            <div class="mt-3">
+                <div class="text-center">
+                    <label for="comment" class="form-label">Комментарий</label>
+                    <textarea class="form-control" id="comment" placeholder="Комментарии" autocomplete="off" name="comment" rows="4" style="resize: none;" form="postForm1">Комментарий: </textarea> <!-- Добавлено поле textarea -->
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success mt-5 d-none" data-bs-toggle="modal" data-bs-target="#checkPaysModal" id="podtwerdit">Подтвердить</button>
+                </div>
+                <!-- Подтверждение проверки для:{% for d in dont_cheked_days %}
+        {{d}}{% endfor %} -->
+                
+            </div>
+        {% endif %}
+        <br><br><br><br><br>
+
+
+        <form method="POST" id="postForm1">{% csrf_token %}
+            <!-- Модальное окно -->
+            <div class="modal fade text-dark" id="checkPaysModal" tabindex="-1" aria-labelledby="checkPaysLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="checkPaysLabel">Вы уверены?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="check_button">
+                            <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    {% endif %}
+    
+    {% endif %}
+    
+</div>
+
+<div class="d-none" id="dontScroll">{{dontScroll}}</div>
+
+
+
+
+
+
+
+
+<script>
+
+    // try{
+    //     const date_from = document.getElementById('date_from') 
+    //     const date_to = document.getElementById('date_to') 
+    //     const comment = document.getElementById('comment') 
+    //     if (comment) {
+    //         comment.value = `Подтверждение проверки 
+    // с ${date_from.value} по ${date_to.value} включительно`
+    //     }
+    // }catch{
+    // }
+
+    
+
+    // Получаем элементы
+    const optionsForm = document.getElementById('optionsForm');
+    const type = document.getElementById('type');
+
+    type.addEventListener('change', function(event) {
+        const selectedValue = event.target.value;
+        const podtwerdit = document.getElementById('podtwerdit')
+        if (selectedValue === '') {
+            if (!podtwerdit.classList.contains('d-none')) {
+                podtwerdit.classList.add('d-none')
+            }
+        } else {
+            if (podtwerdit.classList.contains('d-none')) {
+                podtwerdit.classList.remove('d-none')
+            }
+        }
+
+    })
+
+
+
+    // Добавляем обработчик события на изменение радиокнопок
+    optionsForm.addEventListener('change', function(event) {
+        const selectedValue = event.target.value;
+        console.log("Выбранный вариант:", selectedValue);
+        // Здесь можно добавить дополнительную логику
+    });
+
+    const dontScroll = document.getElementById('dontScroll') 
+    if(dontScroll.innerText !== 'True') {
+            window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth' // Прокрутка будет плавной
+        });
+    }
+    
+</script>
+
+{% endblock content %}

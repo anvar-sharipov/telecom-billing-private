@@ -1,0 +1,112 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Снятие номеров{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light">
+    <form method="POST" class="d-flex" style="justify-content: space-around; align-items: center;">{% csrf_token %}
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="selected_etrap" required>
+                {% if request.user.is_superuser %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+</div>
+
+{% if users %}
+
+    <div class="text-center mt-5">
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#snyatModal">Снять пользователей</button>
+    </div>
+    <div class="container mt-3 text-light">
+        <h2 class="text-center">Список пользователей для снятия</h2>
+        <table class="table table-bordered table-success table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Этрап</th>
+                    <th>Номер</th>
+                    <th>Дата снятия</th>
+                    <th><div class="d-flex justify-content-between"><span>Не снимать?</span><button class="btn btn-secondary btn-sm" onclick="selectUnselectAll(this.id)" id="selectAllBtn" style="width: 200px;">Выделить все</button></div></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> <!-- Используем loop.index для нумерации -->
+                    <td>{{ u.etrap }}</td>
+                    <td>{{ u.number }}</td>
+                    <td>{{ u.snyat_date }}</td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input snyatChekboxInputClasses" type="checkbox" value="{{u.pk}}" name="neSnimat" form="snyatForm" id="user{{forloop.counter}}">
+                            <label class="form-check-label" for="user{{forloop.counter}}">
+                                Не снимать
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    
+    <!-- Модальное окно -->
+    <div class="modal fade text-dark" id="snyatModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Вы уверены?</h5>
+                </div>
+                <div class="modal-footer">
+                    <form method="POST" id="snyatForm">{% csrf_token %}
+                        <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        <input type="hidden" name="snyat">
+                        <input type="hidden" name="selected_etrap" value="{{selected_etrap}}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <div class="container mt-5 text-light">
+        <p class="text-center">Пользователи не найдены.</p>
+    </div>
+{% endif %}
+
+<script>
+    function selectUnselectAll(id) {
+        select_btn = document.getElementById(id)
+        if (select_btn.innerText === 'Выделить все') {
+            select_btn.innerText = 'Снять все выделения'
+
+            const checkboxes = document.querySelectorAll('.snyatChekboxInputClasses');
+            // Проходим по всем чекбоксам и устанавливаем их в состояние checked
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = true;
+            });
+
+        } else {
+            select_btn.innerText = 'Выделить все'
+
+            const checkboxes = document.querySelectorAll('.snyatChekboxInputClasses');
+            // Проходим по всем чекбоксам и устанавливаем их в состояние checked
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        }
+        
+    }
+</script>
+
+{% endblock content %}

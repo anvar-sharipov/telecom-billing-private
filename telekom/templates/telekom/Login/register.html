@@ -1,0 +1,57 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+
+<form method="POST" style="width: 20%; margin-top: 10%; row-gap: 30px;" class="d-flex flex-column ">
+	{% csrf_token %}
+
+
+	<!-- {{ form.as_p }} -->
+	{% for field in form %}
+		<div>
+			<label class="text-light" for="{{ field.id_password }}">{{ field.label }}</label>
+			<div>{{ field }}</div>
+		</div>
+    {% endfor %}
+
+    <select name="etrap" class="form-select">
+        {% for etr in etraps %}
+            <option value="{{etr}}" {% if etrap == etr %}selected{% endif %}>{{etr}}</option>
+        {% endfor %}
+    </select>
+ 
+	<button type="submit" class="btn btn-primary btn-block my_block_center" style="width: fit-content;">Вход</button>
+</form>
+
+{% if messages %}
+	{% for message in messages %}
+		{% if message.tags == 'error' %}
+			<div class="alert alert_danger" role="alert">
+				 {{ message }}
+			</div>
+		{% else %}
+			<div class="alert alert_success" role="alert">
+				{{ message }}
+			</div><br>
+		{% endif %}
+	{% endfor %}
+{% endif %}
+<!-- 
+
+<form method="POST">{% csrf_token %}
+    {% for field in form %}
+        <label class="my_class text-light" for="{{ field.id_password }}">{{ field.label }}</label>
+        {{ field }}
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form> -->
+</center>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+	document.getElementById("id_username").select();
+});
+</script>
+
+
+{% endblock %}

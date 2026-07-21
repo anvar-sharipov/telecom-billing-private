@@ -1,0 +1,83 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}История начислить вручную {% endblock %}
+{% block content %}
+
+
+<h1 class="text-light text-center mt-3">Просмотр истории начислений вручную</h1>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="justify-content: space-around; align-items: center;">
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap">
+                {% if request.user.is_superuser %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Номер</label>
+            <input type="text" class="form-control" id="number" placeholder="Поиск по номеру абонента" autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Поиск по коментариям" autocomplete="off" name="comment" {% if comment %} value="{{comment}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_from" class="form-label">Дата От</label>
+            <input type="date" class="form-control" id="date_from" name="date_from" {% if date_from %} value="{{date_from}}"{% endif %}>
+        </div>
+        <div class="mb-3">
+            <label for="date_to" class="form-label">Дата До</label>
+            <input type="date" class="form-control" id="date_to" name="date_to" {% if date_to %} value="{{date_to}}"{% endif %}>
+        </div>
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+</div>
+
+{% if results %}
+
+<div class="container mt-5 text-light">
+    <h2 class="mb-4">История начислений</h2>
+    <table class="table table-bordered table-hover table-light">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col">Начислил</th>
+                <th scope="col">Дата начисления</th>
+                <th scope="col">На что начислено</th>
+                <th scope="col">Сумма начисления</th>
+                <th scope="col">Номер абонента</th>
+                <th scope="col">Этрап</th>
+                <th scope="col">Комментарий</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>{{ result.user }}</td>
+                    <td>{{ result.date|date:"d.m.Y H:i" }}</td>
+                    <td>{{ result.column }}</td>
+                    <td>{{ result.price|floatformat:2 }}</td>
+                    <td>{{ result.number }}</td>
+                    <td>{{ result.etrap }}</td>
+                    <td><pre>{{ result.comment|default:"-" }}</pre></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">Результаты не найдены.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endif %}
+
+{% endblock content %}
+
+

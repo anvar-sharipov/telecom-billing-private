@@ -1,0 +1,33 @@
+{% load static %}
+<!-- Modal pay -->
+<div class="modal fade payModal" id="payModalKabel{{u.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Кабель TV платеж</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="d-flex justify-content-around mb-4">
+                <h5 class="card-title text-center">{{u.number}}</h5>
+                <h5 class="card-title text-center">{{u.surname}}</h5>
+                <h5 class="card-title text-center">{{u.name}}</h5>
+            </div>
+            <form method="POST" style="border: 1px rgb(207, 206, 206) solid; padding: 15px; border-radius:5px;" id="pay_modal_form">{% csrf_token %}
+                <div class="mb-3 d-flex justify-content-around text-end">
+                    <input type="text" class="form-control" id="inputAmount" placeholder="Введите сумму платежа" name="payKabel" autocomplete="off">   
+                    <input type="hidden" name="hiddenPk" value="{{u.pk}}">
+                    </div>
+                    <div class="form-check mb-3 d-flex">
+                        <input type="checkbox" class="form-check-input" id="my_checkbox{{u.pk}}" name="is_card">
+                        <label class="form-check-label checkbox-container" style="padding-top: 5px; margin-left: 10px;" for="my_checkbox{{u.pk}}">Оплата карточкой</label>
+                    </div>
+                    <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Оплатить</button>
+                    </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+

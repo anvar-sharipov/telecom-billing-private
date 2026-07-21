@@ -1,0 +1,326 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Админ страница{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="width: 40%;">
+    <form method="POST" enctype="multipart/form-data" id="submitForm">{% csrf_token %}
+
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap">
+                {% for etrap in etraps %}
+                    <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="type" class="form-label">Тип</label>
+            <select class="form-select" id="type" name="type" required>
+                <option value="" disabled {% if not column %} selected {% endif %}>Выберите тип</option>
+                <option value="telefon" {% if column == 'telefon' %} selected {% endif %}>Abonplata nach</option>
+                <option value="slr" {% if column == 'slr' %} selected {% endif %}>Slr nach</option>
+                <option value="kod" {% if column == 'kod' %} selected {% endif %}>Kod nach</option>
+                <option value="zakaz" {% if column == 'zakaz' %} selected {% endif %}>Zakaz nach</option>
+                <option value="prochee" {% if column == 'prochee' %} selected {% endif %}>Prochee nach</option>
+                <option value="dop_uslugi" {% if column == 'dop_uslugi' %} selected {% endif %}>Dop_uslugi nach</option>
+                <option value="inrternet" {% if column == 'inrternet' %} selected {% endif %}>Inrternet nach</option>
+                <option value="alem" {% if column == 'alem' %} selected {% endif %}>Alem nach</option>
+                <!-- <option value="kabel" {% if column == 'kabel' %} selected {% endif %}>Kabel</option> -->
+                <option value="saldo_prochee" {% if column == 'saldo_prochee' %} selected {% endif %}>saldo telefoniya</option>
+                <option value="saldo_internet" {% if column == 'saldo_internet' %} selected {% endif %}>saldo internet</option>
+                <option value="saldo_alem" {% if column == 'saldo_alem' %} selected {% endif %}>saldo alem</option>
+                <option value="balance_prochee" {% if column == 'balance_prochee' %} selected {% endif %}>balance telefoniya</option>
+                <option value="balance_internet" {% if column == 'balance_internet' %} selected {% endif %}>balance internet</option>
+                <option value="balance_alem" {% if column == 'balance_alem' %} selected {% endif %}>balance alem</option>
+                <option value="ustanowka_abonplata" {% if column == 'ustanowka_abonplata' %} selected {% endif %}>ustanowka abonplata (only download)</option>
+                <option value="ustanowka_service" {% if column == 'ustanowka_service' %} selected {% endif %}>ustanowka dop uslug (only download)</option>
+            </select>
+        </div>
+   
+
+        <div class="mb-3">
+            <label for="month" class="form-label">Месяц</label>
+            <select class="form-select" id="month" required name="month">
+                {% if not choosed_month %}
+                    <option value="01" {% if current_month == '01' %}selected{% endif %}>Январь</option>
+                    <option value="02" {% if current_month == '02' %}selected{% endif %}>Февраль</option>
+                    <option value="03" {% if current_month == '03' %}selected{% endif %}>Март</option>
+                    <option value="04" {% if current_month == '04' %}selected{% endif %}>Апрель</option>
+                    <option value="05" {% if current_month == '05' %}selected{% endif %}>Май</option>
+                    <option value="06" {% if current_month == '06' %}selected{% endif %}>Июнь</option>
+                    <option value="07" {% if current_month == '07' %}selected{% endif %}>Июль</option>
+                    <option value="08" {% if current_month == '08' %}selected{% endif %}>Август</option>
+                    <option value="09" {% if current_month == '09' %}selected{% endif %}>Сентябрь</option>
+                    <option value="10" {% if current_month == '10' %}selected{% endif %}>Октябрь</option>
+                    <option value="11" {% if current_month == '11' %}selected{% endif %}>Ноябрь</option>
+                    <option value="12" {% if current_month == '12' %}selected{% endif %}>Декабрь</option>
+                {% else %}
+                    <option value="01" {% if choosed_month == '01' %}selected{% endif %}>Январь</option>
+                    <option value="02" {% if choosed_month == '02' %}selected{% endif %}>Февраль</option>
+                    <option value="03" {% if choosed_month == '03' %}selected{% endif %}>Март</option>
+                    <option value="04" {% if choosed_month == '04' %}selected{% endif %}>Апрель</option>
+                    <option value="05" {% if choosed_month == '05' %}selected{% endif %}>Май</option>
+                    <option value="06" {% if choosed_month == '06' %}selected{% endif %}>Июнь</option>
+                    <option value="07" {% if choosed_month == '07' %}selected{% endif %}>Июль</option>
+                    <option value="08" {% if choosed_month == '08' %}selected{% endif %}>Август</option>
+                    <option value="09" {% if choosed_month == '09' %}selected{% endif %}>Сентябрь</option>
+                    <option value="10" {% if choosed_month == '10' %}selected{% endif %}>Октябрь</option>
+                    <option value="11" {% if choosed_month == '11' %}selected{% endif %}>Ноябрь</option>
+                    <option value="12" {% if choosed_month == '12' %}selected{% endif %}>Декабрь</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="year" class="form-label">Год</label>
+            <select class="form-select" id="year" required name="year">
+                {% if not choosed_year %}
+                    <option value="2024" {% if current_year == '2024' %}selected{% endif %}>2024</option>
+                    <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+                    <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+                    <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+                    <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+                    <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+                    <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+                    <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+                    <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+                    <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+                    <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+                    <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+                {% else %}
+                    <option value="2024" {% if choosed_year == '2024' %}selected{% endif %}>2024</option>
+                    <option value="2025" {% if choosed_year == '2025' %}selected{% endif %}>2025</option>
+                    <option value="2026" {% if choosed_year == '2026' %}selected{% endif %}>2026</option>
+                    <option value="2027" {% if choosed_year == '2027' %}selected{% endif %}>2027</option>
+                    <option value="2028" {% if choosed_year == '2028' %}selected{% endif %}>2028</option>
+                    <option value="2029" {% if choosed_year == '2029' %}selected{% endif %}>2029</option>
+                    <option value="2030" {% if choosed_year == '2030' %}selected{% endif %}>2030</option>
+                    <option value="2031" {% if choosed_year == '2031' %}selected{% endif %}>2031</option>
+                    <option value="2032" {% if choosed_year == '2032' %}selected{% endif %}>2032</option>
+                    <option value="2033" {% if choosed_year == '2033' %}selected{% endif %}>2033</option>
+                    <option value="2034" {% if choosed_year == '2034' %}selected{% endif %}>2034</option>
+                    <option value="2035" {% if choosed_year == '2035' %}selected{% endif %}>2035</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="container mt-5">
+            <label class="btn btn-primary custom-file-label">
+                Выберите файл
+                <input type="file" class="custom-file-input" id="fileInput" name="file" required>
+            </label>
+            <span id="fileName" class="ms-2">Файл не выбран</span>
+        </div>
+
+        <div class="mb-3 mt-5">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Введите комментарий" required autocomplete="off" name="comment" {% if not comment %} value="{{formatted_date}} " {% else %} value="{{comment}} " {% endif %}>
+        </div>
+
+        <div class="d-flex justify-content-around">
+            <!-- <div class="d-none">
+                <label for="save_or_nach">Начислить</label>
+                <input type="checkbox" class="form-check-input" id="save_or_nach" name="save_or_nach" {% if save_or_nach %}checked{% endif %}>
+            </div> -->
+
+            <div class="container">        
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="action" id="check" value="check" {% if action == 'check' %} checked {% endif %}>
+                    <label class="form-check-label" for="check">Проверить</label>
+                </div>
+
+                {% if dict2 %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="action" id="nachislit" value="nachislit" {% if action == 'nachislit' %} checked {% endif %}>
+                        <label class="form-check-label" for="nachislit">Начислить</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="action" id="download" value="download" {% if action == 'download' %} checked {% endif %}>
+                        <label class="form-check-label" for="download">Скачать</label>
+                    </div>
+                {% endif %}
+            </div>
+
+             <!-- <button type="submit" class="btn btn-primary">Отправить</button> -->
+            <div class="text-center">
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#myModal" id="submit_btn" style="width: 100px;"></button>
+            </div>
+
+        </div>
+        
+
+       
+
+        <!-- Модальное окно -->
+        <div class="modal fade text-dark" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myModalLabel">Вы уверены?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="loader"></span>
+                        <button type="submit" class="btn btn-primary" id="send_form" onclick="checkForm(event)">Да</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<style>
+    .custom-file-input {
+        display: none;
+    }
+    .custom-file-label {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+
+    
+
+    // const save_or_nach = document.getElementById('save_or_nach')
+    const submit_btn = document.getElementById('submit_btn')
+
+    const send_form = document.getElementById('send_form')
+    const loader = document.getElementById('loader')
+    const submitForm = document.getElementById('submitForm')
+
+
+    document.getElementById('check').checked = true;
+    submit_btn.innerText = 'Проверить';
+    if (submit_btn.classList.contains('btn-danger')) {
+        submit_btn.classList.remove('btn-danger')
+    };
+    if (submit_btn.classList.contains('btn-info')) {
+        submit_btn.classList.remove('btn-info')
+    };
+    if (!submit_btn.classList.contains('btn-primary')) {
+        submit_btn.classList.add('btn-primary')
+    };
+ 
+
+    document.querySelectorAll('input[name="action"]').forEach(radio => {
+        radio.addEventListener("change", function () {
+            let action = this.value;
+            console.log("Выбрано:", action);
+
+            if (action === "check") {
+                submit_btn.innerText = 'Проверить'
+                if (submit_btn.classList.contains('btn-danger')) {
+                    submit_btn.classList.remove('btn-danger')
+                }
+                if (submit_btn.classList.contains('btn-info')) {
+                    submit_btn.classList.remove('btn-info')
+                }
+                if (!submit_btn.classList.contains('btn-primary')) {
+                    submit_btn.classList.add('btn-primary')
+                }
+            } else if (action === "nachislit") {
+                submit_btn.innerText = 'Начислить'
+                if (submit_btn.classList.contains('btn-primary')) {
+                    submit_btn.classList.remove('btn-primary')
+                }
+                if (submit_btn.classList.contains('btn-info')) {
+                    submit_btn.classList.remove('btn-info')
+                }
+                if (!submit_btn.classList.contains('btn-danger')) {
+                    submit_btn.classList.add('btn-danger')
+                }
+            } else if (action === "download") {
+                submit_btn.innerText = 'Скачать'
+                if (submit_btn.classList.contains('btn-primary')) {
+                    submit_btn.classList.remove('btn-primary')
+                }
+                if (submit_btn.classList.contains('btn-danger')) {
+                    submit_btn.classList.remove('btn-danger')
+                }
+                if (!submit_btn.classList.contains('btn-info')) {
+                    submit_btn.classList.add('btn-info')
+                }
+            }
+        });
+    });
+
+
+    function checkForm(event) {
+        if (!submitForm.checkValidity()) {
+            console.log("Форма содержит ошибки, запрос НЕ отправлен");
+            submitForm.reportValidity(); // Подсветит незаполненные required-поля
+            return;
+        }
+        submitForm.submit();
+        event.target.disabled=true;
+        loader.classList.remove('d-none')
+        if (document.getElementById('download').checked) {
+            setTimeout(() => {
+                loader.classList.add('d-none')
+                event.target.disabled=false;
+            }, 30000);
+        }
+    }
+
+    
+
+
+
+//     save_or_nach.onclick = () => {
+//     console.log("Кнопка нажата!", save_or_nach.checked);
+//     if (save_or_nach.checked) {
+//         submit_btn.innerText = 'Начислить'
+//         if (submit_btn.classList.contains('btn-primary')) {
+//             submit_btn.classList.remove('btn-primary')
+//         }
+//         if (!submit_btn.classList.contains('btn-danger')) {
+//             submit_btn.classList.add('btn-danger')
+//         }
+//     } else {
+//         submit_btn.innerText = 'Проверить'
+//         if (submit_btn.classList.contains('btn-danger')) {
+//             submit_btn.classList.remove('btn-danger')
+//         }
+//         if (!submit_btn.classList.contains('btn-primary')) {
+//             submit_btn.classList.add('btn-primary')
+//         }
+//     }
+// };
+
+document.getElementById('fileInput').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : "Файл не выбран";
+    document.getElementById('fileName').textContent = fileName;
+});
+    
+window.onload = function() {
+    // if (save_or_nach.checked) {
+    //     submit_btn.innerText = 'Начислить'
+    //     if (submit_btn.classList.contains('btn-primary')) {
+    //         submit_btn.classList.remove('btn-primary')
+    //     }
+    //     if (!submit_btn.classList.contains('btn-danger')) {
+    //         submit_btn.classList.add('btn-danger')
+    //     }
+    // } else {
+    //     submit_btn.innerText = 'Проверить'
+    //     if (submit_btn.classList.contains('btn-danger')) {
+    //         submit_btn.classList.remove('btn-danger')
+    //     }
+    //     if (!submit_btn.classList.contains('btn-primary')) {
+    //         submit_btn.classList.add('btn-primary')
+    //     }
+    // }
+};
+
+
+
+
+
+</script>
+
+
+{% endblock content %}

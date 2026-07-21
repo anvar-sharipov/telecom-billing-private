@@ -1,0 +1,85 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}REESTR{% endblock %}
+{% block content %}
+
+<div class="reestr__string"><h2>Реестр</h2></div>
+
+<form action="" method="GET" class="reestrForm text-light">
+    <div>
+        <div>Месяц</div>
+        <select class="form-select reestrSearchMonth bg-gold" name="month">
+            {% if get_month %}
+            {% else %}
+            <option selected value="">Месяц</option>
+            {% endif %}
+            {% for month in months %}
+                <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Год</div>
+        <select class="form-select reestrSearchYear bg-gold" name="year">
+            {% for year in years %}
+                <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+            {% endfor %}         
+        </select>
+    </div>
+
+    <div>
+        <div>Этрап</div>
+        <select class="form-select reestrSearchEtrap bg-gold" aria-label="Default select example" name="etrap">
+            {% for etr in etraps %}
+                {% if etrap %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% else %}
+                <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            {% endfor %}
+            <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+        </select>
+    </div>
+
+    <button class="btn reestrSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+    <!-- <input type="text" value="{{request.get_full_path }}" name="url_from"> -->
+
+</form>
+
+
+<div class="d-flex mt-3 justify-content-around">
+    <a href="{% url 'p-txt-reestr' get_year get_month etrap %}"><button class="btn btn-success">Предприятие txt</button></a>
+    <a href="{% url 'r-txt-reestr' get_year get_month etrap %}"><button class="btn btn-success">Reestr txt</button></a>
+    <a href="{% url 'n-txt-reestr' get_year get_month etrap %}"><button class="btn btn-success">Население txt</button></a>
+</div>
+
+
+<style>
+.reestrForm {
+    display: flex;
+    column-gap: 10px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+.reestrSearchSubmit {
+    height: fit-content;
+    margin-top: 25px;
+}
+
+.reestr__string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+</style>
+
+
+{% endblock %}

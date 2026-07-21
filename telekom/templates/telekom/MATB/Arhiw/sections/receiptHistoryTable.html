@@ -1,0 +1,104 @@
+
+
+<table class="kassa-receipt-history-table" style="background-color: white; width: 350px;" >
+    <thead>
+        <tr>
+            <th>Услуга</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Кассир</th>
+            {% if KassaMTB %}
+            <th></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for lastPay in lastPays %}
+
+        {% if lastPay.telefon != 0%}
+        <tr class="col2">
+            <td>Абонплата</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.telefon|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.slr != 0%}
+        <tr class="col3">
+            <td>СЛР</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.slr|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.kod != 0%}
+        <tr class="col4">
+            <td>Код</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.kod|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.zakaz != 0%}
+        <tr class="col5">
+            <td>Заказ</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.zakaz|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.prochee != 0%}
+        <tr class="col6">
+            <td>Прочее</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.prochee|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.dop_uslugi != 0%}
+        <tr class="col7">
+            <td>Доп. усл</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.dop_uslugi|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        
+        {% if lastPay.internet != 0%}
+        <tr class="col8">
+            <td>Интернет</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.internet|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %} 
+        {% if lastPay.kabel != 0%}
+        <tr class="col9">
+            <td>Кабель TV</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.kabel|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        {% if lastPay.alem != 0%}
+        <tr class="col10">
+            <td>Alem TV</td>
+            <td>{{lastPay.date|date:'d M Y'}}</td>
+            <td>{{lastPay.alem|floatformat:2}}</td>
+            <td>{{lastPay.kassir}}</td>
+        </tr>
+        {% endif %}
+        <!-- <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td>
+        <td style="height: 2px; background-color: black;"></td> -->
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+
+
+

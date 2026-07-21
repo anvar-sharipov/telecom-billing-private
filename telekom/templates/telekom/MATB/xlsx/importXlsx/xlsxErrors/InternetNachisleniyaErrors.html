@@ -1,0 +1,53 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Ошибка в файле Интернет Начислений{% endblock %}
+{% block content %}
+
+<div style="padding: 40px 60px; margin-top: 60px;">
+    {% if lessThanNull %}
+    <div class="text-center" style="background-color: #CCCC33; color: black; width: 1450px; margin-left: auto; margin-right: auto;">
+        Если вы читаете этот текст значит все в порядке, просто у платежей есть либо нули либо отрицательные значения, это не проблема, можно смело добавлять данные в БД, так как при импорте данных в БД такие строки игноируются
+    </div>
+    {% endif %}
+
+    {% if something_with_FAO %}
+    <div class="text-center" style="background-color: #CCCC33; color: black; width: 1450px; margin-left: auto; margin-right: auto;">
+        Если вы читаете этот текст значит все в порядке, просто в колонке Ф.И.О есть пустые значения, это не проблема, можно добавлять данные в БД, так как колонка Ф.И.О. не играют никакой роли при начислении платежей
+    </div>
+    {% endif %}
+
+    {% if something_with_FAOandlessThanNull %}
+    <div class="text-center" style="background-color: #CCCC33; color: black; width: 1450px; margin-left: auto; margin-right: auto;">
+        Если вы читаете этот текст значит все в порядке, просто у платежей есть либо нули либо отрицательные значения, а в колонке Ф.И.О. есть пустые значения, это не проблема, можно смело добавлять данные в БД, так как при импорте данных в БД такие строки игноируются, а колонка Ф.И.О. не играют никакой роли при начислении платежей
+    </div>
+    {% endif %}
+    
+
+    <table class="importInternetNachisleniyaErrorsTable">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Ф.И.О.</th>
+                <th>Договор</th>
+                <th>Логин</th>
+                <th>Сумма платежа</th>
+                <th>Этрап</th>
+                <th>Год</th>
+                <th>Месяц</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in errors %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                {% for i in e %}
+                <td>{{ i }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

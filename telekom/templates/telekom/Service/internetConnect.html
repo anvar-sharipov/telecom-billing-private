@@ -1,0 +1,169 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Интернет Подключения/отключения{% endblock %}
+{% block content %}
+
+<!--Форма для поиска абонента-->
+<div class="p-3 mt-3">
+<form action="" class=" d-flex my_width500 my_block_center my_column_gap10" method="GET">
+    <select class="form-select bg-gold" aria-label="Default select example" name="etrap">
+        {% for etr in etraps %}
+            {% if etrap %}
+            <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% else %}
+            <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <input id="internet_connect_search_number" type="text" placeholder="Номер" class="form-control item" name="number" {% if number %} value={{number}} {% endif %} autocomplete="off">
+    <button class="btn btn-success">Поиск</button>
+</form>
+
+{% if abonent %}
+<table class="table table-secondary my_block_center mt-3">
+    <thead>
+        <tr>
+            <th>Ф.И.О</th>
+            <th>Номер</th>
+            <th>Логин</th>
+            <th>Договор</th>
+            <th>Улица</th>
+            <th>Дом</th>
+            <th>Кв.</th>
+            <th>Дата поделючения интернета</th>
+            <th>Дата отключения интернета</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{abonent.surname}} {{abonent.name}}</td>
+            <td>{{number}}</td>
+            <td>{{abonent.login}}</td>
+            <td>{{abonent.dogowor}}</td>
+            <td>{{abonent.street}}</td>
+            <td>{{abonent.home}}</td>
+            <td>{{abonent.flat}}</td>
+            <td>{{abonent.internet_connect_date|date:'y-m-d H:s'}}</td>
+            <td>{{abonent.internet_disconnect_date|date:'y-m-d H:s'}}</td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+
+<form action="" method="POST" class="d-flex flex-column my_row_gap10 justify-content-between my_width700 my_block_center mt-3 p-3" style="background-color:#1E90FF; border-radius: 10px;"> {% csrf_token %}
+    {% if abonent %}
+    <select class="form-select my_bg_ligh_red" aria-label="Default select example" name="tarif_pk">
+        <option disabled class="text-dark" style="background-color: DarkGray;">Ilat Uchin</option>
+        {% for tarif in tarifs %}
+            {% if 'населения' in tarif.tarif %}
+            <option {% if abonent.internet_tarif.pk == tarif.pk %} selected {% endif %} value="{{tarif.pk}}">{{tarif.tarif|slice:"0:6"}}; {{tarif.price}} манат</option>
+            {% endif %}
+        {% endfor %}
+
+        <option disabled class="text-dark" style="background-color: DarkGray;">Okuw jaylary uchin</option>
+        {% for tarif in tarifs %}
+            {% if 'okuw' in tarif.tarif %}
+            <option {% if abonent.internet_tarif.pk == tarif.pk %} selected {% endif %} value="{{tarif.pk}}">{{tarif.tarif|slice:"0:6"}}; {{tarif.price}} манат</option>
+            {% endif %}
+        {% endfor %}
+
+        <option disabled class="text-dark" style="background-color: DarkGray;">Hojalyk jemgiyeti, hususy karhanalar we bashgalar</option>
+        {% for tarif in tarifs %}
+            {% if 'telekechi' in tarif.tarif %}
+            <option {% if abonent.internet_tarif.pk == tarif.pk %} selected {% endif %} value="{{tarif.pk}}">{{tarif.tarif|slice:"0:6"}}; {{tarif.price}} манат</option>
+            {% endif %}
+        {% endfor %}
+        <option value="off" {% if abonent.internet_tarif == None %} selected {% endif %}>{% if abonent.internet_tarif == None %}Отключен{% else %}Отключить{% endif %}</option>
+    </select>
+
+    <div class="d-flex my_column_gap20 justify-content-between bg-light" style="height: 40px; border-radius: 3px; padding: 0 20px;">
+        <div class=" mt-2">Дата Подключения/Изменения</div>
+        <input type="datetime-local" class="form-control my_width200 my_bg_ligh_red" style="height: 35px; margin-top: 3px;" {% if  abonent.alem_connect_date %}value="{{abonent.internet_connect_date|date:'Y-m-d H:i'}}" {% endif %} name="internetConnectOrChangedDate">
+    </div>
+
+    <div class="d-flex my_column_gap20 justify-content-between bg-light" style="height: 40px; border-radius: 3px; padding: 0 20px;">
+        <div class=" mt-2">Дата Отключения</div>
+        <input type="datetime-local" class="form-control my_width200 my_bg_ligh_red" style="height: 35px; margin-top: 3px;" {% if  abonent.alem_connect_date %}value="{{abonent.internet_disconnect_date|date:'Y-m-d H:i'}}" {% endif %} name="internetDisConnectDate">
+    </div>
+    
+    <button class="btn btn-success my_block_center" style="width: fit-content;">Сохранить</button>
+    {% endif %}
+</form>
+
+{% if staffActionInfo %}
+<h5 class="text-center text-light" style="margin-top: 100px;">Подробная информация действий персонала</h5>
+<div class="d-flex flex-column bg-light" style="overflow-y: auto; height: 400px;">
+    
+    <table class="table table-secondary table-hover internet-staff-history-table m-3" style="width: 98%;">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th class="my_width500">Действие</th>
+                <th>Соотрудник</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for info in staffActionInfo %}
+            <tr>
+                <td>{{info.date|date:"Y-m-d h:i:s"}}</td>
+                <td class="my_width500">{{info.comment}}</td>
+                <td>{{info.user}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endif %}
+
+</div>
+
+
+<style>
+
+.my_bg_ligh_red {background-color: #E9967A;}  
+
+
+.internet-staff-history-table th:nth-of-type(1), .internet-staff-history-table td:nth-of-type(1){width: 100px; border: 1px black solid;}
+.internet-staff-history-table th:nth-of-type(2), .internet-staff-history-table td:nth-of-type(2){border: 1px black solid;}
+.internet-staff-history-table th:nth-of-type(3), .internet-staff-history-table td:nth-of-type(3){width: 100px; border: 1px black solid;}
+
+
+
+</style>
+
+
+<script>
+// текущий url в виде строки
+var currentLocation = window.location.href;
+// если в текущем url есть подстрока internet-connect то выполнить код
+if (currentLocation.indexOf("internet-connect") >= 0) {
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("internet_connect_search_number").select();
+    })
+
+
+
+
+}
+
+/*фецис (цере) между цифрами телефона при вводе номера kassa-receipt*/
+(function () {
+document
+    .getElementById("internet_connect_search_number")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    });
+})();
+</script>
+
+{% endblock %}
+

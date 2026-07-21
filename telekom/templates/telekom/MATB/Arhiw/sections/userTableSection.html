@@ -1,0 +1,1145 @@
+<table class="table kassa-userTable fw-bold text-center" >
+    <thead>
+        <tr>
+            <th class="col1" ></th>
+            <th class="col2">Абонплата</th>
+            <th class="col3">СЛР</th>
+            <th class="col4">Код</th>
+            <th class="col5">Заказ</th>
+            <th class="col6">Прочее</th>
+            <th class="col7">Доп. услуги</th>
+            <th class="col8">Интернет</th>
+            <th class="col9">Кабель TV</th>
+            <th class="col10">Alem TV</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        <!-- Сальдо -->
+        <tr>
+            <td class="col1 text-start">Сальдо</td>
+            <td class="col2">{{abonent.s_telefon}}</td>
+            <td class="col3">{{abonent.s_slr}}</td>
+            <td class="col4">{{abonent.s_kod}}</td>
+            <td class="col5">{{abonent.s_zakaz}}</td>
+            <td class="col6">{{abonent.s_prochee}}</td>
+            <td class="col7">{{abonent.s_dop_uslugi}}</td>
+            <td class="col8">{{abonent.s_internet}}</td>
+            <td class="col9">{{abonent.s_kabel}}</td>
+            <td class="col10">{{abonent.s_alem}} </td>
+        </tr>
+
+        <!-- Январь -->
+        <tr>
+            <td class="col1 text-start">Январь</td>
+            <!-- Abonplata -->
+            {% if jan %}
+            <td class="col2" id="abonplataMonth01">{% if jan.telefon != 0 %}{{jan.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth01"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if jan %}
+            <td class="col3" id="slrMonth01">{% if jan.slr != 0 %}{{jan.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth01"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if jan %}
+            <td class="col4" id="kodMonth01">{% if jan.kod != 0 %}{{jan.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth01"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if jan %}
+            <td class="col5" id="zakazMonth01">{% if jan.zakaz != 0 %}{{jan.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth01"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if jan %}
+            <td class="col6" id="procheeMonth01">{% if jan.prochee != 0 %}{{jan.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth01"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if jan %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth01">{% if jan.dop_uslugi != 0 %}{{jan.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_jan  %}
+                            <!-- Modal Button service end_list_jan -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListJanModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth01"></td>
+            {% endif %}
+
+            <!-- internet -->
+            {% if jan %}
+            <td class="col8" id="internetMonth01">{% if jan.internet != 0 %}{{jan.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth01"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if jan %}
+            <td class="col9" id="kabelMonth01">{% if jan.kabel != 0 %}{{jan.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth01"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if jan %}
+            <td class="col10" id="alemMonth01">{% if jan.alem != 0 %}{{jan.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth01"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Февраль -->
+        <tr>
+            <td class="col1 text-start">Февраль</td>
+
+            <!-- Abonplata -->
+            {% if feb %}
+            <td class="col2" id="abonplataMonth02">{% if feb.telefon != 0 %}{{feb.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth02"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if feb %}
+            <td class="col3" id="slrMonth02">{% if feb.slr != 0 %}{{feb.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth02"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if feb %}
+            <td class="col4" id="kodMonth02">{% if feb.kod != 0 %}{{feb.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth02"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if feb %}
+            <td class="col5" id="zakazMonth02">{% if feb.zakaz != 0 %}{{feb.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth02"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if feb %}
+            <td class="col6" id="procheeMonth02">{% if feb.prochee != 0 %}{{feb.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth02"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if feb %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth02">{% if feb.dop_uslugi != 0 %}{{feb.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_feb  %}
+                            <!-- Modal Button service end_list_feb -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListFebModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth02"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if feb %}
+            <td class="col8" id="internetMonth02">{% if feb.internet != 0 %}{{feb.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth02"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if feb %}
+            <td class="col9" id="kabelMonth02">{% if feb.kabel != 0 %}{{feb.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth02"></td>
+            {% endif %}
+
+
+            <!-- Alem TV -->
+            {% if feb %}
+            <td class="col10" id="alemMonth02">{% if feb.alem != 0 %}{{feb.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth02"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Март -->
+        <tr>
+            <td class="col1 text-start">Март</td>
+            
+            <!-- Abonplata -->
+            {% if mar %}
+            <td class="col2" id="abonplataMonth03">{% if mar.telefon != 0 %}{{mar.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth03"></td>
+            {% endif %}
+
+            <!-- Slr -->
+            {% if mar %}
+            <td class="col3" id="slrMonth03">{% if mar.slr != 0 %}{{mar.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth03"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if mar %}
+            <td class="col4" id="kodMonth03">{% if mar.kod != 0 %}{{mar.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth03"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if mar %}
+            <td class="col5" id="zakazMonth03">{% if mar.zakaz != 0 %}{{mar.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth03"></td>
+            {% endif %}
+
+            <!-- Prochee -->
+            {% if mar %}
+            <td class="col6" id="procheeMonth03">{% if mar.prochee != 0 %}{{mar.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth03"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if mar %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth03">{% if mar.dop_uslugi != 0 %}{{mar.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_mar  %}
+                            <!-- Modal Button service end_list_mar -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListMarModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth03"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if mar %}
+            <td class="col8" id="internetMonth03">{% if mar.internet != 0 %}{{mar.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth03"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if mar %}
+            <td class="col9" id="kabelMonth03">{% if mar.kabel != 0 %}{{mar.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth03"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if mar %}
+            <td class="col10" id="alemMonth03">{% if mar.alem != 0 %}{{mar.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth03"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Апрель -->
+        <tr>
+            <td class="col1 text-start">Апрель</td>
+            
+            <!-- Abonplata -->
+            {% if apr %}
+            <td class="col2" id="abonplataMonth04">{% if apr.telefon != 0 %}{{apr.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth04"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if apr %}
+            <td class="col3" id="slrMonth04">{% if apr.slr != 0 %}{{apr.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth04"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if apr %}
+            <td class="col4" id="kodMonth04">{% if apr.kod != 0 %}{{apr.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth04"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if apr %}
+            <td class="col5" id="zakazMonth04">{% if apr.zakaz != 0 %}{{apr.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth04"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if apr %}
+            <td class="col6" id="procheeMonth04">{% if apr.prochee != 0 %}{{apr.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth04"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if apr %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth04">{% if apr.dop_uslugi != 0 %}{{apr.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_apr  %}
+                            <!-- Modal Button service end_list_apr -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListAprModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth04"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if apr %}
+            <td class="col8" id="internetMonth04">{% if apr.internet != 0 %}{{apr.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth04"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if apr %}
+            <td class="col9" id="kabelMonth04">{% if apr.kabel != 0 %}{{apr.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth04"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if apr %}
+            <td class="col10" id="alemMonth04">{% if apr.alem != 0 %}{{apr.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth04"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Май -->
+        <tr>
+            <td class="col1 text-start">Май</td>
+            
+            <!-- Abonplata -->
+            {% if may %}
+            <td class="col2" id="abonplataMonth05">{% if may.telefon != 0 %}{{may.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth05"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if may %}
+            <td class="col3" id="slrMonth05">{% if may.slr != 0 %}{{may.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth05"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if may %}
+            <td class="col4" id="kodMonth05">{% if may.kod != 0 %}{{may.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth05"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if may %}
+            <td class="col5" id="zakazMonth05">{% if may.zakaz != 0 %}{{may.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth05"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if may %}
+            <td class="col6" id="procheeMonth05">{% if may.prochee != 0 %}{{may.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth05"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if may %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth05">{% if may.dop_uslugi != 0 %}{{may.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_may  %}
+                            <!-- Modal Button service end_list_may -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListMayModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth05"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if may %}
+            <td class="col8" id="internetMonth05">{% if may.internet != 0 %}{{may.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth05"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if may %}
+            <td class="col9" id="kabelMonth05">{% if may.kabel != 0 %}{{may.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth05"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if may %}
+            <td class="col10" id="alemMonth05">{% if may.alem != 0 %}{{may.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth05"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Июнь -->
+        <tr>
+            <td class="col1 text-start">Июнь</td>
+            
+            <!-- Abonplata -->
+            {% if jun %}
+            <td class="col2" id="abonplataMonth06">{% if jun.telefon != 0 %}{{jun.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth06"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if jun %}
+            <td class="col3" id="slrMonth06">{% if jun.slr != 0 %}{{jun.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth06"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if jun %}
+            <td class="col4" id="kodMonth06">{% if jun.kod != 0 %}{{jun.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth06"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if jun %}
+            <td class="col5" id="zakazMonth06">{% if jun.zakaz != 0 %}{{jun.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth06"></td>
+            {% endif %}
+            
+            
+            <!-- Prochee -->
+            {% if jun %}
+            <td class="col6" id="procheeMonth06">{% if jun.prochee != 0 %}{{jun.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth06"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if jun %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth06">{% if jun.dop_uslugi != 0 %}{{jun.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_jun  %}
+                            <!-- Modal Button service end_list_jun -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListJunModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth06"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if jun %}
+            <td class="col8" id="internetMonth06">{% if jun.internet != 0 %}{{jun.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth06"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if jun %}
+            <td class="col9" id="kabelMonth06">{% if jun.kabel != 0 %}{{jun.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth06"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if jun %}
+            <td class="col10" id="alemMonth06">{% if jun.alem != 0 %}{{jun.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth06"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Июль -->
+        <tr>
+            <td class="col1 text-start">Июль</td>
+            
+            <!-- Abonplata -->
+            {% if jul %}
+            <td class="col2" id="abonplataMonth07">{% if jul.telefon != 0 %}{{jul.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth07"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if jul %}
+            <td class="col3" id="slrMonth07">{% if jul.slr != 0 %}{{jul.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth07"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if jul %}
+            <td class="col4" id="kodMonth07">{% if jul.kod != 0 %}{{jul.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth07"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if jul %}
+            <td class="col5" id="zakazMonth07">{% if jul.zakaz != 0 %}{{jul.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth07"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if jul %}
+            <td class="col6" id="procheeMonth07">{% if jul.prochee != 0 %}{{jul.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth07"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if jul %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth07">{% if jul.dop_uslugi != 0 %}{{jul.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_jul  %}
+                            <!-- Modal Button service end_list_jul -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListJulModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth07"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if jul %}
+            <td class="col8" id="internetMonth07">{% if jul.internet != 0 %}{{jul.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth07"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if jul %}
+            <td class="col9" id="kabelMonth07">{% if jul.kabel != 0 %}{{jul.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth07"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if jul %}
+            <td class="col10" id="alemMonth07">{% if jul.alem != 0 %}{{jul.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth07"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Август -->
+        <tr>
+            <td class="col1 text-start">Август</td>
+            
+            <!-- Abonplata -->
+            {% if aug %}
+            <td class="col2" id="abonplataMonth08">{% if aug.telefon != 0 %}{{aug.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth08"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if aug %}
+            <td class="col3" id="slrMonth08">{% if aug.slr != 0 %}{{aug.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth08"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if aug %}
+            <td class="col4" id="kodMonth08">{% if aug.kod != 0 %}{{aug.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth08"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if aug %}
+            <td class="col5" id="zakazMonth08">{% if aug.zakaz != 0 %}{{aug.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth08"></td>
+            {% endif %}
+
+            <!-- Prochee -->
+            {% if aug %}
+            <td class="col6" id="procheeMonth08">{% if aug.prochee != 0 %}{{aug.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth08"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if aug %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth08">{% if aug.dop_uslugi != 0 %}{{aug.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_aug  %}
+                            <!-- Modal Button service end_list_aug -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListAugModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth08"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if aug %}
+            <td class="col8" id="internetMonth08">{% if aug.internet != 0 %}{{aug.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth08"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if aug %}
+            <td class="col9" id="kabelMonth08">{% if aug.kabel != 0 %}{{aug.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth08"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if aug %}
+            <td class="col10" id="alemMonth08">{% if aug.alem != 0 %}{{aug.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth08"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Сентябрь -->
+        <tr>
+            <td class="col1 text-start">Сентябрь</td>
+            
+            <!-- Abonplata -->
+            {% if sep %}
+            <td class="col2" id="abonplataMonth09">{% if sep.telefon != 0 %}{{sep.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth09"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if sep %}
+            <td class="col3" id="slrMonth09">{% if sep.slr != 0 %}{{sep.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth09"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if sep %}
+            <td class="col4" id="kodMonth09">{% if sep.kod != 0 %}{{sep.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth09"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if sep %}
+            <td class="col5" id="zakazMonth09">{% if sep.zakaz != 0 %}{{sep.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth09"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if sep %}
+            <td class="col6" id="procheeMonth09">{% if sep.prochee != 0 %}{{sep.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth09"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if sep %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth09">{% if sep.dop_uslugi != 0 %}{{sep.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_sep  %}
+                            <!-- Modal Button service end_list_sep -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListSepModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth09"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if sep %}
+            <td class="col8" id="internetMonth09">{% if sep.internet != 0 %}{{sep.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth09"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if sep %}
+            <td class="col9" id="kabelMonth09">{% if sep.kabel != 0 %}{{sep.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth09"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if sep %}
+            <td class="col10" id="alemMonth09">{% if sep.alem != 0 %}{{sep.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth09"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Октябрь -->
+        <tr>
+            <td class="col1 text-start">Октябрь</td>
+            
+            <!-- Abonplata -->
+            {% if oct %}
+            <td class="col2" id="abonplataMonth10">{% if oct.telefon != 0 %}{{oct.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth10"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if oct %}
+            <td class="col3" id="slrMonth10">{% if oct.slr != 0 %}{{oct.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth10"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if oct %}
+            <td class="col4" id="kodMonth10">{% if oct.kod != 0 %}{{oct.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth10"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if oct %}
+            <td class="col5" id="zakazMonth10">{% if oct.zakaz != 0 %}{{oct.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth10"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if oct %}
+            <td class="col6" id="procheeMonth10">{% if oct.prochee != 0 %}{{oct.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth10"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if oct %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth10">{% if oct.dop_uslugi != 0 %}{{oct.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_oct  %}
+                            <!-- Modal Button service end_list_oct -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListOctModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth10"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if oct %}
+            <td class="col8" id="internetMonth10">{% if oct.internet != 0 %}{{oct.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth10"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if oct %}
+            <td class="col9" id="kabelMonth10">{% if oct.kabel != 0 %}{{oct.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth10"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if oct %}
+            <td class="col10" id="alemMonth10">{% if oct.alem != 0 %}{{oct.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth10"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Ноябрь -->
+        <tr>
+            <td class="col1 text-start">Ноябрь</td>
+            
+            <!-- Abonplata -->
+            {% if nov %}
+            <td class="col2" id="abonplataMonth11">{% if nov.telefon != 0 %}{{nov.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth11"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if nov %}
+            <td class="col3" id="slrMonth11">{% if nov.slr != 0 %}{{nov.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth11"></td>
+            {% endif %}
+
+            <!-- Kod -->
+            {% if nov %}
+            <td class="col4" id="kodMonth11">{% if nov.kod != 0 %}{{nov.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth11"></td>
+            {% endif %}
+
+            <!-- Zakaz -->
+            {% if nov %}
+            <td class="col5" id="zakazMonth11">{% if nov.zakaz != 0 %}{{nov.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth11"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if nov %}
+            <td class="col6" id="procheeMonth11">{% if nov.prochee != 0 %}{{nov.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth11"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if nov %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth11">{% if nov.dop_uslugi != 0 %}{{nov.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_nov  %}
+                            <!-- Modal Button service end_list_nov -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListNovModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth11"></td>
+            {% endif %}
+            
+            <!-- internet -->
+            {% if nov %}
+            <td class="col8" id="internetMonth11">{% if nov.internet != 0 %}{{nov.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth11"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if nov %}
+            <td class="col9" id="kabelMonth11">{% if nov.kabel != 0 %}{{nov.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth11"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if nov %}
+            <td class="col10" id="alemMonth11">{% if nov.alem != 0 %}{{nov.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth11"></td>
+            {% endif %}
+        </tr>
+
+        <!-- Декабрь -->
+        <tr>
+            <td class="col1 text-start">Декабрь</td>
+            
+            <!-- Abonplata -->
+            {% if dec %}
+            <td class="col2" id="abonplataMonth12">{% if dec.telefon != 0 %}{{dec.telefon|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col2" id="abonplataMonth12"></td>
+            {% endif %}
+            
+            <!-- Slr -->
+            {% if dec %}
+            <td class="col3" id="slrMonth12">{% if dec.slr != 0 %}{{dec.slr|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col3" id="slrMonth12"></td>
+            {% endif %}
+     
+            <!-- Kod -->
+            {% if dec %}
+            <td class="col4" id="kodMonth12">{% if dec.kod != 0 %}{{dec.kod|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col4" id="kodMonth12"></td>
+            {% endif %}
+
+
+            <!-- Zakaz -->
+            {% if dec %}
+            <td class="col5" id="zakazMonth12">{% if dec.zakaz != 0 %}{{dec.zakaz|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col5" id="zakazMonth12"></td>
+            {% endif %}
+            
+            <!-- Prochee -->
+            {% if dec %}
+            <td class="col6" id="procheeMonth12">{% if dec.prochee != 0 %}{{dec.prochee|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col6" id="procheeMonth12"></td>
+            {% endif %}
+
+            <!-- dop_uslugi -->
+            {% if dec %}
+            <td class="col7">
+                <div class="d-flex">
+                    <div class="my_width80 text-start" id="dop_uslugiMonth12">{% if dec.dop_uslugi != 0 %}{{dec.dop_uslugi|floatformat:2}}{% endif %}</div>
+                    <div>
+                        {% if end_list_dec  %}
+                            <!-- Modal Button service end_list_dec -->
+                            <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceEndListDecModal" role="button">!</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col7" id="dop_uslugiMonth12"></td>
+            {% endif %}
+
+
+            <!-- internet -->
+            {% if dec %}
+            <td class="col8" id="internetMonth12">{% if dec.internet != 0 %}{{dec.internet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col8" id="internetMonth12"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if dec %}
+            <td class="col9" id="kabelMonth12">{% if dec.kabel != 0 %}{{dec.kabel|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col9" id="kabelMonth12"></td>
+            {% endif %}
+
+            <!-- Alem TV -->
+            {% if dec %}
+            <td class="col10" id="alemMonth12">{% if dec.alem != 0 %}{{dec.alem|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="col10" id="alemMonth12"></td>
+            {% endif %}
+        </tr>
+
+        <!-- К оплате -->
+        <tr>
+            <td class="col1 text-start">К оплате</td>
+
+            <!-- Abonplata -->
+            <td class="col2">{{abonent.abonplata}}</td>
+            <td class="col3"></td>
+            <td class="col4"></td>
+            <td class="col5"></td>
+            <td class="col6"></td>
+
+            <!-- dop_uslugi -->
+            {% if abonent.service.all %}
+            <td class="col7">
+                <!-- Modal Button service -->
+                <div class="d-flex">
+                    <div class="my_width80 text-start">{{service_total_sum}}</div>
+                    <div class="kassaNachInfoModalBtn" data-bs-toggle="modal" data-bs-target="#serviceModal" role="button">!</div>
+                    
+                </div>    
+            </td>
+            {% else %}
+            <td class="col7"></td>
+            {% endif %}
+
+            <!-- internet -->
+            {% if abonent.internet_tarif %}
+            <td class="col8">
+                <!-- Modal Button internet -->
+                <div class="d-flex justify-content-around">
+                    <div>{{abonent.internet_tarif.price}}</div>
+                    <div data-bs-toggle="modal" data-bs-target="#internetModal" class="kassaNachInfoModalBtn">!</div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col8"></td>
+            {% endif %}
+
+            <!-- Kabel TV -->
+            {% if abonent.kabel_count and abonent.is_on %}
+            <td class="col9">
+                <div class="d-flex justify-content-around">
+                    <div>{{abonent.kabel_count.price}}</div>
+                    <div data-bs-toggle="modal" data-bs-target="#kabelInfoModal" class="kassaNachInfoModalBtn">!</div>
+                </div>
+            </td>
+            {% else %}
+                <td class="col9"></td>
+            {% endif %}
+
+            {% if abonent.alemCount %}
+            <td class="col10">
+                <!-- Modal Button internet -->
+                <div class="d-flex justify-content-around">
+                    <div>{{abonent.alemCount.price}}</div>
+                    <div data-bs-toggle="modal" data-bs-target="#alemModal" class="kassaNachInfoModalBtn">!</div>
+                </div>
+            </td>
+            {% else %}
+            <td class="col10"></td>
+            {% endif %}
+        </tr>
+
+
+
+
+
+        <!-- Итого -->
+        <tr>
+            <td class="col1 text-start">Итого</td>
+            <td class="col2" id="abonent_balance_in_kassa_table">{{abonent.b_telefon|floatformat:2}}</td>
+            <td class="col3" id="slr_balance_in_kassa_table">{{abonent.b_slr|floatformat:2}}</td>
+            <td class="col4" id="kod_balance_in_kassa_table">{{abonent.b_kod|floatformat:2}}</td>
+            <td class="col5" id="zakaz_balance_in_kassa_table">{{abonent.b_zakaz|floatformat:2}}</td>
+            <td class="col6" id="prochee_balance_in_kassa_table">{{abonent.b_prochee|floatformat:2}}</td>
+
+            <td class="col7" id="dop_uslugi_balance_in_kassa_table">{{abonent.b_dop_uslugi|floatformat:2}}</td>
+
+            <td class="col8" id="internet_balance_in_kassa_table">{{abonent.b_internet|floatformat:2}}</td>
+
+            <td class="col9" id="kabel_balance_in_kassa_table">{{abonent.b_kabel|floatformat:2}}</td>
+
+            <td class="col10" id="alem_balance_in_kassa_table">{{abonent.b_alem|floatformat:2}}</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+{% if abonent and abonent.wost_date == None and abonent.close_date == None and request.user.is_superuser %}
+<div>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#wost">Востановить {{abonent.number|slice:"1"}}-{{abonent.number|slice:"1:3"}}-{{abonent.number|slice:"3:5"}}</button>    
+    <!-- Modal -->
+    <div class="modal fade" id="wost" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-footer">
+                    <form action="" method="POST">{% csrf_token %}
+                        <div>Комментарий</div>
+                        <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+                        <input type="hidden" name="wost" value="{{abonent.pk}}">
+                        <div class="d-flex justify-content-between text-danger">
+                            <h5>Востановить?</h5>
+                            <button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        </div>   
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#wostAnother">Востановить на другой номер</button>
+    <!-- Modal -->
+    <div class="modal fade" id="wostAnother" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-footer">
+                    <form action="" method="POST">{% csrf_token %}
+                        <div>Выберите номер и этрап для востановления</div>
+                        <div class="d-flex my_column_gap10">
+                            <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrapToWost">
+                                {% for etr in etraps %}
+                                    {% if etrap in etraps %}
+                                        <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                                    {% else %}
+                                        <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input type="text" name="numberToWost" class="form-control my_width150 bg-gold" placeholder="Номер">
+                        </div>
+                        <div>Комментарий</div>
+                        <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+                        <input type="hidden" name="Another" value="{{abonent.pk}}">
+                        <div class="d-flex justify-content-between text-danger">
+                            <h5>Востановить?</h5>
+                            <button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        </div>   
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+
+
+<style>
+/* .kassaNachInfoModalBtn {
+    background-color: white;
+    border: black solid 1px;
+    font-size: 10px;
+    border-radius: 5px; 
+    height: 17px; 
+    width: 17px; 
+    margin-top: 4px;
+    user-select: none;
+}
+.kassaNachInfoModalBtn:hover {
+    background-color: #F08080;
+} */
+
+th, td {padding: 5px !important;}
+
+</style>
+
+
+
+
+<script>
+
+
+</script>

@@ -1,0 +1,283 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Экзамен{% endblock %}
+{% block content %}
+
+
+<div class="text-light p-4">
+    <div class="d-flex">
+        {% if request.user.is_superuser %}
+        
+        <a href="{% url 'exam-history-all' %}">
+            <div class="text-center begin">История</div>
+        </a>
+        {% endif %}
+        <div id="clock" style="font-size: 20px;"></div>
+    </div>
+
+    <div class="d-flex" style="justify-content: center; align-items: center; flex-direction: column;">
+        <h5>Экзамены {{current_year}}</h5>
+        <div class="d-flex" style="column-gap: 10px;">
+            <select name="group" class="form-select my_width150" id="mySelect">
+                <option value="">Ваш отдел?</option>
+                {% for g in groups %}
+                <option value="{{g}}">{{g}}</option>
+                {% endfor %}
+            </select>
+
+            <select name="lang" class="form-select my_width150" id="mySelect" form="startForm">
+                <option value="">Язык</option>
+                <!-- <option value="rus">Русский</option> -->
+                <option value="tm">Туркменский</option>
+            </select>
+
+            <input type="text" class="form-control" placeholder="Фамилия" name="surname" form="startForm" autocomplete="off">
+            <input type="text" class="form-control" placeholder="Имя", name="name" form="startForm" autocomplete="off">
+            <select name="etrap" class="form-select my_width150" id="mySelect" form="startForm">
+                <option value="">Этрап</option>
+                {% for e in etraps %}
+                <option value="{{e}}">{{e}}</option>
+                {% endfor %}
+            </select>
+            
+            <input type="tel" id="phone" form="startForm" name="sotowyy" pattern="\(\+\d{3}\)\s\d{2}\s\d{3}\-\d{2}\-\d{2}" title="Введите номер телефона в формате +(993) XX XXX-XX-XX" required value="+(993) " class="form-control" autocomplete="off"><br>
+
+            <br>
+            <button class="btn btn-danger" style="width: 150px;" data-bs-toggle="modal" data-bs-target="#exampleModal" id="start_btn" disabled>Начать</button>
+        </div>
+    </div>
+ 
+</div>
+
+  
+
+
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Вы уверены?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            Все вопросы будут относиться к отделу <span id="setGroup"></span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет</button>
+          <form method="POST" action="{% url 'start-exam' %}" id="startForm">{% csrf_token %}
+            <input type="hidden" name="bolum" value="" id="bolumName">
+            <button type="submit" class="btn btn-primary">Начать</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="container" class="text-light">
+    <span id="text1"></span>
+    <span id="text2"></span>
+</div>
+
+<svg id="filters">
+    <defs>
+        <filter id="threshold">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 255 -140" />
+        </filter>
+    </defs>
+</svg>
+
+<style>
+    a, a:hover {
+        text-decoration: none;
+        color: black;
+    }
+    .begin {
+        padding: 5px 8px;
+        background-color: #486356;
+        width: 100px;
+        cursor: pointer;
+        border-radius: 5px;
+
+    }
+    .begin:hover {
+        background-color: #87b29d;
+    }
+
+
+
+
+    body {
+    margin: 0px;
+}
+
+#container {
+    position: absolute;
+    margin: auto;
+    width: 100vw;
+    height: 80pt;
+    top: 0;
+    bottom: 0;
+
+    filter: url(#threshold) blur(0.6px);
+}
+
+#text1,
+#text2 {
+    position: absolute;
+    width: 100%;
+    display: inline-block;
+
+    font-family: "Raleway", sans-serif;
+    font-size: 80pt;
+
+    text-align: center;
+
+    user-select: none;
+}
+</style>
+
+
+<script>
+
+let setGroup = document.getElementById('setGroup')
+var selectElement = document.getElementById('mySelect')
+
+
+selectElement.addEventListener('change', function() {
+    if (selectElement.value) {
+        document.getElementById('start_btn').disabled = false
+    } else {
+        document.getElementById('start_btn').disabled = true
+    }
+    setGroup.innerHTML = selectElement.value
+    document.getElementById('bolumName').value = selectElement.value
+})
+
+    const elts = {
+    text1: document.getElementById("text1"),
+    text2: document.getElementById("text2")
+};
+
+const texts = [
+    "Нажмите",
+    "на кнопку",
+    "начать",
+    "Удачи!!!",
+    ":)",
+];
+
+const morphTime = 1;
+const cooldownTime = 0.25;
+
+let textIndex = texts.length - 1;
+let time = new Date();
+let morph = 0;
+let cooldown = cooldownTime;
+
+elts.text1.textContent = texts[textIndex % texts.length];
+elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+
+function doMorph() {
+    morph -= cooldown;
+    cooldown = 0;
+
+    let fraction = morph / morphTime;
+
+    if (fraction > 1) {
+        cooldown = cooldownTime;
+        fraction = 1;
+    }
+
+    setMorph(fraction);
+}
+
+function setMorph(fraction) {
+    elts.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    elts.text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+    fraction = 1 - fraction;
+    elts.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+    elts.text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+    elts.text1.textContent = texts[textIndex % texts.length];
+    elts.text2.textContent = texts[(textIndex + 1) % texts.length];
+}
+
+function doCooldown() {
+    morph = 0;
+
+    elts.text2.style.filter = "";
+    elts.text2.style.opacity = "100%";
+
+    elts.text1.style.filter = "";
+    elts.text1.style.opacity = "0%";
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    let newTime = new Date();
+    let shouldIncrementIndex = cooldown > 0;
+    let dt = (newTime - time) / 1000;
+    time = newTime;
+
+    cooldown -= dt;
+
+    if (cooldown <= 0) {
+        if (shouldIncrementIndex) {
+            textIndex++;
+        }
+
+        doMorph();
+    } else {
+        doCooldown();
+    }
+}
+
+animate();
+
+// clock
+function updateClock() {
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            // Дополнить нулем, если минуты или секунды меньше 10
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            var timeString = hours + ':' + minutes + ':' + seconds;
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        // Обновляем часы каждую секунду
+        setInterval(updateClock, 1000);
+
+        // Запускаем функцию в первый раз, чтобы часы отобразились сразу
+        updateClock();
+
+
+
+// Input +993
+document.getElementById('phone').addEventListener('input', function() {
+  // Проверяем, начинается ли значение поля с +(993)
+  if (!this.value.startsWith('+(993)')) {
+    // Если нет, добавляем его в начало
+    this.value = '+(993) ' + this.value;
+  }
+});
+
+// Отключаем возможность изменения начала поля ввода
+document.getElementById('phone').addEventListener('keydown', function(event) {
+  // Проверяем, не нажата ли клавиша Backspace перед началом номера
+  if (event.key === 'Backspace' && this.selectionStart <= 6) {
+    event.preventDefault();
+  }
+});
+
+</script>
+{% endblock %}

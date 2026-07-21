@@ -1,0 +1,366 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}TV-{{number_for_shapka}}{% endblock %}
+{% block content %}
+{% load static %}
+
+
+
+<form method="GET" id="search_form">{% csrf_token %}</form>
+<div style="background-color:white; height: 4px;"></div>
+<div style="background-color: #f3f3f3;">
+    <div class="fw-bold d-flex" style="background-color: #d4d4d4; padding: 5px; align-items:center;">Список пользователей</div>
+    <div class="my_body">
+        <div class="my_container">
+            <!-- left -->
+            {% include 'telekom/MATB/KabelNew/left.html' %}
+
+            <!-- right -->
+            {% include 'telekom/MATB/KabelNew/right/right.html' %}
+            
+        </div>
+    </div>
+</div>
+
+<style>
+
+    /* Расширенный поиск */
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      column-gap: 5px;
+    }
+    .filter-inputs {
+      display: none;
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #d7d6d6;
+      box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+ 
+
+
+/* анимация для кнопки найти */
+    @keyframes bounce {
+        0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Анимация появления последнего успешного платежа */
+@keyframes last_pay_anime {
+    0% {transform: scale(0.5); background-color:#dedfde}
+  100% {transform: scale(1); background-color:#d2f6bd;}
+}
+
+.last_pay_row {
+    animation: last_pay_anime .5s;
+    animation-direction: alternate;
+    background-color:#d2f6bd;
+}
+
+    .my_btn {
+        padding: 3px 10px; 
+        border-radius: 3px; 
+        border: 1px rgb(203, 203, 203) solid;
+        transition: transform 0.2s;
+    }
+
+
+
+    .my_btn.bounce {
+        animation: bounce 0.5s;
+    }
+
+    .my_btn:hover, .payImg:hover{
+        background-color:#dddddd;
+    }
+
+    .my_input {
+        padding: 1px 5px;
+    }
+    .my_body {
+            margin: 0;
+            margin: 10px;
+            height: 100%;
+            font-size: 14px;
+            border: 1px rgb(207, 206, 206) solid;
+        }
+        .my_container {
+            display: flex;
+            height: 100vh; /* Высота на весь экран */
+        }
+        .left {
+            width: 15%;
+            background-color: #f0f0f0; /* Цвет фона левой стороны */
+            margin: 10px;
+            padding: 10px;
+            border-radius:5px;
+            border: 1px rgb(207, 206, 206) solid;
+            box-sizing: border-box;
+        }
+        .right {
+            margin: 10px;
+            border: 1px rgb(207, 206, 206) solid;
+            width: 85%;
+            background-color: white; /* Цвет фона правой стороны */
+            /* padding: 20px; */
+            box-sizing: border-box;
+        }
+
+        /* img в input сотового в modal add_user */
+        .input-with-image {
+            position: relative;
+            display: inline-block;
+        }
+
+        .input-with-image img {
+            position: absolute;
+            left: 5px;
+            top: 12%;
+            width: 20%;
+        }
+
+        .input-with-image input {
+            padding-left: 60px; /* Учитывает ширину изображения */
+        }
+        @media (max-width: 1600px) {
+            .my_body{
+                font-size: 12px !important;
+            }
+            h5 {
+                font-size: 1.1rem;
+            }
+            img {
+                width: 1.5rem;
+            }
+
+        }
+
+        @media (max-width: 1400px) {
+            .my_body{
+                font-size: 11px !important;
+            }
+            h5 {
+                font-size: 1rem;
+            }
+            img {
+                width: 1.5rem;
+            }
+
+        }
+
+        @media (max-width: 1300px) {
+            .my_body{
+                font-size: 12px !important;
+            }
+            h5 {
+                font-size: 0.9rem;
+            }
+            /* img {
+                width: 1.2rem;
+            } */
+
+            li, td {
+                padding: .3rem .8rem !important;
+            }
+            .card-body {
+                padding: .2rem .2rem !important;
+            }
+
+            input {
+                height:1.4rem !important;
+            }
+
+            .input-with-image img {
+            top: 0;
+        }
+
+        }
+
+        @media (max-width: 1000px) {
+            .my_body{
+                font-size: 11px !important;
+            }
+            h5 {
+                font-size: 0.8rem;
+            }
+            /* img {
+                width: 1rem;
+            } */
+            input {
+                height:1.2rem !important;
+            }
+
+        }
+
+        th, td {
+            padding: 0 !important;
+        }
+
+ 
+        /* Изменить цвет placeholder */
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        ::placeholder {
+        color: rgb(214, 214, 214) !important;
+        opacity: 1;
+        }
+
+        /* Internet Explorer 10-11 */
+        :-ms-input-placeholder {
+        color: rgb(214, 214, 214) !important;
+        }
+
+        /* Microsoft Edge */
+        ::-ms-input-placeholder {
+        color: rgb(214, 214, 214) !important;
+        }
+
+        /* Firefox 19+ */
+        ::-moz-placeholder {
+        color: rgb(214, 214, 214) !important;
+        opacity: 1;
+        }
+
+        /* Safari 10.1+ and Chrome */
+        ::-webkit-input-placeholder {
+        color: rgb(214, 214, 214) !important;
+        }
+
+
+
+
+</style>
+
+<script>
+    let newKabelName = document.getElementById('newKabelName');
+    let newKabelSurName = document.getElementById('newKabelSurName');
+    let newKabelStreet = document.getElementById('newKabelStreet');
+    let newKabelHome = document.getElementById('newKabelHome');
+    let newKabelFlat = document.getElementById('newKabelFlat');
+    let edara_or_not_left = document.getElementById('edara_or_not_left');
+
+    if (newKabelName.value.length || newKabelSurName.value.length || newKabelStreet.value.length || newKabelHome.value.length || newKabelFlat.value.length || edara_or_not_left.checked==true) {
+        document.getElementById('filterInputs').style.display = 'block';
+        document.getElementById('advancedSearch').checked = true;
+        document.getElementById('newKabelSurName').select();
+    } else {
+        document.getElementById('number').select();
+    }
+
+    // Расширенный поиск
+    document.getElementById('advancedSearch').addEventListener('change', function() {
+        var filterInputs = document.getElementById('filterInputs');
+        if (this.checked) {
+            filterInputs.style.display = 'block';
+            document.getElementById('number').value = '';
+            document.getElementById('newKabelSurName').select();
+        } else {
+            filterInputs.style.display = 'none';
+            document.getElementById('number').select();
+        }
+    });
+
+    document.getElementById('myButton').addEventListener('click', function() {
+        this.classList.add('bounce');
+
+        // Удаляем класс после завершения анимации
+        this.addEventListener('animationend', function() {
+            this.classList.remove('bounce');
+        }, { once: true });
+    });
+
+    // Добавляем событие на все модальные окна pays
+    document.querySelectorAll('.payModal').forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function (event) {
+            document.getElementById('inputAmount').select();
+        });
+    });
+
+    // при вкл или откл is_active в modal в add user менять цвет фона
+    let is_active_in_add_user = document.getElementById('is_active_in_add_user');
+    is_active_in_add_user.addEventListener('click', function() {
+        if (is_active_in_add_user.checked) {
+            document.getElementById('add_user_modal_content').style.backgroundColor = '#f4ffee';
+        } else {
+            document.getElementById('add_user_modal_content').style.backgroundColor = '#ffeeee';
+        }
+    });
+
+    // Добавляем событие на модальное окно add_new_user играем цветами в background
+    document.getElementById('add_new_user').addEventListener('shown.bs.modal', function (event) {
+        if (document.getElementById('is_active_in_add_user').checked) {
+            document.getElementById('add_user_modal_content').style.backgroundColor = '#f4ffee';
+        } else {
+            document.getElementById('add_user_modal_content').style.backgroundColor = '#ffeeee';  
+        }
+        document.getElementById('number_input_in_add_user_modal').select();
+    });
+
+
+    // триггер функция для нажаитя backspaace
+    // function triggerBackspace(element) {
+    //     let event = new KeyboardEvent('keydown', {
+    //         bubbles: true,
+    //         cancelable: true,
+    //         key: 'Backspace',
+    //         code: 'Backspace',
+    //         keyCode: 8,
+    //         charCode: 8,
+    //         which: 8
+    //     });
+
+    //     element.dispatchEvent(event);
+    // }
+
+    // для input sotowyy в modal add user
+    function formatMobileNumber(event) {
+        let sotowyy_id_in_add_user_input = document.getElementById('sotowyy_id_in_add_user_input');
+        // Узнаем какую клавишу нажал пользователь
+        let key = event.key;
+        // если при нажатии на Backspace перед символом которая удаяется есть пробел то убрать и пробел
+        if (key === 'Backspace') {
+        let currentValue = sotowyy_id_in_add_user_input.value;
+        if (currentValue.length > 0 && currentValue.charAt(currentValue.length - 2) === ' ') {
+            // как тут убрать последний символ
+            sotowyy_id_in_add_user_input.value = currentValue.slice(0, -1);
+            
+        } else {
+            console.log('Поле ввода пустое');
+        }
+        }
+
+        // Автоматически ставить пробелы через каждые 2 цыфры
+        if (sotowyy_id_in_add_user_input.value.length == 2 && key !== 'Backspace') {
+            sotowyy_id_in_add_user_input.value += " ";
+        }
+
+        if (sotowyy_id_in_add_user_input.value.length == 5 && key !== 'Backspace') {
+            sotowyy_id_in_add_user_input.value += " ";
+        }
+
+        if (sotowyy_id_in_add_user_input.value.length == 8 && key !== 'Backspace') {
+            sotowyy_id_in_add_user_input.value += " ";
+        }
+    }
+    
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.getElementById('sotowyy_id_in_add_user_input').addEventListener('keydown', formatMobileNumber);
+    });
+
+
+
+
+
+</script>
+
+{% endblock %}

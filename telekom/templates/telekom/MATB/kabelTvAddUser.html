@@ -1,0 +1,353 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Добавить нового пользователя Кабель TV{% endblock %}
+{% block content %}
+
+<div class="p-3">
+    <!-- Поиск абонента -->
+    <form action="" method="GET">
+        <div class="d-flex my_column_gap10 text-light">
+            <!-- По этрапу -->
+            <div>
+                <div>Этрап</div>
+                <select class="form-select bg-gold" aria-label="Default select example" name="etrap">
+                    {% for etr in etraps %}
+                        {% if etrap %}
+                        <option {% if etr == etrap and etrap != 'all' %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                        {% else %}
+                        <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                        {% endif %} 
+                    {% endfor %}
+                    <option {% if etrap == 'all' %} selected {% endif %} value="all">Все</option>
+                </select>
+            </div>
+            <!-- По номеру если есть -->
+            <div>
+                <div>дом. номер</div>
+                <input id="kabelTv_AddUser_search_number" type="text" class="form-control bg-gold" name="number" {% if number %} value={{number}} {% endif %} autocomplete="off">
+            </div>
+            <!-- По старому ID -->
+            <div>
+                <div>ID</div>
+                <input type="text" class="form-control bg-gold" name="old_id" {% if old_id %} value="{{old_id}}" {% endif %} autocomplete="off">
+            </div>
+
+            <!-- По Ф.И.О -->
+            <div>
+                <div>Фамилия</div>
+                <input type="text" class="form-control bg-gold" name="surname" {% if surname %} value="{{surname}}" {% endif %} autocomplete="off">
+            </div>
+
+            <div>
+                <div>Имя</div>
+                <input type="text" class="form-control bg-gold" name="name" {% if name %} value="{{name}}" {% endif %} autocomplete="off">
+            </div>
+
+            <!-- По адресу -->
+            <div>
+                <div>Улица</div>
+                <input type="text" class="form-control bg-gold" name="street" {% if street %} value="{{street}}" {% endif %} autocomplete="off">
+            </div>
+
+            <div>
+                <div>Дом</div>
+                <input type="text" class="form-control bg-gold" name="home" {% if home %} value="{{home}}" {% endif %} autocomplete="off">
+            </div>
+
+            <div>
+                <div>Кв.</div>
+                <input type="text"class="form-control bg-gold" name="flat" {% if flat %} value="{{flat}}" {% endif %} autocomplete="off">
+            </div>
+            
+            <!-- По сотовому -->
+            <div>
+                <div>Сотовый</div>
+                <input type="text"class="form-control bg-gold" name="sotowyy" {% if sotowyy %} value="{{sotowyy}}" {% endif %} autocomplete="off">
+            </div>
+            
+            <button class="btn btn-success mt-4" style="height: fit-content;">Поиск</button>
+
+
+
+            <div>
+                <div class="dropdown">
+                    <div class="" type="button" id="emptyNumbers" data-bs-toggle="dropdown" aria-expanded="false"> ...</div>
+                    <div class="dropdown-menu p-2" aria-labelledby="emptyNumbers">
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Dashoguz</div>
+                            <div>{{ lastEmptyNumberDz}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Akdepe</div>
+                            <div>{{ get_last_empty_number_ak}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Boldumsaz</div>
+                            <div>{{ get_last_empty_number_bol}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Gorogly</div>
+                            <div>{{ get_last_empty_number_gor}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Koneurgench</div>
+                            <div>{{ get_last_empty_number_kone}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Turkmenbashy</div>
+                            <div>{{ get_last_empty_number_turk}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>S.A.Nyyazow</div>
+                            <div>{{ get_last_empty_number_nyyaz}}</div>
+                        </div>
+
+                        <div class="d-flex my_column_gap10">
+                            <div>Ruhubelent</div>
+                            <div>{{ get_last_empty_number_ruh}}</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    {% if oneUser %}
+    <table class="table table-dark table-hover mt-3 kabelTvConnecTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Фамилия</th>
+                <th>Имя</th> 
+                <th>Улица</th>
+                <th>Дом</th>
+                <th>Кв.</th>
+                
+                <th>Баланс</th>
+
+                <th>Домашний номер</th>
+                <th>Сотовый</th>
+
+                <th>точек</th>
+                <th>Дата установки</th>
+                <th>Вкл?</th>
+
+                <th>Предпр?</th>
+                <th>Комментарии</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{oneUser.ids}}</td>
+                <td>{{oneUser.surname}}</td>
+                <td>{{oneUser.name}}</td>
+                <td>{{oneUser.street}}</td>
+                <td>{{oneUser.home}}</td>
+                <td>{{oneUser.flat}}</td>
+
+                <td>{{oneUser.b_kabel|floatformat:2}}</td>
+
+                <td>{{oneUser.number}}</td>
+                <td>{{oneUser.sotowyy}}</td>
+
+                <td>{{oneUser.kabel_count.kabel_count}}</td>
+                <td>{{oneUser.connect_date|date:'d M Y H:i:s'}}</td>
+                <td>
+                    {% if oneUser.is_on %}
+                    <input type="checkbox" class="form-check-input" checked disabled>
+                    {% else %}
+                    <input type="checkbox" class="form-check-input" disabled>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if oneUser.is_enterprises %}
+                    <input type="checkbox" class="form-check-input" checked disabled>
+                    {% else %}
+                    <input type="checkbox" class="form-check-input" disabled>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <div class="d-flex justify-content-between">
+                        {% if oneUser.kabel_comments %}
+                        <div>{{ oneUser.kabel_comments|slice:":20" }}</div>
+                        <div class="dropdown">
+                            <div class="" type="button" id="kabelCooment" data-bs-toggle="dropdown" aria-expanded="false"> ...</div>
+                            <div class="dropdown-menu p-2" aria-labelledby="kabelCooment">
+                            <div>{{ oneUser.kabel_comments }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    {% else %}
+    <table class="table table-dark table-hover mt-3 kabelTvConnecTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Фамилия</th>
+                <th>Имя</th> 
+                <th>Улица</th>
+                <th>Дом</th>
+                <th>Кв.</th>
+                
+                
+
+
+                <th>Домашний номер</th>
+                <th>Сотовый</th>
+
+                <th>точек</th>
+                <th>Дата установки</th>
+                <th>Вкл?</th>
+
+                <th>Предпр?</th>
+                <th>Комментарии</th>
+                
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            
+            <tr id="{{user.pk}}" onmouseover="addBG(this.id)" onmouseleave="delBg(this.id)">
+                <td>{{user.ids}}</td>
+                <td>{{user.surname}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.street}}</td>
+                <td>{{user.home}}</td>
+                <td>{{user.flat}}</td>
+
+
+                <td>{{user.number}}</td>
+                <td>{{user.sotowyy}}</td>
+
+                <td>{{user.kabel_count.kabel_count}}</td>
+                <td>{{user.connect_date|date:'d M Y H:i:s'}}</td>
+                <td>
+                    {% if user.is_on %}
+                    <input type="checkbox" class="form-check-input" checked disabled>
+                    {% else %}
+                    <input type="checkbox" class="form-check-input" disabled>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.is_enterprises %}
+                    <input type="checkbox" class="form-check-input" checked disabled>
+                    {% else %}
+                    <input type="checkbox" class="form-check-input" disabled>
+                    {% endif %}
+                </td>
+                <td>{% if user.kabel_comments %}{{user.kabel_comments}}{% endif %}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</div>
+
+{% if oneUser %}
+
+<div style="background-color: #1E90FF; padding: 20px; border-radius: 10px;" class="my_width400 my_block_center">
+    <form action="" method="POST" class="d-flex flex-column justify-content-between my_width700 my_block_center text-light" style="row-gap: 0px;"> {% csrf_token %}
+        <div>
+            <div>Фамилия</div>
+            <input type="text" name="surname" class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.surname %} value="{{oneUser.surname}}" {% endif %}>
+        </div>
+        <div>
+            <div>Имя</div>
+            <input type="text" name="name"    class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.name %} value="{{oneUser.name}}" {% endif %}>
+        </div>
+        
+        <div>
+            <div>Улица</div>
+            <input type="text" name="street"  class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.street %} value="{{oneUser.street}}" {% endif %}>
+        </div>
+        <div>
+            <div>Дом</div>
+            <input type="text" name="home"    class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.home %} value="{{oneUser.home}}" {% endif %}>
+        </div>
+        <div>
+            <div>Кв.</div>
+            <input type="text" name="flat"    class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.flat %} value="{{oneUser.flat}}" {% endif %}>
+        </div>
+        <div>
+            <div>Сотовый</div>
+            <input type="text" name="sotowyy" class="form-control my_width300 bg-gold" autocomplete="off" {% if oneUser.sotowyy %} value="{{oneUser.sotowyy}}" {% endif %}>
+        </div>
+        <div class="d-flex my_column_gap10 bg-gold my_width200 btn mt-2" style="padding-left: 10px;" role="button" id="KabelIsEnterprisesButton" onclick="KabelIsEnterprisesButton(this.id)">
+            {% if oneUser.is_enterprises %}
+            <input type="checkbox" class="form-check-input" name="is_enterprises" checked>
+            {% else %}
+            <input type="checkbox" class="form-check-input" name="is_enterprises">
+            {% endif %}
+            <div class="my_width100 text-dark">Предприятия?</div> 
+        </div>
+        <div>
+            <div>Кол-во точек</div>
+            <select class="form-select  my_width300 bg-gold" aria-label="Default select example" name="tarif_pk" style="height: fit-content;">
+                {% for tarif in tarifs %}
+                    <option {% if current_tarif_pk == tarif.pk %} selected {% endif %} value="{{tarif.pk}}">Кол-во точек {{tarif.kabel_count}}; Цена {{tarif.price}} манат</option>
+                {% endfor %}
+                <option value="off" {% if current_tarif_pk == 'off' %} selected {% endif %}>{% if current_tarif_pk == 'off' %}Отключен{% else %}Отключить{% endif %}</option>
+            </select>
+        </div>
+        <div>
+            <div>Примечание</div>
+            <textarea rows="2" cols="35" name="comment" class="bg-gold"></textarea>
+        </div>
+        <div class="d-flex my_column_gap10 bg-gold my_width200 btn" style="padding-left: 10px;" role="button" id="KabelIsOnButton" onclick="KabelIsOnButton(this.id)">
+            {% if oneUser.is_on %}
+            <input type="checkbox" class="form-check-input" name="is_on" checked>
+            {% else %}
+            <input type="checkbox" class="form-check-input" name="is_on">
+            {% endif %}
+            <div class="my_width100 text-dark">Включить?</div> 
+        </div>
+        
+        <input type="hidden" name="pk" value="{{oneUser.pk}}">
+        <button class="btn btn-danger mt-4" style="height: fit-content; width: fit-content;" {% if request.user.is_superuser %} {% else %} disabled {% endif %} >Сохранить</button>
+    </form>
+</div>
+
+{% endif %}
+
+<style>
+
+.kabelTvConnecTable th:nth-of-type(1), .kabelTvConnecTable td:nth-of-type(1){width: 50px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(2), .kabelTvConnecTable td:nth-of-type(2){width: 200px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(3), .kabelTvConnecTable td:nth-of-type(3){width: 200px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(4), .kabelTvConnecTable td:nth-of-type(4){width: 150px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(5), .kabelTvConnecTable td:nth-of-type(5){width: 50px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(6), .kabelTvConnecTable td:nth-of-type(6){width: 50px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(7), .kabelTvConnecTable td:nth-of-type(7){width: 50px; border: 1px black solid;}
+
+.kabelTvConnecTable th:nth-of-type(8), .kabelTvConnecTable td:nth-of-type(8){width: 200px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(9), .kabelTvConnecTable td:nth-of-type(9){width: 150px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(10), .kabelTvConnecTable td:nth-of-type(10){width: 20px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(11), .kabelTvConnecTable td:nth-of-type(11){width: 150px; border: 1px black solid;}
+
+.kabelTvConnecTable th:nth-of-type(12), .kabelTvConnecTable td:nth-of-type(12){width: 50px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(13), .kabelTvConnecTable td:nth-of-type(13){width: 50px; border: 1px black solid;}
+.kabelTvConnecTable th:nth-of-type(14), .kabelTvConnecTable td:nth-of-type(14){border: 1px black solid;}
+
+</style>
+
+
+{% endblock %}

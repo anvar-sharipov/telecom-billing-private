@@ -1,0 +1,108 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Начисление Код{% endblock %}
+{% block content %}
+
+<div class="kodNachisleniyaContainer">
+    <form action="" method="GET" class="kodNachisleniyaForm">
+        <div>
+            <div>Месяц</div>
+            <select class="form-select kodNachisleniyaSearchMonth" name="month">
+                {% if get_month %}
+                {% else %}
+                <option selected value="">Месяц</option>
+                {% endif %}
+                {% for month in months %}
+                    <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+
+        <div>
+            <div>Год</div>
+            <select class="form-select kodNachisleniyaSearchYear" name="year">
+                {% for year in years %}
+                    <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+        <button class="btn kodNachisleniyaSearchSubmit btn-success" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+    </form>
+
+    <div class="kodNachisleniyaInfo">
+        <!-- succes info -->
+        <div class="d-flex kodInfoRowContainers">
+            <div class="item1kod">Количество абонентов для начисления</div>
+            <div class="item2kod">{{abonentCountSuccess}}</div>
+        </div>
+        <div class="d-flex kodInfoRowContainers">
+            <div class="item1kod">Количество Звонков для начисления</div>
+            <div class="item2kod">{{totalSuccesCalls}}</div>
+        </div>
+        
+        <div class="d-flex kodInfoRowContainers">
+            <div class="item1kod">Количество общих минут звонков для начисления</div>
+            <div class="item2kod">{{totalMtSuccess}}</div>
+        </div>
+        <div class="d-flex kodInfoRowContainers">
+            <div class="item1kod">Общая цена начисления</div>
+            <div class="item2kod">{{totalSuccessPrice|floatformat:2}}</div>
+        </div>
+        <div class="d-flex justify-content-around">
+            <a href="{% url 'global-success' get_year get_month %}"><button class="btn btn-primary">Скачать TXT</button></a>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kodNachisleniyaBtnModal">Начислить</button>
+        </div>
+
+        <!-- error info -->
+        <div class="d-flex kodInfoRowContainerErr">
+            <div class="item1kod">Количество абонентов не найденные в БД</div>
+            <div class="item2kod">{{abonentCountError}}</div>
+        </div>
+        <div class="d-flex kodInfoRowContainerErr">
+            <div class="item1kod">Количество Звонков для не найденных в БД</div>
+            <div class="item2kod">{{totalErrorCalls}}</div>
+        </div>
+        <div class="d-flex kodInfoRowContainerErr">
+            <div class="item1kod">Количество бщих минут для не найденных в БД</div>
+            <div class="item2kod">{{totalMtError}}</div>
+        </div>
+        <div class="d-flex kodInfoRowContainerErr">
+            <div class="item1kod">Цена звонков для не найденных в БД</div>
+            <div class="item2kod">{{totalErrorPrice|floatformat:2}}</div>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'global-error' get_year get_month %}"><button class="btn btn-primary">Скачать TXT</button></a>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="kodNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-body">
+    <h5>Начисления за {{get_month}} {{get_year}} год</р>
+    <h5>Начислить?</h5>
+    </div>
+    <div class="modal-footer">
+        <form action="{% url 'kod-nachisleniya-btn' %}" method="POST">{% csrf_token %}
+            <div>Комментарий - задокументируйте ваши действия</div>
+            <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+            <input type="hidden" value="{{get_year}}" name="year">
+            <input type="hidden" value="{{get_month}}" name="month">
+            <input type="hidden" value="{{request.get_full_path}}" name="url_from">
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Начислить</button>
+        </form>
+    </div>
+    </div>
+</div>
+</div>
+
+<div class="kod_nachisleniya_string"><h1>Код</h1> <span>начисления</span></div>
+
+
+
+
+{% endblock %}

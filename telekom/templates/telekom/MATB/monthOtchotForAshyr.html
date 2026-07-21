@@ -1,0 +1,59 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Ашир месяц отчет {% endblock %}
+{% block content %}
+
+
+
+<div style="background-color: #A9A9A9; min-height: 98vh;">
+    <div class="pt-2 my_width600 my_block_center">
+        <form method="GET">
+            <div class="d-flex my_column_gap10">
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="etrap">
+                        {% for etr in etraps %}
+                        <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="year">
+                        {% for y in years %}
+                        <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="month">
+                        {% for mon in months %}
+                        <option value="{{mon}}" {% if mon == month %} selected {% endif %}>{{mon}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="search_btn">
+                    <button class="btn btn-success">Скачать</button>
+                </div>
+            </div>
+            
+            
+        </form>
+    </div>
+    <!-- <div class="text-light">
+        {% for key, value in test.items %}
+        <div>{{key}} === {{value}}</div>
+        {% endfor %}
+    </div> -->
+
+    <!-- <div class="mt-4">
+        <h4 class="text-center">Найдено {{count}} абонентов</h4>
+        <form method="POST" class="text-center">{% csrf_token %}
+            <button class="btn btn-success">Скачать CSV</button>
+        </form>
+    </div> -->
+    
+
+</div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,187 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Заказ начисление{% endblock %}
+{% block content %}
+
+<div class="zakaz_nachisleniya_string"><h3>Заказ Начисления</h3></div>
+
+
+
+<div class="my_width800 my_block_center mt-3">
+    <form action="" method="GET" class="text-light">
+        <div class="d-flex my_column_gap10">
+            <div>
+                <div>Месяц</div>
+                <select class="form-select my_width200 bg-gold" name="month">
+                    <option {% if get_month == '' %} selected {% endif %} value="">Месяц</option>
+                    {% for month in months %}
+                        <option {% if get_month == month %} selected {% endif %} value="{{month}}">{{month}}</option>
+                    {% endfor %}       
+                </select>
+            </div>
+
+            <div>
+                <div>Год</div>
+                <select class="form-select my_width200 bg-gold" name="year">
+                    {% for year in years %}
+                        {% if get_year %}
+                        <option {% if get_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                        {% else %}
+                        <option {% if current_year == year %} selected {% endif %} value="{{year}}">{{year}}</option>
+                        {% endif %}
+                    {% endfor %}         
+                </select>
+            </div>
+
+            <div>
+                <div>Этрап</div>
+                <select class="form-select my_width200 bg-gold" aria-label="Default select example" name="etrap">
+                    <option selected value="Dashoguz">Dashoguz</option>
+                </select>
+            </div>
+
+
+            <button class="btn zakazNachisleniyaSearchSubmit btn-success mt-4" onclick="this.form.submit(); this.disabled=true;">Поиск</button>
+        </div>
+    </form>
+</div>
+
+<div style="width: 1500px;" class="my_block_center">
+
+    <div class="mt-3 p-3 bg-white" style=" overflow-y:scroll; height: 50vh;">
+        {% if ZakazCalls %}
+        <table class="table table-light zakazCallsTable">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата/время</th>
+                    <th>Кто</th>
+                    <th>Этрап</th>
+                    <th>Куда</th>
+                    <th>Страна/город</th>
+                    <th style="background-color: #ADD8E6;">Время</th>
+                    <th>Мин</th>
+                    <th>Цена за мин. без проц.</th>
+                    <th>Общая цена с проц.</th>
+                    <th>Действие</th>
+                    <th>agent_id</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for call in ZakazCalls %}
+                    <tr>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{forloop.counter}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.DATE|date:'d M Y H:i:s'}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_A}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.etrap}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_B}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.NUMBER_LOCATIONS}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button" style="background-color: #ADD8E6;" class="fw-bold">{{call.DUR}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.MT != '0' %}{{call.MT}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.price != '0' %}{{call.price|floatformat:2}}{% endif %}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{% if call.total_price != '0' %}{{call.total_price|floatformat:2}}{% endif %}</td>
+
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.action}}</td>
+                        <td class="{{forloop.counter}}" onclick="zakazChangeBg({{forloop.counter}})" role="button">{{call.agent_id}}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        {% else %}
+        <h5 class="text-danger text-center mt-3">Нет Данных</h5>
+        {% endif %}
+    </div>
+
+    <div style="height: 20px; background-color: #A9A9A9;" class="d-flex text-light fw-bold">
+        <div style="padding-left: 30px;"> Найдено: {{lenZakazCalls}} </div>
+        <div style="padding-left: 50px;">Ошибок: {{didntHaveUser}}</div>
+        <div style="padding-left: 855px;">{{totalSum|floatformat:2}}</div>
+        <div style="padding-left: 38px;">{{totalSumProc|floatformat:2}}</div>
+    </div>
+
+    <div class="my_width100 my_block_center"><button class="btn btn-danger mt-3 displayNone" id="zakazSaveButton" form="zakazSaveForm">Сохранить</button></div>
+    
+</div>
+
+{% if ZakazCalls %}
+<div>
+    <div class="text-light text-center mt-3">{% if already_nach %}Уже начислено{% else %}Начислить{% endif %} на сумму {{success_total_price|floatformat:2}}?</div>
+    <div class="my_width100 my_block_center">
+        <button type="button" class="btn {% if already_nach %} btn-secondary {% else %} btn-success {% endif %} " data-bs-toggle="modal" data-bs-target="#zakazNachisleniyaBtnModal" {% if already_nach %}disabled{% endif %}>{% if already_nach %}Начислено{% else %}Начислить{% endif %}</button>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="zakazNachisleniyaBtnModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-footer">
+                <form action="" method="POST">{% csrf_token %}
+                    <div>Комментарий</div>
+                    <textarea name="comment" id="comment" cols="55" rows="10"></textarea>
+                    <div class="d-flex justify-content-between">
+                        <div class="pt-2 fw-bold text-danger">Начислить за {{get_month}} {{get_year}} год</div>
+                        <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Начислить</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.zakaz_nachisleniya_string{
+    color: white; 
+    position: absolute; 
+    top: 70px; 
+    left: 50px;
+    background-color: #6495ED;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+th, td {
+    border: black solid 1px;
+    padding: 0;
+    margin: 0;
+}
+
+
+.zakazCallsTable th:nth-of-type(9) {width: 80px;}
+.zakazCallsTable th:nth-of-type(10) {width: 80px;}
+.zakazCallsTable th:nth-of-type(11) {width: 80px;}
+.zakazCallsTable th:nth-of-type(12) {width: 80px;}
+.zakazCallsTable th:nth-of-type(13) {width: 200px;}
+</style>
+
+<script>
+
+/* ############################################
+для изменения BG строки в таблице ZakazCalls ##
+   ############################################
+*/
+function zakazChangeBg(pk) {
+    var interpay_pks = document.getElementsByClassName(pk);
+
+    var all_rows = document.getElementsByTagName('td');
+    for (var i = 0; i < all_rows.length; i++) {
+        if (all_rows[i].classList.contains('my-bg-orange')) { all_rows[i].classList.remove('my-bg-orange'); }
+    }
+    
+    for (let i = 0; i < interpay_pks.length; i++) {
+        if (interpay_pks[i].tagName != 'INPUT') {
+            interpay_pks[i].classList.add('my-bg-orange')
+        }
+    }
+}
+/* ################################################
+для изменения BG строки в таблице ZakazCalls END ##
+   ################################################
+*/
+
+</script>
+
+{% endblock %}

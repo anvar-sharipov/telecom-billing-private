@@ -1,0 +1,63 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Не найдены совпадения в договоре платежей{% endblock %}
+{% block content %}
+
+<h1 class="text-light">Ошибка в файле Платежи с биллинга</h1>
+
+
+<div style="margin: 100px;">
+    <table class="table table-success">
+        <thead>
+            <tr>
+                <th>Count</th>
+                <th>manager</th>
+                <th>date</th>
+                <th>dogowor</th>
+                <th>price</th>
+                <th>plateji Type</th>
+                <th>date_price</th>
+                <th>Kod oplaty</th>
+                <th>ЮЛ/ФЛ</th>
+                <th>FAM</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in errorList %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                {% for v in p %}
+                    {% if forloop.counter == 1 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 2 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 3 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 4 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 5 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 6 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 7 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 8 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                    {% if forloop.counter == 9 %}
+                        <td>{{v}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+errorList.append([p.manager, p.pay_date, p.dogowor, p.price, p.platejiType, p.date_price, p.kod_oplaty, p.YurOrFiz, p.FAO])
+{% endblock %}

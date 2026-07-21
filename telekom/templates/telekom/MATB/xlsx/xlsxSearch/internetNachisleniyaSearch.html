@@ -1,0 +1,196 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Поиск Интернет Начислений{% endblock %}
+{% block content %}
+
+
+<div class="d-flex internetNachisleniyaSearchContainer">
+    <form action="" method="GET">
+        <div class="d-flex internetNachisleniyaSearchFormContainer">
+
+            <div>
+                <div for="" class="text-light text-center">Ф.И.О</div>
+                <input type="text" class="form-control bg-gold internetNachisleniyaSearchFormItems" id="internetNachisleniyaSearchFAOInput" name="FAO" {% if FAO %} value="{{FAO}}" {% endif %}>
+            </div>
+
+            <div>
+                <div for="" class="text-light text-center">Договор Номер</div>
+                <input type="text" class="form-control bg-gold internetNachisleniyaSearchFormItems" name="dogowor" {% if dogowor %} value="{{dogowor}}" {% endif %}>
+            </div>
+
+            <div>
+                <div for="" class="text-light text-center">Логин</div>
+                <input type="text" class="form-control bg-gold internetNachisleniyaSearchFormItems"  name="login" {% if login %} value="{{login}}" {% endif %}>
+            </div>
+
+            <div>
+                <div class="text-light text-center">Месяц</div>
+                <select class="form-select internetNachisleniyaSearchFormItems bg-gold" aria-label="Default select example" name="month" {% if month %} value="{{month}}" {% endif %}>
+                    {% for mon in months %}
+                        <option {% if mon == month %} selected {% endif %} value="{{mon}}">{{mon}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <div class="text-light text-center">Год</div>
+                <select class="form-select internetNachisleniyaSearchFormItems bg-gold" aria-label="Default select example" name="year" {% if year %} value="{{year}}" {% endif %}>
+                    {% for y in years %}
+                        <option {% if y == year %} selected {% endif %} value="{{y}}">{{y}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <div class="text-light text-center">Этрап</div>
+                <select class="form-select internetNachisleniyaSearchFormItems bg-gold" aria-label="Default select example" name="etrap">
+                    {% for etr in etraps %}
+                      {% if etrap %}
+                        <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                      {% else %}
+                        <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                      {% endif %}
+                    {% endfor %}
+                    <option {% if etrap == ''  and log == '' and etrap == '' %} selected {% endif %} value="">Все</option>
+                </select>
+            </div>
+
+            <div>
+                <div class="text-light">OFF</div>
+                <input type="checkbox" name="off" class="form-check-input" {% if off %} checked {% endif %}>
+            </div>
+
+            <button class="btn btn-primary internetNachisleniyaSearchFormBtn">Искать</button>
+
+        </div>
+    </form>
+
+{% if tables %}
+    <table class="internetNachisleniyaTable table table-hover">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>id</th>
+                <th>Ф.И.О</th>
+                <th>Договор</th>
+                <th>Логин</th>
+                <th>Этрап</th>
+                <th>Год</th>
+                <th>Месяц</th>
+                <th>Цена</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{table.pk}}</td>
+                <td>{{table.FAO}}</td>
+                <td>{{table.dogowor}}</td>
+                <td>{{table.login}}</td>
+                <td>{{table.etrap}}</td>
+                <td>{{table.year}}</td>
+                <td>{{table.month}}</td>
+                <td>{{table.price}}</td>
+            </tr>
+            {% endfor %}
+            <tr style="background-color: orange;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Jemi Toleg:</td>
+                <td>{{totalSum|floatformat:2}}</td>
+                
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+<h5 class="text-center text-danger mt-3">НЕТ ДАННЫХ</h5>
+{% endif %}
+
+</div>
+{% if lenTables > tables.count %}
+<form action="" method="POST" style="width: 200px; margin-left: auto; margin-right: auto;">{% csrf_token %}
+    <button class="btn btn-primary">Посмотреть все</button>
+</form>
+{% endif %}
+
+<style>
+
+/* #########################
+    internetNachisleniyaSearch ##
+   #########################
+*/
+.internetNachisleniyaSearchFormBtn {
+    height: fit-content; 
+    margin-top: 24px;
+}
+
+.internetNachisleniyaSearchFormItems {
+    width: 250px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.internetNachisleniyaSearchContainer{
+    flex-direction: column; 
+    margin-top: 30px; 
+    padding: 0 40px;
+}
+
+.internetNachisleniyaSearchFormContainer {
+    column-gap: 20px; 
+    width: 1680px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.bg-gold {
+    background-color: #FFD700;
+}
+
+.internetNachisleniyaTable {
+    width: 1500px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    margin-top: 50px;
+}
+
+.internetNachisleniyaTable th, .internetNachisleniyaTable td {
+    padding:0 3px;
+}
+
+.internetNachisleniyaTable th:nth-of-type(1), .internetNachisleniyaTable td:nth-of-type(1){width: 50px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(2), .internetNachisleniyaTable td:nth-of-type(2){width: 50px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(3), .internetNachisleniyaTable td:nth-of-type(3){width: 400px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(4), .internetNachisleniyaTable td:nth-of-type(4){width: 200px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(5), .internetNachisleniyaTable td:nth-of-type(5){width: 200; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(6), .internetNachisleniyaTable td:nth-of-type(6){width: 300; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(7), .internetNachisleniyaTable td:nth-of-type(7){width: 100px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(8), .internetNachisleniyaTable td:nth-of-type(8){width: 100px; border: 1px black solid;}
+.internetNachisleniyaTable th:nth-of-type(9), .internetNachisleniyaTable td:nth-of-type(9){width: 100px; border: 1px black solid;}
+
+/* #############################
+    internetNachisleniyaSearch END ##
+   #############################
+*/
+
+</style>
+
+<script>
+// текущий url в виде строки
+var currentLocation = window.location.href;
+// если в текущем url есть подстрока internet-nachisleniya-search то выполнить код
+if (currentLocation.indexOf("internet-nachisleniya-search") >= 0) {
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("internetNachisleniyaSearchFAOInput").select();
+
+    })
+}
+</script>
+{% endblock %}

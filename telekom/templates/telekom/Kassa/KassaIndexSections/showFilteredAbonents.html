@@ -1,0 +1,36 @@
+<table class="table table-light table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Номер</th>
+            <th>id</th>
+            <th>ФИО</th>
+            <th>Улица</th>
+            <th>Дом</th>
+            <th>Кв.</th>
+            <th>Сотовый</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for abon in abonents %}   
+        <tr>
+            <td>{{abon.number}}</td>
+            <td>{{abon.ids}}</td>
+            
+            <td>
+                <form method="POST">{% csrf_token %}
+                    <input type="hidden" name="kabelFilteredId" value="{{abon.pk}}">
+                    <input type="hidden" name="search_number">
+                    <button class="btn btn-primary btn-sm">{{abon.surname}} {{abon.name}}</button>    
+                </form>
+            </td>
+
+            <td>{{abon.street}}</td>
+            <td>{{abon.home}}</td>
+            <td>{{abon.flat}}</td>
+            <td>{{abon.sotowyy}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>

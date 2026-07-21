@@ -1,0 +1,337 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Old Login Dogowor{% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+  <h2 class="mb-3 text-center text-light">Поиск в OldLoginDogowor</h2>
+
+  <form method="get" class="mb-4">
+      <div class="row g-3">
+          <div class="col-md-4">
+              <label class="form-label text-light">Номер</label>
+              <input type="text" name="number_search" class="form-control" value="{{ search_params.number_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Этрап</label>
+              <input type="text" name="etrap_search" class="form-control" value="{{ search_params.etrap_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Логин</label>
+              <input type="text" name="login_search" class="form-control" value="{{ search_params.login_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Договор</label>
+              <input type="text" name="dogowor_search" class="form-control" value="{{ search_params.dogowor_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Предприятие</label>
+              <select name="is_enterprises_search" class="form-select">
+                  <option value="">Все</option>
+                  <option value="1" {% if search_params.is_enterprises == "1" %}selected{% endif %}>Да</option>
+                  <option value="0" {% if search_params.is_enterprises == "0" %}selected{% endif %}>Нет</option>
+              </select>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+              <button class="btn btn-primary w-100" type="submit">Искать</button>
+          </div>
+      </div>
+  </form>
+
+  {% if results %}
+      <table class="table table-bordered table-hover table-info">
+          <thead class="table-dark">
+              <tr>
+                  <th>Номер</th>
+                  <th>Этрап</th>
+                  <th>Логин</th>
+                  <th>Договор</th>
+                  <th>Дата сохранения</th>
+                  <th>Предприятие</th>
+                  <th>HB</th>
+                  <th>Кто сохранял</th>
+                  <th>Сохранено при действии</th>
+                  <th>Счет №</th>
+                  <th class="text-info">Изменить</th>
+                  <th class="text-danger">Удалить</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for item in results %}
+              <tr>
+                  <td>{{ item.number }}</td>
+                  <td>{{ item.etrap }}</td>
+                  <td>{{ item.login }}</td>
+                  <td>{{ item.dogowor }}</td>
+                  <td>{{ item.created_at|date:"d.m.Y" }}</td>
+                  <td>{% if item.is_enterprises %}✅{% else %}❌{% endif %}</td>
+                  <td>{{ item.hb }}</td>
+                  <td>{{ item.operator }}</td>
+                  <td>{{ item.saved_in_action }}</td>
+                  <td>{{ item.account }}</td>
+                  <td>
+                    <!-- <form method="POST">{% csrf_token %} -->
+                    <button type="submit" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#edit{{item.pk}}">Изменить</button>
+                    <!-- Модальное окно -->
+                    <div class="modal fade" id="edit{{item.pk}}" tabindex="-1" aria-labelledby="editLabel{{item.pk}}" aria-hidden="true">
+                      <div class="modal-dialog">  <!-- modal-xl делает окно большим -->
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title text-center" id="editLabel{{item.pk}}">Изменить</h5>
+                              </div>
+                              <div class="modal-body">
+                                <form method="POST">{% csrf_token %}
+                                  <div class="mb-3" style="width: 300px; margin-left: auto; margin-right: auto;" >
+
+                                        <div class="d-flex mb-2" style="align-items:center;">
+                                          <label for="change_etrap" style="width:100px;">Этрап:</label>
+                                          <select class="form-select border border-dark" name="change_etrap" id="change_etrap">
+                                              {% if request.user.is_superuser and request.user.username == 'admin1' %}
+                                                {% for etr in etraps %}
+                                                    <option value="{{etr}}" {% if item.etrap == etr %} selected {% endif %}>{{etr}}</option>
+                                                {% endfor %}
+                                              {% else %}
+                                                <option value="{{request_user_etrap}}" selected>{{request_user_etrap}}</option>
+                                              {% endif %}
+                                          </select>
+                                        </div>
+                                      
+                                        <div class="d-flex pb-2" style="align-items: center;">
+                                          <label for="change_number{{item.pk}}" style="width: 100px;">Номер</label>
+                                          <input type="text" name="change_number" class="form-control" value="{{item.number}}" id="change_number{{item.pk}}" oninput="change_number_input({{item.pk}})">
+                                        </div>
+
+                                        <div class="d-flex pb-2" style="align-items: center;">
+                                          <label for="change_dogowor{{item.pk}}" style="width: 100px;">Dogowor</label>
+                                          <input type="text" name="change_dogowor" class="form-control" value="{{item.dogowor}}" id="change_dogowor{{item.pk}}" oninput="change_dogowor_input({{item.pk}})">
+                                        </div>
+
+                                        <div class="d-flex mb-3" style="align-items: center;">
+                                          <label for="change_login{{item.pk}}" style="width: 100px;">Login</label>
+                                          <input type="text" name="change_login" class="form-control" value="{{item.login}}" id="change_login{{item.pk}}" oninput="change_login_input({{item.pk}})">
+                                        </div>
+
+                                        <div class="d-flex mb-3" style="align-items: center;">
+                                          <label class="form-check-label" for="change_edara{{item.pk}}" style="width:75px;">Edara</label>
+                                          <input type="checkbox" class="form-check-input" name="change_edara" id="change_edara{{item.pk}}" {% if item.is_enterprises %} checked {% endif %}>
+                                        </div>
+
+                                        <div class="d-flex mb-2" style="align-items: center;">
+                                          <label for="change_hozOrBud{{item.pk}}" class="form-label" style="width:100px;">Hoz/Bud</label>
+                                          <select class="form-select" id="change_hozOrBud{{item.pk}}" name="change_hozOrBud">
+                                                <option value="">Ilat</option>
+                                                <option value="H" {% if item.hb == 'H' %} selected {% endif %} >H</option>
+                                                <option value="B" {% if item.hb == 'B' %} selected {% endif %}>B</option>
+                                          </select>
+                                        </div>
+
+                                        <div class="d-flex mb-2" style="align-items: center;">
+                                          <label for="change_account{{item.pk}}" style="width:100px;">Счет №</label>
+                                          <input type="text" class="form-control" name="change_account" id="change_account{{item.pk}}" autocomplete="off" {% if item.account %} value="{{item.account}}" {% endif %} oninput="change_account_input({{item.pk}})">
+                                        </div>
+                                        <input type="hidden" name="item_id" value="{{ item.pk }}">
+                                        <input type="hidden" name="change_old">
+                                  </div>
+                                  <div class="text-end">
+                                      <button type="submit" class="btn btn-primary" onclick = "this.form.submit(); this.disabled=true;">Изменить</button>
+                                  </div>
+                                </form>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td>
+                      <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{item.pk}}">Удалить</button>
+                      <!-- Модальное окно -->
+                      <div class="modal fade" id="delete{{item.pk}}" tabindex="-1" aria-labelledby="deleteLabel{{item.pk}}" aria-hidden="true">
+                        <div class="modal-dialog">  <!-- modal-xl делает окно большим -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-center" id="deleteLabel{{item.pk}}">Вы уверены? Удалить old {{item.dogowor}}</h5>
+                                </div>
+                                  <form method="POST">{% csrf_token %}
+                                    <div class="text-end">
+                                        <input type="hidden" name="delete_old">
+                                        <input type="hidden" name="item_id" value="{{item.id}}">
+                                        <div class="text-center m-5">
+                                          <button type="submit" class="btn btn-danger" onclick = "this.form.submit(); this.disabled=true;">Удалить</button>
+                                        </div>
+                                    </div>
+                                  </form>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  {% endif %}
+</div>
+
+
+<div class="p-4 my_width600 my_block_center mt-5">
+    <form method="POST">{% csrf_token %}
+        <div class="d-flex text-light" style="flex-direction: column; row-gap: 30px;">
+
+            <div class="d-flex" style="align-items:center;">
+                <label for="etrap_select" style="width:100px;">Этрап:</label>
+                <select class="form-select border border-dark" name="etrap" id="etrap_select">
+                    {% if request.user.is_superuser %}
+                    {% for etr in etraps %}
+                        <option value="{{etr}}">{{etr}}</option>
+                    {% endfor %}
+                    {% else %}
+                        <option value="{{log}}">{{log}}</option>
+                    {% endif %}
+              </select>
+            </div>
+
+            <div class="d-flex" style="align-items:center;">
+              <label for="old_number" style="width:100px;">Номер:</label>
+              <input type="text" class="form-control" name="old_number" placeholder="Number" id="old_number" autocomplete="off" maxlength="7" value="{{old_number}}">
+            </div>
+            
+
+
+            <div class="d-flex" style="align-items:center;">
+              <label for="old_dogowor" style="width:100px;">Договор:</label>
+              <input type="text" class="form-control" name="old_dogowor" placeholder="Dogowor" id="old_dogowor" autocomplete="off">
+            </div>
+
+
+            <div class="d-flex" style="align-items:center;">
+              <label for="old_login" style="width:100px;">Логин:</label>
+              <input type="text" class="form-control" name="old_login" placeholder="Login" id="old_login" autocomplete="off" value="{{old_login}}">
+            </div>
+
+            
+            
+
+            <div class="d-flex">
+              <label class="form-check-label" for="edara" style="width:100px;">
+                  Edara
+              </label>
+              <input type="checkbox" class="form-check-input" name="edara" id="edara">
+            </div>
+
+            <div id="hozOrBudContainer" class="text-light d-none" style="width: 200px; margin-left: auto; margin-right: auto; border: 1px white solid; padding: 5px; border-radius: 10px;">
+              
+              <div>
+                <label for="hozOrBud" class="form-label">Hoz/Bud</label>
+                <select class="form-select" id="hozOrBud" name="hozOrBud">
+                      <option value="">Ilat</option>
+                      <option value="H">H</option>
+                      <option value="B">B</option>
+                </select>
+              </div>
+              <hr>
+              <div>
+                <label for="account" style="width:100px;">Счет №</label>
+                <input type="text" class="form-control" name="account" id="account" autocomplete="off">
+              </div>
+              
+            </div>
+            
+
+            <div class="search_btn my_block_center">
+                <button class="btn btn-success">Сохранить</button>
+            </div>
+        </div>   
+        
+    </form>
+
+</div>
+<br><br><br>
+
+
+<script>
+    let old_login = document.getElementById('old_login')
+    let old_dogowor = document.getElementById('old_dogowor')
+    let old_number = document.getElementById('old_number')
+    let account = document.getElementById('account')
+    const edara = document.getElementById('edara')
+    const hozOrBudContainer = document.getElementById('hozOrBudContainer')
+
+    edara.addEventListener('change', function(event) {
+      if (event.target.checked) {
+        if (hozOrBudContainer.classList.contains('d-none')) {
+          hozOrBudContainer.classList.remove('d-none')
+        }
+      } else {
+        if (!hozOrBudContainer.classList.contains('d-none')) {
+          hozOrBudContainer.classList.add('d-none')
+        }
+      }
+      
+    })
+
+    
+function change_number_input (id) {
+  const change_number = document.getElementById(`change_number${id}`)
+  change_number.value = change_number.value.replace(/\D/g, '')
+  if (change_number.value .length > 5) {
+    change_number.value = change_number.value.slice(0, 5);
+  }
+}
+
+function change_dogowor_input (id) {
+  const change_dogowor = document.getElementById(`change_dogowor${id}`)
+  const change_login = document.getElementById(`change_login${id}`)
+  change_dogowor.value = change_dogowor.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+  change_login.value = change_dogowor.value.toLowerCase()
+}
+
+function change_login_input (id) {
+  const change_login = document.getElementById(`change_login${id}`)
+  change_login.value = change_login.value.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+}
+
+
+function change_account_input (id) {
+  const change_account = document.getElementById(`change_account${id}`)
+  change_account.value = change_account.value.replace(/[^0-9-]/g, '')
+}
+
+  old_number.addEventListener('input', function() { 
+      old_number.value = old_number.value.replace(/\D/g, '')
+    if (old_number.value .length > 5) {
+      old_number.value = old_number.value.slice(0, 5);
+    }
+});
+
+
+account.addEventListener('input', function() { 
+    account.value = account.value.replace(/[^0-9-]/g, '')
+});
+
+
+old_dogowor.addEventListener('input', function() { 
+    old_dogowor.value = old_dogowor.value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    document.getElementById('old_login').value = old_dogowor.value.toLowerCase()
+});
+
+old_login.addEventListener('input', function() { 
+    old_login.value = old_login.value.toLowerCase().replace(/[^a-z0-9]/g, '')
+});
+
+
+
+// автофокус + автовыделения input номера после загрузки страницы kassa*/
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("old_number").select();
+    if (old_login.value != '' || old_login.value != null) {
+        old_dogowor.value =old_login.value.toUpperCase();
+    }
+
+});
+
+
+
+</script>
+
+
+{% endblock %}

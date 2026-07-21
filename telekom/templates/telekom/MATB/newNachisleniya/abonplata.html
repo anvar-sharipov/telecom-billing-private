@@ -1,0 +1,197 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Абонплата Начисления{% endblock %}
+{% block content %}
+<h1 class="text-light text-center">Абонплата начисления</h1>
+
+{% if alreadyNachs %}
+    <div class="text-center">
+        <button class="btn btn-danger" disabled>Уже начислено</button>
+    </div>
+{% endif %}
+
+<div class="text-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" onclick="setMessage()" id="submitModal">
+        Начислить
+    </button>
+</div>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="align-items: center; justify-content: space-around;">
+        <div class="mb-3">
+            <label for="month" class="form-label">Месяц</label>
+            <select class="form-select" id="month" required name="month">
+                <option value="" disabled selected>Выберите месяц начисления</option>
+                <option value="01" {% if month %}{% if month == '01' %}selected{% endif %}{% elif current_month == '01' %}selected{% endif %}>Январь</option>
+                <option value="02" {% if month %}{% if month == '02' %}selected{% endif %}{% elif current_month == '02' %}selected{% endif %}>Февраль</option>
+                <option value="03" {% if month %}{% if month == '03' %}selected{% endif %}{% elif current_month == '03' %}selected{% endif %}>Март</option>
+                <option value="04" {% if month %}{% if month == '04' %}selected{% endif %}{% elif current_month == '04' %}selected{% endif %}>Апрель</option>
+                <option value="05" {% if month %}{% if month == '05' %}selected{% endif %}{% elif current_month == '05' %}selected{% endif %}>Май</option>
+                <option value="06" {% if month %}{% if month == '06' %}selected{% endif %}{% elif current_month == '06' %}selected{% endif %}>Июнь</option>
+                <option value="07" {% if month %}{% if month == '07' %}selected{% endif %}{% elif current_month == '07' %}selected{% endif %}>Июль</option>
+                <option value="08" {% if month %}{% if month == '08' %}selected{% endif %}{% elif current_month == '08' %}selected{% endif %}>Август</option>
+                <option value="09" {% if month %}{% if month == '09' %}selected{% endif %}{% elif current_month == '09' %}selected{% endif %}>Сентябрь</option>
+                <option value="10" {% if month %}{% if month == '10' %}selected{% endif %}{% elif current_month == '10' %}selected{% endif %}>Октябрь</option>
+                <option value="11" {% if month %}{% if month == '11' %}selected{% endif %}{% elif current_month == '11' %}selected{% endif %}>Ноябрь</option>
+                <option value="12" {% if month %}{% if month == '12' %}selected{% endif %}{% elif current_month == '12' %}selected{% endif %}>Декабрь</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" required name="etrap">
+                <option value="" disabled selected>Выберите Этрап</option>
+                {% for etrap in etraps %}
+                    <option value="{{ etrap }}" {% if selected_etrap == etrap %}selected{% endif %}>{{ etrap }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="year" class="form-label">Год</label>
+            <select class="form-select" id="year" required name="year">
+                <option value="" disabled selected>Выберите год начисления</option>
+                <option value="2024" {% if year %}{% if year == '2024' %}selected{% endif %}{% elif current_year == '2024' %}selected{% endif %}>2024</option>
+                <option value="2025" {% if year %}{% if year == '2025' %}selected{% endif %}{% elif current_year == '2025' %}selected{% endif %}>2025</option>
+                <option value="2026" {% if year %}{% if year == '2026' %}selected{% endif %}{% elif current_year == '2026' %}selected{% endif %}>2026</option>
+                <option value="2027" {% if year %}{% if year == '2027' %}selected{% endif %}{% elif current_year == '2027' %}selected{% endif %}>2027</option>
+                <option value="2028" {% if year %}{% if year == '2028' %}selected{% endif %}{% elif current_year == '2028' %}selected{% endif %}>2028</option>
+                <option value="2029" {% if year %}{% if year == '2029' %}selected{% endif %}{% elif current_year == '2029' %}selected{% endif %}>2029</option>
+                <option value="2030" {% if year %}{% if year == '2030' %}selected{% endif %}{% elif current_year == '2030' %}selected{% endif %}>2030</option>
+                <option value="2031" {% if year %}{% if year == '2031' %}selected{% endif %}{% elif current_year == '2031' %}selected{% endif %}>2031</option>
+                <option value="2032" {% if year %}{% if year == '2032' %}selected{% endif %}{% elif current_year == '2032' %}selected{% endif %}>2032</option>
+                <option value="2033" {% if year %}{% if year == '2033' %}selected{% endif %}{% elif current_year == '2033' %}selected{% endif %}>2033</option>
+                <option value="2034" {% if year %}{% if year == '2034' %}selected{% endif %}{% elif current_year == '2034' %}selected{% endif %}>2034</option>
+                <option value="2035" {% if year %}{% if year == '2035' %}selected{% endif %}{% elif current_year == '2035' %}selected{% endif %}>2035</option>
+            </select>
+        </div>
+
+        <!-- <div class="mb-3">
+            <label for="comment" class="form-label">Комментарий</label>
+            <input type="text" class="form-control" id="comment" placeholder="Введите комментарий" required autocomplete="off" name="comment" value="{{formatted_date}} ">
+        </div> -->
+
+        <div class="text-center">
+            <button class="btn btn-success" type="submit">Поиск</button>
+        </div>
+
+        
+        
+
+    </form>
+</div>
+
+
+
+        {% if price_info_dict_edara or price_info_dict_ilat %}
+        <div class="container mt-5" style="background-color: white;">
+            <h1 class="text-center">{{selected_etrap}}</h1>
+            
+            <h3 class="text-center">Edara</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Абонплата</th>
+                            <th scope="col">Количество (<span class="text-primary">{{total_edara_count}}</span>)</th>
+                            <th scope="col">Сумма (<span class="text-primary">{{total_edara_price|floatformat:2}}</span>)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for abonplata, info in price_info_dict_edara.items %}
+                            <tr>
+                                <td>{{ abonplata }}</td>
+                                <td>{{ info.0 }}</td>
+                                <td>{{ info.1 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            <h3 class="text-center">Ilat</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Абонплата</th>
+                            <th scope="col">Количество (<span class="text-primary">{{total_ilat_count}}</span>)</th>
+                            <th scope="col">Сумма (<span class="text-primary">{{total_ilat_price|floatformat:2}}</span>)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for abonplata, info in price_info_dict_ilat.items %}
+                            <tr>
+                                <td>{{ abonplata }}</td>
+                                <td>{{ info.0 }}</td>
+                                <td>{{ info.1 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <table class="table table-striped">
+                    <tbody>
+                            <tr>
+                                <td>итого</td>
+                                <td><h3 class="text-primary">{{umumy_count}}</h3></td>
+                                <td><h3 class="text-primary">{{umumy_price|floatformat:2}}</h3></td>
+                            </tr>
+                    </tbody>
+                </table>
+      
+        </div>
+
+        <div class="container">
+            <form method="POST">{% csrf_token %}
+                <div class="modal fade text-dark" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="myModalLabel">Вы уверены?</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div id="modalMessageText">
+                                    
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="submitButton" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>   
+        </div>
+        {% endif %}
+
+    
+<script>
+const alreadyNachs = document.getElementById('alreadyNachs');
+const submitModal = document.getElementById('submitModal');
+
+{% if alreadyNachs %}
+    submitModal.classList.add('d-none')
+{% endif %}
+
+
+function setMessage() {
+    const monthSelect = document.getElementById('month');
+    const etrapSelect = document.getElementById('etrap');
+    const yearSelect = document.getElementById('year');
+    
+
+    
+    // if (alreadyNachs.innerText != '') {
+    //     console.log('rfrfrfr');
+        
+    //     submitButton.value = 'Уже ничислено'
+    //     submitButton.disabled = true
+    // }
+
+    let selectedMonth = monthSelect.value
+    let selectedEtrap = etrapSelect.value
+    let selectedYear = yearSelect.value
+    document.getElementById('modalMessageText').innerHTML = `Начислить за ${selectedYear}-${selectedMonth} этрап ${selectedEtrap}`
+    
+}
+</script>
+
+{% endblock content %}

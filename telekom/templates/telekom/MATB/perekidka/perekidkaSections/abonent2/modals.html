@@ -1,0 +1,140 @@
+
+
+<!-- Modal internet -->
+<div class="modal fade" id="internetModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div style="font-size: 24px;">
+                  <div>Скорость: {{abonent2.internet_tarif.tarif}}</div>
+                  <div>Цена: {{abonent2.internet_tarif.price}} МАНАТ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <!-- Modal alem -->
+  <div class="modal fade" id="alemModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div style="font-size: 24px;">
+                    <div>Точек: {{abonent2.alemCount.alem_count}}</div>
+                    <div>Статус: {% if abonent2.alem %}Включен{% else %}Отключен{% endif %}</div>
+                    <div>Цена: {{abonent2.alemCount.price}} МАНАТ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <!-- Modal service -->
+  <div class="modal fade" id="serviceModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div>
+                  <table class="table table-success">
+                    <thead>
+                      <tr>
+                        <th>Услуга</th>
+                        <th>Цена</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for service in abonent2.service.all %}
+                      <tr>
+                        <td>{{service.service}}</td>
+                        <td>{{service.price}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+    <!-- kabelInfoModal -->
+
+    <div class="modal fade" id="kabelInfoModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              {% if abonent2.kabel_count %}
+                <div style="font-size: 24px;">
+                  <div>Кол-во точек: {{abonent2.kabel_count.kabel_count}}</div>
+                  <div>Цена: {{abonent2.kabel_count.price}}</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  
+         <!-- Modal инфа о абонплате и метрах (если есть) -->
+   <div class="modal fade" id="abonAndMetrInfoModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          {% if abonent2.count_of_numbers %}
+          <div>Абонплата</div>
+          <table class="table table-dark table-hover">  
+            <thead>
+              <tr>
+                <th>Номер по счету</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent2.count_of_numbers.count_of_numbers}}</td>
+                <td>{{abonent2.count_of_numbers.price}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if abonent2.abon_length %}
+          <div>Метры</div>
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Метры</th>
+                <th>Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent2.abon_length.metr}}</td>
+                <td>{{abonent2.abon_length.price}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+          {% if abonent2.beneficiary %}
+          <div>Льгота</div>
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Льгота</th>
+                <th>Процент</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{abonent2.beneficiary.beneficiary}}</td>
+                <td>{{abonent2.beneficiary.percent}}</td>
+              </tr>
+            </tbody>
+          </table>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>

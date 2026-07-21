@@ -1,0 +1,424 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Прочие отчеты{% endblock %}
+{% block content %}
+
+
+
+<div class="my_width800 my_block_center pt-4">
+    <form method="GET">
+        <select name="etrap" class="form-select">
+            {% if not request.user.is_superuser and request.user.username != 'Gayyp' %}
+                <option value="{{etrap_user}}" selected >{{etrap_user}}</option>
+            {% else %}
+                {% for etr in etraps %}
+                    {% if etrap in etraps %}
+                        <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                    {% elif log in etrpas %}
+                        <option value="{{etr}}" {% if log == etr %} selected {% endif %}>{{etr}}</option>
+                    {% else %}
+                        <option value="{{etr}}">{{etr}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </select>
+        <br>
+        <select name="year" class="form-select">
+            {% for y in years %}
+                <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <select name="month" class="form-select">
+            {% for m in months %}
+                <option value="{{m}}" {% if m == month %} selected {% endif %}>{{m}}</option>    
+            {% endfor %}
+        </select>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-success btn-sm">Поиск</button>
+        </div>
+
+    </form>
+</div>
+
+
+<div class="my_width800 my_block_center pt-4 mt-4">
+    <ol class="list-group list-group-numbered" id="myList">
+
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="calls_for_k">
+                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Скачать разговоры для К {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+            
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="oplatyCardOrNo">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} оплата по населению карт или налич {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="edaraIntNach">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Начисления интернета для EDARA {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="ilatIntNach">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Начисления интернета для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="edaraSlrNach">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Начисления Slr для EDARA {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="IlatSlrNach">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Начисления Slr для Населения {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+
+
+
+            <!-- <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="PlatejiSKassySbazy">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Все Платежи с кассы {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li> -->
+            <!-- <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="oplataPlatejiSBilinga">
+                    <input class="btn btn-danger btn-sm" value="Оплатить" type="submit">
+                </form>
+                {% else %}Оплатить{% endif %} Оплатить Платежи {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="oplataOFFPlatejiSBilinga">
+                    <input class="btn btn-danger btn-sm" value="Оплатить OFF" type="submit">
+                </form>
+                {% else %}Оплатить{% endif %} Оплатить Платежи OFF {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li> -->
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="SotowyOtchyot">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Отчет по Алтын Асыр звонкам {% if year and month and etrap %}за {{month}} {{year}}{% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="SpisokOtkKabel">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Список отключения кабель TV {% if year and month and etrap %}за {{month}} {{year}} Dashoguz{% endif %}
+            </li>
+            <!-- <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="raspredProcheePoMinusam">
+                    <input class="btn btn-danger btn-sm" value="Распределить" type="submit">
+                </form>
+                {% else %}Распределить{% endif %} прочее по минусам
+            </li> -->
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="internetKassaTolegleri">
+                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Список интернет платежей {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="kabelBaza">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} БД кабель TV
+            </li>
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="edaraBaza">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} БД Эдара, {% if etrap %} Dashoguz{% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="dop_09">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} DOP-09, {% if etrap %} {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="dop_uslugi_list">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Список подключенных слуг, {% if etrap %} {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="lena_plateji">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Лена Платежи Dashoguz {% if month %} за {{month}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="kod_8_lik_10_lyk_gepleshikleri">
+                    <input class="btn btn-danger btn-sm" value="error" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} {% comment %} код 8, код 10 разговоры {% endcomment %} {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="all_tolegler">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} все платежи {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="only_alem_for_DT_KT">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} платежи Alem для DT KT {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="plateji_s_DZ_na_etrapy">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} платежи с ДЗ кассиров на этап все столбцы {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="plateji_s_DZ_naEtrapy2">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} платежи с ДЗ кассиров на этап только 2 столбца номер и сумма в отрицательном виде {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="plateji_po_abonentam">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} платежи абонентов {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="nach_po_abonentam">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} начисления абонентов {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="wywod_sagid_balance_za_1_yanwara">
+                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Сагид баланс телефония за 1 января (только для Dashoguz)
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="all_toleg_po_month">
+                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} все платежи {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+
+            {% if etrap == 'Dashoguz' %}
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="zakaz_calls">
+                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Заказ звонки {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+            {% endif %}
+    
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="mahri_poprosila">
+                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} База как махри поросила {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            </li>
+        {% endif %}
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="all_nach_po_month">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} все начисления {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="all_toleg_po_day_telefoniya">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} все платежи по дням {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="export_old_logins_and_active_logins2">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} export_old_logins_and_active_logins2 (Список договоров которые есть и в old и в active) {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="export_users_with_slr_or_kod">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} export_users_with_slr_or_kod (Номера где фамилия и имя пусты но AMTS разговоры есть)
+            {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="export_AlemNachData">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} export_AlemNachData
+            {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="export_AlemNachData_joined_numbers">
+                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} export_AlemNachData_joined_numbers
+            {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+
+       
+
+        
+
+        
+        
+
+    </ol>
+</div>
+
+
+
+{% if listAbonplata %}
+<table class="table table-secondary teble-bordered">
+    <thead>
+        <tr>
+            <th>COUNT</th>
+            <th>SUM</th>
+            <th>PAY TYPY</th>
+            <th>TYPE_OF</th>
+            <th>IS_CART</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {% for v in listAbonplata %}
+                    <td>{{v}}</td>
+                {% if forloop.counter == 2 %}
+                    <td>A</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+
+
+
+
+<script>
+    function makeActive(element) {
+    // Удаление класса "active" у всех элементов списка
+    var listItems = document.getElementById("myList").getElementsByTagName("li");
+    for (var i = 0; i < listItems.length; i++) {
+        listItems[i].classList.remove("active");
+    }
+
+    // Добавление класса "active" к кликнутому элементу
+    element.classList.add("active");
+}
+
+</script>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Услуги Подключения/отключения{% endblock %}
+{% block content %}
+
+<!--Форма для поиска абонента-->
+<div class="p-3 mt-3">
+<form action="" class="d-flex my_width500 my_block_center my_column_gap10 mt-3" method="GET">
+    <select class="form-select bg-gold" aria-label="Default select example" name="etrap">
+        {% if request.user.is_superuser and request.user.username == 'admin1' %}
+            {% for etr in etraps %}
+                <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+            {% endfor %}
+        {% else %}
+            <option value="{{log}}">{{log}}</option>
+        {% endif %}
+    </select>
+    <input type="hidden" name="month" value="{{month}}">
+    <input type="hidden" name="year" value="{{year}}">
+    <input id="service_connect_search_number" type="text" placeholder="Номер" class="form-control item" name="number" {% if number %} value={{number}} {% endif %} autocomplete="off">
+    <button class="btn btn-success">Поиск</button>
+</form>
+
+{% if abonent %}
+<table class="table table-success serv-conn-table my_block_center mt-3">
+    <thead>
+        <tr>
+            <th>Ф.И.О</th>
+            <th>Номер</th>
+            <th>Логин</th>
+            <th>Договор</th>
+            <th>Улица</th>
+            <th>Дом</th>
+            <th>Кв.</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{abonent.surname}} {{abonent.name}}</td>
+            <td>{{number}}</td>
+            <td>{{abonent.login}}</td>
+            <td>{{abonent.dogowor}}</td>
+            <td>{{abonent.street}}</td>
+            <td>{{abonent.home}}</td>
+            <td>{{abonent.flat}}</td>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+{% if abonent %}
+<h5 class="text-light text-center mt-3">Подключенные Услуги: {{countOfConnectedService}}</h5>
+{% endif %}
+<form action="" method="POST" class="mt-3"> {% csrf_token %}
+    <div class="d-flex bg-light my_width1100 my_block_center pb-3" style="flex-direction: column; row-gap: 10px; overflow-y: auto; height: 600px;">
+    {% for service in services %}
+        <div role="button" id="{{service.pk}}" class="d-flex my_width1000 my_block_center" style="column-gap: 10px; padding: 5px; border-radius: 5px;">
+            {% if service.pk in abon_serv_pk_list %}
+            <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" checked id="s1{{service.pk}}">
+            {% else %}
+            <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" id="s1{{service}}">
+            {% endif %}
+            <label role="button" class="fw-bold no-select" for="s1{{service}}">{{service.service}}; <span style="color:red;">{{service.price}} man</span></label>
+        </div>   
+    {% endfor %}
+   
+    </div>
+    <!-- <div class="d-flex bg-light my_width1100 my_block_center pb-3" style="flex-direction: column; row-gap: 10px; overflow-y: auto; height: 600px;">
+        <div role="button" class="my_block_center my-bg-white text-center mt-3" style="background-color:DarkGray; width: 1085px;">Доп. Услуги</div>
+        {% for service in services %}
+            {% if 'Bukja' not in service.service and '_' not in service.service and 'b' not in service.service%}
+                <div role="button" id="{{service.pk}}" class="d-flex my_width1000 my_block_center" style="column-gap: 10px; padding: 5px; border-radius: 5px;">
+                    {% if service.pk in abon_serv_pk_list %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" checked id="s1{{service.pk}}">
+                    {% else %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" id="s1{{service}}">
+                    {% endif %}
+                    <label role="button" class="fw-bold no-select" for="s1{{service}}">{{service.service}}; <span style="color:red;">{{service.price}} man</span></label>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div role="button" class="my_block_center my-bg-white text-center" style="background-color:DarkGray; width: 1085px;">ATS oz Bukjalary</div>
+        {% for service in services %}
+            {% if 'Bukja' in service.service and '_' not in service.service %}
+                <div role="button" id="{{service.pk}}" class="d-flex my_width1000 my_block_center" style="column-gap: 10px; padding: 5px; border-radius: 5px;">
+                    {% if service.pk in abon_serv_pk_list %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" checked id="s2{{service}}">
+                    {% else %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" id="s2{{service}}">
+                    {% endif %}
+                    <label role="button" class="fw-bold" for="s2{{service}}">{{service.service}}; <span style="color:red;">{{service.price}} man</span></label>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div role="button" class="my_block_center my-bg-white text-center" style="background-color:DarkGray; width: 1085px;">Abonent Saylan Bukjalar</div>
+        {% for service in services %}
+            {% if '_' in service.service or 'b' in service.service %}
+                <div role="button" id="{{service.pk}}" class="d-flex my_width1000 my_block_center" style="column-gap: 10px; padding: 5px; border-radius: 5px;">
+                    {% if service.pk in abon_serv_pk_list %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" checked id="s3{{service}}">
+                    {% else %}
+                    <input type="checkbox" name="pkBoxes" value="{{service.pk}}" class="form-check-input" id="s3{{service}}">
+                    {% endif %}
+                    <label role="button" class="fw-bold" for="s3{{service}}">{{service.service}}; <span style="color:red;">{{service.price}} man</span></label>
+                </div>
+            {% endif %}
+        {% endfor %}
+        
+    </div> -->
+    {% if allow_to_change_service %}
+        {% if abonent %}
+        <br>
+        <div>
+            <select class="form-select my_width300 my_block_center" name="month">
+                {% for m in months %}
+                    <option {% if month == m %} selected {% endif %} value="{{m}}">{{m}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+        <br>
+        <div>
+            <select class="form-select my_width300 my_block_center" name="year">
+                {% for y in years %}
+                    <option {% if year == y %} selected {% endif %} value="{{y}}">{{y}}</option>
+                {% endfor %}         
+            </select>
+        </div>
+            <div class="my_width100 my_block_center"><button class="btn btn-primary mt-3">Сохранить</button></div>
+        {% endif %}
+    {% endif %}
+</form>
+
+{% if staffActionInfo %}
+<h5 class="text-center text-light mt-5">Подробная информация действий персонала</h5>
+<div class="my_width800 my_block_center d-flex flex-column" style="overflow-y: auto; height: 400px;">
+    
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th class="my_width500">Действие</th>
+                <th>Соотрудник</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for info in staffActionInfo %}
+            <tr>
+                <td>{{info.date|date:"Y-m-d h:i:s"}}</td>
+                <td class="my_width500"><pre>{{info.comment}}</pre></td>
+                <td>{{info.user}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endif %}
+
+</div>
+
+
+<style>
+
+.serv-conn-table {
+    width: 1050px;
+}
+
+.serv-conn-table th:nth-of-type(1), .serv-conn-table td:nth-of-type(1){width: 350px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(2), .serv-conn-table td:nth-of-type(2){width: 100px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(3), .serv-conn-table td:nth-of-type(3){width: 100px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(4), .serv-conn-table td:nth-of-type(4){width: 100px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(5), .serv-conn-table td:nth-of-type(5){width: 200px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(6), .serv-conn-table td:nth-of-type(6){width: 100px; border: 1px black solid;}
+.serv-conn-table th:nth-of-type(7), .serv-conn-table td:nth-of-type(7){width: 100px; border: 1px black solid;}
+
+.no-select {
+    -webkit-user-select: none; /* Chrome, Safari, Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Стандарт */
+  }
+
+</style>
+
+
+<script>
+// текущий url в виде строки
+var currentLocation = window.location.href;
+// если в текущем url есть подстрока service-connect то выполнить код
+if (currentLocation.indexOf("service-connect") >= 0) {
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    document.getElementById("service_connect_search_number").select();
+    })
+
+// function changeBG(pk) {
+//     if (document.getElementById(pk).childNodes[1].checked == true){
+//         document.getElementById(pk).childNodes[1].checked = false
+//         document.getElementById(pk).classList.remove('bg-gold')
+//         document.getElementById(pk).classList.add('my-bg-white')
+
+//     } else {
+//         document.getElementById(pk).childNodes[1].checked = true
+//         document.getElementById(pk).classList.add('bg-gold')
+//         document.getElementById(pk).classList.remove('my-bg-white')
+//     }
+// }
+
+
+    
+
+
+
+
+}
+
+/*фецис (цере) между цифрами телефона при вводе номера kassa-receipt*/
+(function () {
+document
+    .getElementById("service_connect_search_number")
+    .addEventListener("keydown", function (e) {
+    if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+        document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+        document.activeElement.value += "-";
+        }
+    }
+    });
+})();
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,79 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Импорт звонков со станций{% endblock %}
+{% block content %}
+
+
+
+<div style="padding: 0 20px; background-color:#8f95cf;">
+    <h1 class="text-center text-light" style="margin-top: 50px; padding-top: 20px;">Dashoguz shaher</h1>
+    <div class="d-flex">
+        <div class="card">
+            <h2 class="text-center">Добавить <div style="background-color:#efafaf; display: inline-block; padding: 3px; border-radius:5px;">a</div> </h2>
+            <hr>
+            <form method="POST" class="my_block_center">{% csrf_token %}
+                <input type="hidden" name="dbf_a">
+                <div class="d-flex">
+                    <div class="my_width80"><input type="checkbox" id="dbf_a_check_input" class="form-check-input border-dark" name="dbf_a_check_input"></div>
+                    <div class="my_width80"><button class="btn btn-success btn-sm" id="dbf_a_btn"></button></div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 class="text-center">Добавить <div style="background-color:#efafaf; display: inline-block; padding: 3px; border-radius:5px;">ha</div> </h2>
+            <hr>
+            <form method="POST" class="my_block_center">{% csrf_token %}
+                <input type="hidden" name="dbf_ha">
+                <button class="btn btn-success btn-sm">Добавить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .card {
+        width: 250px;
+        height: 120px;
+        background-color:#f0f0f0;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .card h2 {
+        font-size: 16px;
+        color:#333;
+        margin-bottom: 0;
+    }
+
+    .card form {
+        font-size: 14px;
+        color: #666
+    }
+</style>
+
+
+<script>
+    let dbf_a_btn = document.getElementById('dbf_a_btn')
+    let dbf_a_check_input = document.getElementById('dbf_a_check_input')
+    if (dbf_a_check_input.checked == true) {
+        dbf_a_btn.innerHTML = 'Добавить'
+    } else {
+        dbf_a_btn.innerHTML = 'Проверить'
+    }
+    dbf_a_check_input.addEventListener('click', function(e){
+        if (dbf_a_check_input.checked == true) {
+        dbf_a_btn.innerHTML = 'Добавить'
+        dbf_a_btn.classList.remove('btn-success')
+        dbf_a_btn.classList.add('btn-danger')
+    } else {
+        dbf_a_btn.innerHTML = 'Проверить'
+        dbf_a_btn.classList.add('btn-success')
+        dbf_a_btn.classList.remove('btn-danger')
+    }
+    })
+</script>
+
+{% endblock %}

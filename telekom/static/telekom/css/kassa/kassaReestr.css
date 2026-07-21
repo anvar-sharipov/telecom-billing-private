@@ -1,0 +1,16 @@
+@media print {
+    .PrintNone{display:none;}
+    .haveReestr{display: block !important;}
+  
+  }
+  
+  
+  .reestr-container {
+      color: white;
+      margin: 20px 60px;
+  }
+  
+  .reestr-table {
+      background-color: white;
+  }
+  

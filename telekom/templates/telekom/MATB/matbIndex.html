@@ -1,0 +1,873 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}База Абонентов {% if abonent %} {{abonent.number}} {% endif %} {% endblock %}
+{% block content %}
+{% load static %}
+
+
+
+<!--search form-->
+<div style="background-color: LightGray; height: 100vh;" class="p-2">
+  <form action="" method="GET">
+    <div class="d-flex my_column_gap10">
+      <div class="d-flex">
+        <div>Акт рапорт</div>
+        <input type="text" class="form-control my_width300" value="{{akt_raport}}" name="akt_raport" style="height: 25px;" id="akt_raport">
+      </div>
+      <div class="d-flex">
+        <div>Распоряжение</div>
+        <input type="text" class="form-control my_width300" value="{% if anotherName %}{{anotherName}}{% else %}Эминов А.{% endif %}" name="raspor" style="height: 25px;" id="raspor">
+      </div>
+    </div>
+    <hr>
+
+    <div class="d-flex">
+
+      <div class="d-flex my_column_gap10">
+        <input id="matb_search_number" type="text" placeholder="Номер" class="form-control my_width100 border border-dark" name="search_number" {% if num %} value={{num}} {% endif %} autocomplete="off" style="height: 25px;">
+        <select class="form-select my_width200 border border-dark" aria-label="Default select example" name="etrap" style="height: 25px; padding: 0;">
+          {% if request.user.is_superuser or dataBaseInternet == True or request.user.username == "Gayyp" %}
+            {% for etr in etraps %}
+                {% if etrap in etraps or etrap == 'all' %}
+                    <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% else %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                {% endif %}
+            {% endfor %}
+          <!-- {% elif dataBaseInternet %} -->
+          {% else %}
+          <option value="{{log}}">{{log}}</option>
+          {% endif %}
+          <!-- <option value="all" {% if etrap == 'all' %} selected {% endif %}>Все</option> -->
+      </select>
+        <button class="btn btn-success" style="height: 25px; padding: 0 5px;">Поиск</button>
+      </div>
+    </form>
+
+<div class="my_width150 my_block_center">
+    <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mtbIndexFiltrModal">
+    Filter
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="mtbIndexFiltrModal" tabindex="-1" aria-labelledby="mtbIndexFiltrModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mtbIndexFiltrModalLabel">Filter</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" class="d-flex p-1 my_column_gap10" style="flex-direction: column; row-gap: 10px;">{% csrf_token %}
+            <div class="d-flex">
+              <div class="my_width80">Имя {{akt_raportPOST}}</div>
+              <input type="text" class="form-control border border-dark" {%  if name %} value="{{name}}"{% endif %} name="name" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Фамилия</div>
+              <input type="text" class="form-control border border-dark" {%  if surname %} value="{{surname}}"{% endif %} name="surname" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Улица</div>
+              <input type="text" class="form-control border border-dark" {%  if street %} value="{{street}}"{% endif %} name="street" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Дом</div>
+              <input type="text" class="form-control border border-dark" {%  if home %} value="{{home}}"{% endif %} name="home" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Кв.</div>
+              <input type="text" class="form-control border border-dark" {%  if flat %} value="{{flat}}"{% endif %} name="flat" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Логин</div>
+              <input type="text" class="form-control border border-dark" {%  if login %} value="{{login}}"{% endif %} name="login" autocomplete="off">
+            </div>
+            <div class="d-flex">
+              <div class="my_width80">Договор</div>
+              <input type="text" class="form-control border border-dark" {%  if dogowor %} value="{{dogowor}}"{% endif %} name="dogowor" autocomplete="off">
+            </div>
+
+            <div class="d-flex">
+              <div class="my_width80">Счет №</div>
+              <input type="text" class="form-control border border-dark" {%  if filter_account %} value="{{filter_account}}"{% endif %} name="filter_account" autocomplete="off">
+            </div>
+  
+            <input type="hidden" name="filter">
+            <input type="hidden" name="akt_filter" id="akt_filter" value="{{akt_raport}}">
+            <div class="d-flex">
+              <div class="my_width80">Этрап</div>
+              <select class="form-select border border-dark" aria-label="Default select example" name="etrap">
+                {% if filter_etrap %}
+                  {% for etr in etraps %}
+                  <option {% if etr == filter_etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                  {% endfor %}
+                {% else %}
+                  {% for etr in etraps %}
+                    <option {% if etr == log %} selected {% endif %} value="{{etr}}">{{etr}}</option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
+            <div class="d-flex">
+              <div class="my_width80">П или Н</div>
+              <select class="form-select border border-dark" aria-label="Default select example" name="filter_Naseleniye_or_Edara">
+                  {% if filter_Naseleniye_or_Edara %}
+                  <option value="filter_and_edara_and_naseleniye" {% if filter_Naseleniye_or_Edara == 'filter_and_edara_and_naseleniye' %} selected {% endif %}>Все</option>
+                  <option value="filter_edara" {% if filter_Naseleniye_or_Edara == 'filter_edara' %} selected {% endif %}>Предприятия</option>
+                  <option value="filter_naseleniye" {% if filter_Naseleniye_or_Edara == 'filter_naseleniye' %} selected {% endif %}>Населения</option>
+                  {% else %}
+                  <option value="filter_and_edara_and_naseleniye">Все</option>
+                  <option value="filter_edara">Предприятия</option>
+                  <option value="filter_naseleniye">Населения</option>
+                  {% endif %}
+              </select>
+            </div>
+
+            <button class="btn btn-success btn-sm mt-3" style="height: fit-content;">Фильтр</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</div>
+    
+  
+
+  <!-- save form -->
+  {% if abonent %}
+  <div class="p-2" style="background-color: LightGray;">
+    <form action="" method="POST" id="myForm">{% csrf_token %}
+      <div class="d-flex flex-column my_row_gap10" style="row-gap: 10px;">
+        <div class="d-flex my_column_gap10 flex-wrap my_row_gap10 flex-column">
+          <input type="hidden" name="akt_post" id="akt_post">
+          <div class="d-flex my_column_gap10">
+            <div>
+              <div>Фамилия</div>
+              <input type="text" class="form-control my_width300 fw-bold border border-dark" name="surname" {% if abonent.surname %} value="{{abonent.surname}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" id="baseSurname" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+    
+            <div>
+              <div>Имя</div>
+              <input type="text" class="form-control my_width300 fw-bold border border-dark" name="name"    {% if abonent.name %} value="{{abonent.name}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" id="baseName" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+  
+            <div>
+              <div>Улица</div>
+              <input type="text" class="form-control my_width400 fw-bold border border-dark" name="street"  {% if abonent.street %} value="{{abonent.street}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" id="baseStreet" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+  
+            <div>
+              <div>Дом</div>
+              <input type="text" class="form-control my_width80 fw-bold border border-dark" name="home"    {% if abonent.home %} value="{{abonent.home}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" id="baseHome" maxlength="6" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+  
+            <div>
+              <div>Квартира</div>
+              <input type="text" class="form-control my_width80 fw-bold border border-dark" name="flat"    {% if abonent.flat %} value="{{abonent.flat}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" id="baseFlat" maxlength="5" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>   
+            
+            <div>
+              <div>Абонплата</div>
+              <input type="text" class="form-control my_width80 fw-bold border border-dark" name="abonplata" {% if abonent.abonplata %} value="{{abonent.abonplata}}" {% endif %} autocomplete="off" id="baseAbonplata" {% if  not abonent.is_enterprises and SHBIndex %}  readonly {% endif %} oninput="abonplataChange(event)" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+
+            <div class="no-select {% if is_allow_to_cahnge_base == False %} invisible {% endif %}">
+              <br>
+              <label for="is_beneficiary">
+                <div class="d-flex my_column_gap10 my_width150 justify-content-between border border-dark pt-2" style="border-radius: 4px; padding-left: 15px; padding-right: 15px; height: 38px; background-color: white;" role="button" id="is_beneficiarys_container">
+                  Льготник
+                  <input type="checkbox" class="form-check-input" name="is_beneficiary" id="is_beneficiary" {% if abonent.beneficiary %} checked {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} autocomplete="off" onkeydown="return event.key !== 'Enter';">
+                </div>
+              </label>
+            </div>
+    
+            <div class="d-none">
+              <div>Сотовый (6*-**-**-**)</div>
+              <input type="text" class="form-control my_width200 fw-bold border border-dark" name="sotowyy" id="sotowyyInput" {% if abonent.sotowyy %} value='{{ abonent.sotowyy|slice:":2" }}-{{ abonent.sotowyy|slice:"2:4" }}-{{ abonent.sotowyy|slice:"4:6" }}-{{ abonent.sotowyy|slice:"6:8" }}' {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+          </div>
+
+          
+  
+          <div class="d-flex my_column_gap10">
+            <div>
+              <div>Логин</div>
+              <input type="text" class="form-control my_width200 fw-bold border border-dark" name="login"   {% if abonent.login %} value="{{abonent.login}}" {% endif %} oninput="MtbOninputLogin()" id="myLogin" autocomplete="off" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+            <!-- <div class="d-none" id="MtbOldLoginInputContainer">
+              <div>.</div>
+              <select name="reasonLogin" class="form-select my_width200 col8">
+                <option value="reason">Сохранить в old?</option>
+                <option value="correctError">Нет</option>
+                <option value="change">Да</option>
+              </select>
+            </div> -->
+    
+            <div>
+              <div>Договор</div>
+              <input type="text" class="form-control my_width200 fw-bold border" name="dogowor" {% if abonent.dogowor %} value="{{abonent.dogowor}}" {% endif %} oninput="MtbOninputDogowor()" id="myDogowor" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+            <div class="d-none" id="MtbOldDogoworInputContainer">
+              <div>.</div>
+              <select name="reasonDogowor" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
+                <option value="reason"  >Сохранить в old?</option>
+                <option value="correctError">Нет</option>
+                <option value="change">да</option>
+              </select>
+            </div>
+
+            <div>
+              <div>Дата подкл. инт.</div>
+              <input type="date" class="form-control my_width200 fw-bold border border-dark" name="intOnDate" value="{{formatted_intOnDate}}" id="baseIntOnDate" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} onkeydown="return event.key !== 'Enter';" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+
+            <div>
+              <div>Дата откл. инт.</div>
+              <input type="date" class="form-control my_width200 fw-bold border border-dark" name="intOffDate" value="{{formatted_intOffDate}}" id="baseIntOffDate" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} onkeydown="return event.key !== 'Enter';" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div>
+
+          </div>
+
+  
+       
+
+          
+          <div class="d-flex my_column_gap10">
+          
+            
+
+            <div {% if is_allow_to_cahnge_base == False %}  class="invisible" {% endif %}>
+              <div class="no-select">Edara</div>
+              <div class="d-flex my_column_gap10 my_width200 justify-content-between border border-dark" id="matbIndexEdaraCheckBox" onclick="EdaraCheckBox(this.id)" style="border-radius: 4px; padding-left: 15px; padding-right: 15px; height: 38px; background-color: white;" role="button">
+                <label role="button" class="mt-2" for="MtbIndexEdaraLabel">Edara</label>
+                <input id="MtbIndexEdaraLabel" type="checkbox" class="form-check-input border border-dark" style="margin-top: 12px;" name="edara" {% if abonent.is_enterprises %} checked {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %}>
+              </div>
+            </div>
+            {% if is_allow_to_cahnge_base == False %}
+              {% if abonent.is_enterprises %}
+                <div class="mt-3">Edara</div>
+              {% else %}
+                <div class="mt-3">Ilat</div>
+              {% endif %}
+            {% endif %}
+
+            <div class="d-none {% if is_allow_to_cahnge_base == False %} invisible {% endif %}" id="MtbAccountInput">
+              <div>Счёт</div>
+              <input type="text" class="form-control my_width200 fw-bold border border-dark col8" name="account" {% if abonent.account %} value="{{abonent.account}}" {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} id="baseAccount" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            </div> 
+            {% if is_allow_to_cahnge_base == False %}
+              {% if abonent.account %}
+                <div class="mt-3">Счет №: <div class="text-center">{{abonent.account}}</div></div>
+              {% endif %}
+            {% endif %}       
+            
+            
+            <div class="d-none {% if is_allow_to_cahnge_base == False %} invisible {% endif %}" id="MtbHBInput">
+              <div>Хоз/Бюд</div>
+              <select class="form-select my_width200 border border-dark col8" aria-label="Default select example" name="hb" id="baseHB" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %}>
+                <option value="" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %}>Нет</option>
+                {% for i in HB %}
+                    <option value="{{i.pk}}" {% if abonent.hb.pk == i.pk %} selected {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %}>{{i.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% if is_allow_to_cahnge_base == False %}
+              {% if abonent.hb %}
+                <div class="mt-3">Hoz/Bud: <div class="text-center">{{abonent.hb.name}}</div></div>
+              {% endif %}
+            {% endif %}     
+            
+    
+            <!-- <div>
+              <div>Дата добавления абонента </div>
+              <input type="date" class="form-control my_width200 fw-bold border border-dark" name="addDate" value="{% if formatted_addDate %}{{formatted_addDate}}{% else %}{{current_date}}{% endif %}">
+            </div> -->
+    
+            <div class="no-select {% if is_allow_to_cahnge_base == False %} invisible {% endif %}">
+              <label for="baseSnyat">Снять (-1)</label>
+              <!-- <div>Снять (-1)</div> -->
+              <div class="d-flex my_column_gap10 my_width200 justify-content-between border border-dark" id="matbIndexSnyatCheckBox" style="border-radius: 4px; padding-left: 15px; padding-right: 15px; height: 38px; background-color: white;" role="button">
+                <div role="button" class="mt-2">Снятие {% if abonent.snyat_date %}<span style="font-size: 12px;">{{abonent.snyat_date|date:'d M Y H:i:s'}}</span>{% endif %}</div>
+                <input type="checkbox" class="form-check-input" style="margin-top: 12px;" name="snyat" {% if abonent.snyat_bool %} checked {% endif %} {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} id="baseSnyat" {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+              </div>
+            </div>
+
+            {% if is_allow_to_cahnge_base or SHBIndex %}
+            <!-- Button trigger modal matbSaveBtn -->
+          <div class="btn btn-info mt-4 my_width150 {% if not abonent.is_enterprises and not is_allow_to_cahnge_base %}invisible{% endif %}" style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#matbSaveBtn" id="baseSaveBtn">Сохранить</div>
+          {% endif %}
+          {% if len_filtered_objs %}
+          <div class="btn btn-light mt-4 my_width150" style="height: fit-content;">{{len_filtered_objs}}</div>
+          {% endif %}
+          
+           
+
+          </div>
+        
+  
+          
+  
+          {% if dataBase %}
+          <!-- <button class="btn btn-danger mt-4" style="height: fit-content;" form="clearForm">Очистить номер</button> -->
+          <!-- Button trigger modal clear-number -->
+          <!-- <div class="btn btn-danger mt-4"  style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#matbClearBtn">Снять номер</div> -->
+          {% endif %}
+  
+        </div>
+      </div>
+    </form>
+  
+    <!-- <form action="" method="POST" id="clearForm">{% csrf_token %}
+      <input type="hidden" name="clear">
+      
+  
+    </form> -->
+  </div>
+  {% endif %}
+{% if filtered_objs %}
+<div style="overflow-x: auto; max-height: 800px;">
+  <table class="table table-hover table-bordered" style="background-color: white;">
+    <thead>
+      <tr>
+        <th>Номер</th>
+        <th>ФИО</th>
+        <th>Улица</th>
+        <th>Дом</th>
+        <th>Кв</th>
+        <th>Абонплата</th>
+        <th>Пред.</th>
+        <th>Счёт</th>
+        <th>Х-Б</th>
+        <th>Login</th>
+        <th>TV</th>
+        <th>Выбрать {{filter_etrap}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for obj in filtered_objs %}
+      <tr>
+        <td>{{obj.number}}</td>
+        <td>{{obj.surname}} {{obj.name}}</td>
+        <td>{{obj.street}}</td>
+        <td>{{obj.home}}</td>
+        <td>{{obj.flat}}</td>
+        <td>{{obj.abonplata}}</td>
+
+        {% if obj.is_enterprises %}
+        <th><input type="checkbox" class="form-check-input" checked disabled></th>
+        {% else %}
+        <th></th>
+        {% endif %}
+
+        {% if obj.account %}
+        <td>{{obj.account}}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+
+        <td>{{obj.hb.name}}</td>
+        <td>{{obj.login}}</td>
+        <td>{{obj.kabel_count.kabel_count}}</td>
+        <td>
+          <form method="GET">
+            <input type="hidden" name="user_pk" value="{{obj.pk}}">
+            <input type="hidden" name="akt_raport" id="akt_click_on_table" {% if akt_raport %} value="{{akt_raport}}" {% endif %}>
+
+ 
+            <input type="hidden" name="name" value="{{name}}">
+            <input type="hidden" name="surname" value="{{surname}}">
+            <input type="hidden" name="street" value="{{street}}">
+            <input type="hidden" name="home" value="{{home}}">
+            <input type="hidden" name="flat" value="{{flat}}">
+            <input type="hidden" name="login" value="{{login}}">
+            <input type="hidden" name="dogowor" value="{{dogowor}}">
+            <input type="hidden" name="filter_etrap" value="{{filter_etrap}}">
+            <input type="hidden" name="filter_Naseleniye_or_Edara" value="{{filter_Naseleniye_or_Edara}}">
+            <input type="hidden" name="filter_account" value="{{filter_account}}">
+            <button class="btn btn-success btn-sm" style="height: 20px; padding: 0;">Выбрать</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+  
+
+</div>
+
+  <!-- Modal matbSaveBtn-->
+  <div class="modal fade" id="matbSaveBtn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- <div class="modal-body text-uppercase">
+            <div class="fw-bold">Сохранить изменения?</div>
+        </div> -->
+        <div class="modal-footer">
+            <div class="text-left">Запишите комментарий</div>
+            <textarea name="comment" id="comment" cols="45" rows="10" form="myForm"></textarea>
+            <div class="d-flex justify-content-between my_width500" style="padding-left: 10px;">
+              <div class="fw-bold text-uppercase mt-2">Сохранить изменения?</div>
+              <div><input type="submit" value="Сохранить" class="btn btn-danger" form="myForm"></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<style>
+  td, th {
+    padding: 0 0 0 5px !important;
+  }
+
+ .no-select {
+    -webkit-user-select: none; /* Chrome, Safari, Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Стандарт */
+  }
+
+  .myBgColor {
+    background-color: #9fc0e2;
+  }
+</style>
+
+
+<script>
+
+function abonplataChange(event) {
+    let value = event.target.value;
+    // Заменяем запятые на точки
+    value = value.replace(/,/g, '.');
+    // Удаляем все символы, кроме цифр и точки
+    value = value.replace(/[^0-9.]/g, '');
+    event.target.value = value;
+}
+
+// Если при изменении логина открыть select причины изменения
+function MtbOninputLogin() {
+  // document.getElementById('MtbOldLoginInputContainer').classList.remove('d-none') 
+
+}
+
+// Если при изменении договора открыть select причины изменения
+function MtbOninputDogowor() {
+  document.getElementById('MtbOldDogoworInputContainer').classList.remove('d-none') 
+}
+
+// если при открытии страницы абонент edara то показать 2 input hb и account
+try {
+  if (document.getElementById('MtbIndexEdaraLabel').checked == true) {
+    document.getElementById('MtbAccountInput').classList.remove('d-none')
+    document.getElementById('MtbHBInput').classList.remove('d-none')
+  }
+} catch {
+
+}
+
+
+
+
+// если кликнул на edara checkbox
+function EdaraCheckBox() {
+    if (document.getElementById('MtbIndexEdaraLabel').checked == false) {
+      document.getElementById('MtbAccountInput').classList.add('d-none')
+      document.getElementById('MtbHBInput').classList.add('d-none')
+      document.getElementById('MtbAccountInput').childNodes[3].value = ''
+      document.getElementById('MtbHBInput').childNodes[3].value = ''
+    } else {
+      document.getElementById('MtbAccountInput').classList.remove('d-none')
+      document.getElementById('MtbHBInput').classList.remove('d-none')
+    }
+  }
+
+  // function snyatCheckBox(id) {
+  //   if (document.getElementById(id).childNodes[3].checked == false) {
+  //     document.getElementById(id).childNodes[3].checked = true
+  //   } else {
+  //     document.getElementById(id).childNodes[3].checked = false
+  //   }
+  // }
+
+try {
+  /*фецис (цере) между цифрами сотового при вводе номера matb-index*/
+(function () {
+  document
+    .getElementById("sotowyyInput")
+    .addEventListener("keydown", function (e) {
+      if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 2) {
+          document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 5) {
+          document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 8) {
+          document.activeElement.value += "-";
+        }
+      }
+    });
+})();
+} catch {}
+
+
+akt_raport.oninput = function () {
+
+  try {
+    document.getElementById('akt_post').value = akt_raport.value
+  } catch {}
+
+  document.getElementById('akt_filter').value = akt_raport.value
+
+  try {
+    document.getElementById('akt_click_on_table').value = akt_raport.value
+  } catch {
+    
+  }
+
+}
+
+let myComment = document.getElementById('comment')
+let myAkt_raport = document.getElementById('akt_raport')
+
+myComment.value = myAkt_raport.value
+
+myAkt_raport.addEventListener('input', function() { 
+  document.getElementById('comment').value = document.getElementById('akt_raport').value;
+});
+
+
+
+let myLogin = document.getElementById('myLogin')
+let myDogowor = document.getElementById('myDogowor')
+
+myDogowor.addEventListener('keypress', function(event) {
+      if (event.key === ' ') {
+          event.preventDefault(); // Запретить ввод пробела
+      }
+  });
+myLogin.addEventListener('keypress', function(event) {
+      if (event.key === ' ') {
+          event.preventDefault(); // Запретить ввод пробела
+      }
+  });
+
+try {
+  myLogin.addEventListener('input', function() { 
+  document.getElementById('myDogowor').value = document.getElementById('myLogin').value.toUpperCase();
+  document.getElementById('MtbOldDogoworInputContainer').classList.remove('d-none') 
+});
+} catch {}
+
+
+// стрелочный переход для mahri
+
+/*автофокус + автовыделения input номера после загрузки страницы MATB + Service*/
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("matb_search_number").select();
+});
+
+
+/*фецис (цере) между цифрами телефона при вводе номера matb-index*/
+let matb_search_number = document.getElementById('matb_search_number')
+let baseSurname = document.getElementById('baseSurname')
+let baseName = document.getElementById('baseName')
+let baseStreet = document.getElementById('baseStreet')
+let baseHome = document.getElementById('baseHome')
+let baseFlat = document.getElementById('baseFlat')
+let baseAbonplata = document.getElementById('baseAbonplata')
+let is_beneficiary = document.getElementById('is_beneficiary')
+let baseIntOnDate = document.getElementById('baseIntOnDate')
+let baseIntOffDate = document.getElementById('baseIntOffDate')
+let is_enterprises = document.getElementById('is_enterprises')
+let MtbIndexEdaraLabel = document.getElementById('MtbIndexEdaraLabel')
+let baseAccount = document.getElementById('baseAccount')
+let baseSnyat = document.getElementById('baseSnyat')
+let baseHB = document.getElementById('baseHB')
+let baseSaveBtn = document.getElementById('baseSaveBtn')
+let is_beneficiarys_container = document.getElementById('is_beneficiarys_container')
+let matbIndexEdaraCheckBox = document.getElementById('matbIndexEdaraCheckBox')
+let matbIndexSnyatCheckBox = document.getElementById('matbIndexSnyatCheckBox')
+
+
+
+
+
+matb_search_number.addEventListener("keydown", function (e) {
+      if (e.keyCode === 39) {
+        baseSurname.style.backgroundColor = "#9fc0e2";
+        matb_search_number.style.backgroundColor = "white";
+        setTimeout(function () {
+          baseSurname.select();
+        }, 0);
+      }
+      if (e.keyCode !== 8 && e.keyCode !== 46) {
+        if (document.activeElement.value.length == 1) {
+          document.activeElement.value += "-";
+        }
+        if (document.activeElement.value.length == 4) {
+          document.activeElement.value += "-";
+        }
+      }
+    });
+
+
+
+try {
+  baseSurname.addEventListener('keydown', function(e) {
+  if (e.keyCode === 39) {
+    baseSurname.style.backgroundColor = "white";
+    baseName.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseName.select();
+    }, 0);
+  }
+  if (e.keyCode === 37) {
+    setTimeout(function () {
+      matb_search_number.select();
+      baseSurname.style.backgroundColor = "white";
+      matb_search_number.style.backgroundColor = "#9fc0e2";
+    }, 0);
+  }
+})
+
+baseName.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseName.style.backgroundColor = "white";
+    baseSurname.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseSurname.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseName.style.backgroundColor = "white";
+    baseStreet.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseStreet.select();
+    }, 0)
+  }
+})
+
+baseStreet.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseStreet.style.backgroundColor = "white";
+    baseName.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseName.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseStreet.style.backgroundColor = "white";
+    baseHome.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseHome.select();
+    }, 0)
+  }
+})
+
+baseHome.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseHome.style.backgroundColor = "white";
+    baseStreet.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseStreet.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseHome.style.backgroundColor = "white";
+    baseFlat.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseFlat.select();
+    }, 0)
+  }
+})
+
+baseFlat.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseFlat.style.backgroundColor = "white";
+    baseHome.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseHome.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseFlat.style.backgroundColor = "white";
+    baseAbonplata.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseAbonplata.select();
+    }, 0)
+  }
+})
+
+baseAbonplata.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseAbonplata.style.backgroundColor = "white";
+    baseFlat.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseFlat.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseAbonplata.style.backgroundColor = "white";
+    is_beneficiarys_container.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      is_beneficiary.select();
+    }, 0)
+  }
+})
+
+is_beneficiary.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    is_beneficiarys_container.style.backgroundColor = "white";
+    baseAbonplata.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseAbonplata.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    is_beneficiarys_container.style.backgroundColor = "white";
+    myLogin.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      myLogin.select();
+    }, 0)
+  }
+})
+
+myLogin.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    myLogin.style.backgroundColor = "white";
+    is_beneficiarys_container.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      is_beneficiary.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    myLogin.style.backgroundColor = "white";
+    baseIntOnDate.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseIntOnDate.select();
+    }, 0)
+  }
+})
+
+baseIntOnDate.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseIntOnDate.style.backgroundColor = "white";
+    myLogin.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      myLogin.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseIntOnDate.style.backgroundColor = "white";
+    baseIntOffDate.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseIntOffDate.select();
+    }, 0)
+  }
+})
+
+
+baseIntOffDate.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseIntOffDate.style.backgroundColor = "white";
+    baseIntOnDate.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseIntOnDate.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseIntOffDate.style.backgroundColor = "white";
+    matbIndexEdaraCheckBox.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      MtbIndexEdaraLabel.select();
+    }, 0)
+  }
+})
+
+MtbIndexEdaraLabel.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    matbIndexEdaraCheckBox.style.backgroundColor = "white";
+    baseIntOffDate.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseIntOffDate.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    if (MtbIndexEdaraLabel.checked) {
+      matbIndexEdaraCheckBox.style.backgroundColor = "white";
+      baseAccount.style.backgroundColor = "#9fc0e2";
+      setTimeout(function () {
+        baseAccount.select();
+    }, 0)
+    } else {
+      matbIndexEdaraCheckBox.style.backgroundColor = "white";
+      matbIndexSnyatCheckBox.style.backgroundColor = "#9fc0e2";
+      setTimeout(function () {
+        baseSnyat.select();
+    }, 0)
+    }
+  }
+})
+
+
+baseAccount.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    baseAccount.style.backgroundColor = "white";
+    matbIndexEdaraCheckBox.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      MtbIndexEdaraLabel.select();
+    }, 0)
+  }
+  if (e.keyCode === 39) {
+    baseAccount.style.backgroundColor = "white";
+    matbIndexSnyatCheckBox.style.backgroundColor = "#9fc0e2";
+    setTimeout(function () {
+      baseSnyat.select();
+    }, 0)
+  }
+})
+
+
+baseSnyat.addEventListener('keydown', function(e) {
+  if (e.keyCode === 37) {
+    if (MtbIndexEdaraLabel.checked) {
+      matbIndexSnyatCheckBox.style.backgroundColor = "white";
+      baseAccount.style.backgroundColor = "#9fc0e2";
+      setTimeout(function () {
+      baseAccount.focus();
+    }, 0)
+    } else {
+      matbIndexSnyatCheckBox.style.backgroundColor = "white";
+      matbIndexEdaraCheckBox.style.backgroundColor = "#9fc0e2";
+      setTimeout(function () {
+      MtbIndexEdaraLabel.select();
+    }, 0)
+    }
+    
+  }
+})
+
+} catch {}
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+{% endblock %}

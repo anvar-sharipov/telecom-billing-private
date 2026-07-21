@@ -1,0 +1,775 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Отчет {% if month %} за {{month}} {% endif %}{% endblock %}
+{% block content %}
+
+
+
+
+<div style="background-color: #A9A9A9; min-height: 98vh;">
+    <div class="pt-2 my_width600 my_block_center">
+        <form method="GET">
+            <div class="d-flex my_column_gap10">
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="etrap">
+                        {% for etr in etraps %}
+                        <option value="{{etr}}" {% if etr == etrap %} selected {% endif %}>{{etr}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="year">
+                        {% for y in years %}
+                        <option value="{{y}}" {% if y == year %} selected {% endif %}>{{y}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <select class="form-select my_width200 border border-dark" name="month">
+                        {% for mon in months %}
+                        <option value="{{mon}}" {% if mon == month %} selected {% endif %}>{{mon}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="search_btn">
+                    <button class="btn btn-success">Поиск</button>
+                </div>
+            </div>
+            
+            
+        </form>
+    </div>
+    <!-- Текущий баланс Плюс (Население) -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Текущий Баланс Население</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Дебит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonplataPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheePlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{balancePlusSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Текущий баланс Минус (Население) -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Текущий Баланс Население</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Кредит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonplataMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheeMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{balanceMinusSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Текущий баланс Плюс (Edara) -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Текущий Баланс Предприятие</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Дебит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonplataPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheePlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemPlusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{balancePlusEdaraSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Текущий баланс Минус (Edara) -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Текущий Баланс Предприятие</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Кредит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonplataMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheeMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemMinusEdara|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{balanceMinusEdaraSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Платежи за Выбранный месяц с кассы Наличными -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Платежи с кассы</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Наличными</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheePayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemPayNal|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{payNalSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Платежи за Выбранный месяц с кассы Картой -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Платежи с кассы</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Карт</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheePayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemPayCard|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{PayCardSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Платежи за Выбранный месяц Внешние платежи -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Внешние платежи</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{abonPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheePayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV</td>
+                    <td class="colPrice">{{kabelPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemPayW|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{PayWSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Все Начисления -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Все Начисления</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата Население</td>
+                    <td class="colPrice">{{abonNachN|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Абонплата Предприятие</td>
+                    <td class="colPrice">{{abonNachP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheeNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги (MTB)</td>
+                    <td class="colPrice">{{serviceNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги (Mushder-bolum)</td>
+                    <td class="colPrice">{{serviceSepNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{intNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Население</td>
+                    <td class="colPrice">{{kabelNachN|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Предприятие</td>
+                    <td class="colPrice">{{kabelNachP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemNach|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{nachSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Все Перекидки c -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Перекинута с</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{telefonM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheeM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Население</td>
+                    <td class="colPrice">{{kabelM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemM|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{perekidkaMinusSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Все Перекидки на -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Перекинута на</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{telefonP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{slrP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{kodP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{zakazP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{procheeP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{dop_uslugiP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{internetP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Население</td>
+                    <td class="colPrice">{{kabelP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{alemP|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{perekidkaPlusSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- автоперекидка С прочего -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Автоперекидка с прочего в</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{sProWabon|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{sProWslr|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{sProWkod|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{sProWzakaz|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{sProWdop_uslugi|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{sProchWSum|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Баланс предыдущего месяца плюс -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Баланс предыдущего месяца {{lastMonth}}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Дебит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{lastBalanceAbonplataPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{lastBalanceSlrPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{lastBalanceKodPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{lastBalanceZakazPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{lastBalanceProcheePlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{lastBalanceDop_uslugiPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{lastBalanceInternetPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Население</td>
+                    <td class="colPrice">{{lastBalanceKabelPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{lastBalanceAlemPlus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{totalBalanceLastMonthPlus|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Баланс предыдущего месяца минус -->
+    <div class="my_width500 my_block_center pt-2">
+        <table class="table table-light table-bordered border border-dark">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center">Баланс предыдущего месяца {{lastMonth}}</th>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-center">Кредит</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="colName">Абонплата</td>
+                    <td class="colPrice">{{lastBalanceAbonplataMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Слр</td>
+                    <td class="colPrice">{{lastBalanceSlrMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Код</td>
+                    <td class="colPrice">{{lastBalanceKodMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Заказ</td>
+                    <td class="colPrice">{{lastBalanceZakazMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Прочее</td>
+                    <td class="colPrice">{{lastBalanceProcheeMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Доп. Услуги</td>
+                    <td class="colPrice">{{lastBalanceDop_uslugiMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Интернет</td>
+                    <td class="colPrice">{{lastBalanceInternetMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Кабель TV Население</td>
+                    <td class="colPrice">{{lastBalanceKabelMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td class="colName">Alem TV</td>
+                    <td class="colPrice">{{lastBalanceAlemMinus|floatformat:2}}</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #DCDCDC;" class="text-end fw-bold colName" >Итого</td>
+                    <td style="background-color: #DCDCDC;" class="colPrice" id="test">{{totalBalanceLastMonthMinus|floatformat:2}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    
+
+    
+
+</div>
+
+<style>
+    td, th {
+        padding: 3px 5px 0 5px !important;
+    }
+
+    @media print {
+        .search_btn {
+            display: none !important;
+        }
+    }
+
+    .colName, .colPrice {
+        width: 250px;
+    }
+</style>
+
+{% endblock %}

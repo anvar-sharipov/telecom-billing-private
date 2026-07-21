@@ -1,0 +1,611 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Изменения начислений{% endblock %}
+{% block content %}
+
+<h1 class="text-light text-center mt-3">Изменения начислений</h1>
+
+<div class="container mt-5 text-light">
+    <form method="GET" class="d-flex" style="justify-content: space-around; align-items: center;">
+        <div class="mb-3">
+            <label for="etrap" class="form-label">Этрап</label>
+            <select class="form-select" id="etrap" name="etrap" required>
+                {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+                    {% for e in etraps %}
+                        <option value="{{ e }}" {% if etrap == e %}selected{% endif %}>{{ e }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="{{request_user_etrap}}">{{request_user_etrap}}</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="number" class="form-label">Номер</label>
+            <input type="text" class="form-control" id="number" placeholder="Номер абонента" required autocomplete="off" name="number" {% if number %} value="{{number}}"{% endif %}>
+        </div>
+
+        <div class="mb-3">
+            <label for="month" class="form-label">Месяц</label>
+            <select class="form-select" id="month" required name="month">
+                <option value="" disabled selected>Выберите месяц начисления</option>
+                {% if not month_digit %}
+                <option value="01" {% if current_month == '01' %}selected{% endif %}>Январь</option>
+                <option value="02" {% if current_month == '02' %}selected{% endif %}>Февраль</option>
+                <option value="03" {% if current_month == '03' %}selected{% endif %}>Март</option>
+                <option value="04" {% if current_month == '04' %}selected{% endif %}>Апрель</option>
+                <option value="05" {% if current_month == '05' %}selected{% endif %}>Май</option>
+                <option value="06" {% if current_month == '06' %}selected{% endif %}>Июнь</option>
+                <option value="07" {% if current_month == '07' %}selected{% endif %}>Июль</option>
+                <option value="08" {% if current_month == '08' %}selected{% endif %}>Август</option>
+                <option value="09" {% if current_month == '09' %}selected{% endif %}>Сентябрь</option>
+                <option value="10" {% if current_month == '10' %}selected{% endif %}>Октябрь</option>
+                <option value="11" {% if current_month == '11' %}selected{% endif %}>Ноябрь</option>
+                <option value="12" {% if current_month == '12' %}selected{% endif %}>Декабрь</option>
+                {% else %}
+                <option value="01" {% if month_digit == '01' %}selected{% endif %}>Январь</option>
+                <option value="02" {% if month_digit == '02' %}selected{% endif %}>Февраль</option>
+                <option value="03" {% if month_digit == '03' %}selected{% endif %}>Март</option>
+                <option value="04" {% if month_digit == '04' %}selected{% endif %}>Апрель</option>
+                <option value="05" {% if month_digit == '05' %}selected{% endif %}>Май</option>
+                <option value="06" {% if month_digit == '06' %}selected{% endif %}>Июнь</option>
+                <option value="07" {% if month_digit == '07' %}selected{% endif %}>Июль</option>
+                <option value="08" {% if month_digit == '08' %}selected{% endif %}>Август</option>
+                <option value="09" {% if month_digit == '09' %}selected{% endif %}>Сентябрь</option>
+                <option value="10" {% if month_digit == '10' %}selected{% endif %}>Октябрь</option>
+                <option value="11" {% if month_digit == '11' %}selected{% endif %}>Ноябрь</option>
+                <option value="12" {% if month_digit == '12' %}selected{% endif %}>Декабрь</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="year" class="form-label">Год</label>
+            <select class="form-select" id="year" required name="year">
+                <option value="" disabled selected>Выберите год начисления</option>
+                {% if not year %}
+                <option value="2024" {% if current_year == '2024' %}selected{% endif %}>2024</option>
+                <option value="2025" {% if current_year == '2025' %}selected{% endif %}>2025</option>
+                <option value="2026" {% if current_year == '2026' %}selected{% endif %}>2026</option>
+                <option value="2027" {% if current_year == '2027' %}selected{% endif %}>2027</option>
+                <option value="2028" {% if current_year == '2028' %}selected{% endif %}>2028</option>
+                <option value="2029" {% if current_year == '2029' %}selected{% endif %}>2029</option>
+                <option value="2030" {% if current_year == '2030' %}selected{% endif %}>2030</option>
+                <option value="2031" {% if current_year == '2031' %}selected{% endif %}>2031</option>
+                <option value="2032" {% if current_year == '2032' %}selected{% endif %}>2032</option>
+                <option value="2033" {% if current_year == '2033' %}selected{% endif %}>2033</option>
+                <option value="2034" {% if current_year == '2034' %}selected{% endif %}>2034</option>
+                <option value="2035" {% if current_year == '2035' %}selected{% endif %}>2035</option>
+                {% else %}
+                <option value="2024" {% if year == '2024' %}selected{% endif %}>2024</option>
+                <option value="2025" {% if year == '2025' %}selected{% endif %}>2025</option>
+                <option value="2026" {% if year == '2026' %}selected{% endif %}>2026</option>
+                <option value="2027" {% if year == '2027' %}selected{% endif %}>2027</option>
+                <option value="2028" {% if year == '2028' %}selected{% endif %}>2028</option>
+                <option value="2029" {% if year == '2029' %}selected{% endif %}>2029</option>
+                <option value="2030" {% if year == '2030' %}selected{% endif %}>2030</option>
+                <option value="2031" {% if year == '2031' %}selected{% endif %}>2031</option>
+                <option value="2032" {% if year == '2032' %}selected{% endif %}>2032</option>
+                <option value="2033" {% if year == '2033' %}selected{% endif %}>2033</option>
+                <option value="2034" {% if year == '2034' %}selected{% endif %}>2034</option>
+                <option value="2035" {% if year == '2035' %}selected{% endif %}>2035</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <button class="btn btn-primary">Поиск</button>
+    </form>
+</div>
+
+{% if user_table %}
+    <h5 class="text-light text-center mt-5">Абонент</h5>
+    <div class="container">
+        <table class="table table-bordered table-success">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Номер</th>
+                    <th>Этрап</th>
+                    <th>Адрес</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{user_table.surname}}</td>
+                    <td>{{user_table.name}}</td>
+                    <td>{{user_table.number}}</td>
+                    <td>{{user_table.etrap}}</td>
+                    <td>{{user_table.street}}, {{user_table.home}}, {{user_table.flat}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% if user_kabel %}
+    <h5 class="text-light text-center mt-5">Кабельное</h5>
+    <div class="container">
+        <table class="table table-bordered table-primary">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Номер</th>
+                    <th>Адрес</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{user_kabel.surname}}</td>
+                    <td>{{user_kabel.name}}</td>
+                    <td>{{user_kabel.number}}</td>
+                    <td>{{user_kabel.street}}, {{user_kabel.home}}, {{user_kabel.flat}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+{% if user_table or user_kabel %}
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5>Начисления для абонента: {{ user_table.surname }} {{ user_table.name }}</h5>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        
+        {% if not user_table_nach and not user_kabel_nach %}
+            {% if not only_kabel %}
+                <h4 class="text-center">Нет начисления abonent</h4>
+                <div class="d-flex container justify-content-between">
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Интернет</label>
+                        <input type="text" step="0.01" class="form-control" name="internet" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Доп. Услуги</label>
+                        <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Alem TV</label>
+                        <input type="text" step="0.01" class="form-control" name="alem" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Телефон</label>
+                        <input type="text" class="form-control" name="telefon" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">СЛР</label>
+                        <input type="text" step="0.01" class="form-control" name="slr" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Код</label>
+                        <input type="text" step="0.01" class="form-control" name="kod" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Заказ</label>
+                        <input type="text" step="0.01" class="form-control" name="zakaz" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Прочее</label>
+                        <input type="text" step="0.01" class="form-control" name="prochee" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                <hr>
+            {% endif %}
+            {% if user_kabel %}
+            <h4 class="text-center">Нет начисления kabel</h4>
+            <div style="width: 100px; margin-left: auto; margin-right: auto;" class="text-center">
+                <label class="form-label">Кабель</label>
+                <input type="text" step="0.01" class="form-control" name="kabel" value="0" oninput="validateInputedText(event)">
+            </div>
+            {% endif %}
+        {% endif %}
+        {% if not user_table_nach and user_kabel_nach %}
+            {% if not only_kabel %}
+                <h4 class="text-center">Нет начисления abonent</h4>
+                <div class="d-flex container justify-content-between">
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Интернет</label>
+                        <input type="text" step="0.01" class="form-control" name="internet" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Доп. Услуги</label>
+                        <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Alem TV</label>
+                        <input type="text" step="0.01" class="form-control" name="alem" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Телефон</label>
+                        <input type="text" class="form-control" name="telefon" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">СЛР</label>
+                        <input type="text" step="0.01" class="form-control" name="slr" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Код</label>
+                        <input type="text" step="0.01" class="form-control" name="kod" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Заказ</label>
+                        <input type="text" step="0.01" class="form-control" name="zakaz" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Прочее</label>
+                        <input type="text" step="0.01" class="form-control" name="prochee" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                <hr>
+            {% endif %}
+            <h4 class="text-center">Есть начисления kabel</h4>
+                {% for nach in user_kabel_nach %}
+                <div style="width: 100px; margin-left: auto; margin-right: auto;" class="text-center">
+                    <label class="form-label">Кабель</label>
+                    <input type="text" step="0.01" class="form-control" name="kabel" value="{{ nach.nach }}" oninput="validateInputedText(event)">
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if user_table_nach and not user_kabel_nach %}
+            <h4 class="text-center">Есть начисления abonent</h4>
+            {% for nach in user_table_nach %}
+                <div class="d-flex container justify-content-between">
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Интернет</label>
+                        <input type="text" step="0.01" class="form-control" name="internet" value="{{ nach.internet }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Доп. Услуги</label>
+                        <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="{{ nach.dop_uslugi }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Alem TV</label>
+                        <input type="text" step="0.01" class="form-control" name="alem" value="{{ nach.alem }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Телефон</label>
+                        <input type="text" class="form-control" name="telefon" value="{{ nach.telefon }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">СЛР</label>
+                        <input type="text" step="0.01" class="form-control" name="slr" value="{{ nach.slr }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Код</label>
+                        <input type="text" step="0.01" class="form-control" name="kod" value="{{ nach.kod }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Заказ</label>
+                        <input type="text" step="0.01" class="form-control" name="zakaz" value="{{ nach.zakaz }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Прочее</label>
+                        <input type="text" step="0.01" class="form-control" name="prochee" value="{{ nach.prochee }}" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+            {% endfor %}
+            {% if user_kabel %}
+            <hr>
+            <h4 class="text-center">Нет начисления kabel</h4>
+            <div style="width: 100px; margin-left: auto; margin-right: auto;" class="text-center">
+                <label class="form-label">Кабель</label>
+                <input type="text" step="0.01" class="form-control" name="kabel" value="0" oninput="validateInputedText(event)">
+            </div>
+            {% endif %}
+        {% endif %}
+        {% if user_table_nach and user_kabel_nach %}
+            <h4 class="text-center">Есть начисления abonent</h4>
+            {% for nach in user_table_nach %}
+                <div class="d-flex container justify-content-between">
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Интернет</label>
+                        <input type="text" step="0.01" class="form-control" name="internet" value="{{ nach.internet }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Доп. Услуги</label>
+                        <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="{{ nach.dop_uslugi }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Alem TV</label>
+                        <input type="text" step="0.01" class="form-control" name="alem" value="{{ nach.alem }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Телефон</label>
+                        <input type="text" class="form-control" name="telefon" value="{{ nach.telefon }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">СЛР</label>
+                        <input type="text" step="0.01" class="form-control" name="slr" value="{{ nach.slr }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Код</label>
+                        <input type="text" step="0.01" class="form-control" name="kod" value="{{ nach.kod }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Заказ</label>
+                        <input type="text" step="0.01" class="form-control" name="zakaz" value="{{ nach.zakaz }}" oninput="validateInputedText(event)">
+                    </div>
+                    <div style="width: 100px;" class="text-center">
+                        <label class="form-label">Прочее</label>
+                        <input type="text" step="0.01" class="form-control" name="prochee" value="{{ nach.prochee }}" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+            {% endfor %}
+            <hr>
+            <h4 class="text-center">Есть начисления kabel</h4>
+                {% for nach in user_kabel_nach %}
+                <div style="width: 100px; margin-left: auto; margin-right: auto;" class="text-center">
+                    <label class="form-label">Кабель</label>
+                    <input type="text" step="0.01" class="form-control" name="kabel" value="{{ nach.nach }}" oninput="validateInputedText(event)">
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+
+
+{% comment %}
+
+        {% if user_table_nach or user_kabel_nach %}
+            {% if user_table_nach %}
+                <h1>Есть начисления abonent</h1>
+                {% for nach in user_table_nach %}
+                    <div class="d-flex" style="column-gap: 5px;">
+                        <div style="width: 100px;">
+                            <label class="form-label">Интернет</label>
+                            <input type="text" step="0.01" class="form-control" name="internet" value="{{ nach.internet }}" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Доп. Услуги</label>
+                            <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="{{ nach.dop_uslugi }}" oninput="validateInputedText(event)">
+                        </div>
+                     
+                        <div style="width: 100px;">
+                            <label class="form-label">Alem TV</label>
+                            <input type="text" step="0.01" class="form-control" name="alem" value="{{ nach.alem }}" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Телефон</label>
+                            <input type="text" class="form-control" name="telefon" value="{{ nach.telefon }}" oninput="validateInputedText(event)">
+                        </div>
+                     
+                        
+                
+                        <div style="width: 100px;">
+                            <label class="form-label">СЛР</label>
+                            <input type="text" step="0.01" class="form-control" name="slr" value="{{ nach.slr }}" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Код</label>
+                            <input type="text" step="0.01" class="form-control" name="kod" value="{{ nach.kod }}" oninput="validateInputedText(event)">
+                        </div>
+                       
+                        
+                   
+                        <div style="width: 100px;">
+                            <label class="form-label">Заказ</label>
+                            <input type="text" step="0.01" class="form-control" name="zakaz" value="{{ nach.zakaz }}" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Прочее</label>
+                            <input type="text" step="0.01" class="form-control" name="prochee" value="{{ nach.prochee }}" oninput="validateInputedText(event)">
+                        </div>
+
+                    </div>
+                    
+                    
+                    
+                    
+                {% endfor %}
+            {% else %}
+                {% if not only_kabel %}
+                    <!-- Пустые поля если начислений нет -->
+                    <h1>Нет начислений abonent</h1>
+                    <div class="d-flex" style="column-gap: 5px;">
+                        <div style="width: 100px;">
+                            <label class="form-label">Интернет</label>
+                            <input type="text" step="0.01" class="form-control" name="internet" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Доп. Услуги</label>
+                            <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Alem TV</label>
+                            <input type="text" step="0.01" class="form-control" name="alem" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Телефон</label>
+                            <input type="text" class="form-control" name="telefon" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">СЛР</label>
+                            <input type="text" step="0.01" class="form-control" name="slr" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Код</label>
+                            <input type="text" step="0.01" class="form-control" name="kod" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Заказ</label>
+                            <input type="text" step="0.01" class="form-control" name="zakaz" value="0" oninput="validateInputedText(event)">
+                        </div>
+                        <div style="width: 100px;">
+                            <label class="form-label">Прочее</label>
+                            <input type="text" step="0.01" class="form-control" name="prochee" value="0" oninput="validateInputedText(event)">
+                        </div>
+                    </div>
+                {% endif %}
+                
+            {% endif %}
+            {% if user_kabel_nach %}
+                <h1>Есть начислений kabel</h1>
+                {% for nach in user_kabel_nach %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Кабель</label>
+                            <input type="text" step="0.01" class="form-control" name="kabel" value="{{ nach.nach }}" oninput="validateInputedText(event)">
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+            <h1>Нет начислений kabel</h1>
+                {% for nach in user_kabel_nach %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Кабель</label>
+                            <input type="text" step="0.01" class="form-control" name="kabel" value="0" oninput="validateInputedText(event)">
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% if not only_kabel %}
+                <!-- Пустые поля если начислений нет -->
+                <h1>Нет начислений abonent</h1>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">Интернет</label>
+                    <input type="text" step="0.01" class="form-control" name="internet" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Доп. Услуги</label>
+                        <input type="text" step="0.01" class="form-control" name="dop_uslugi" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">Alem TV</label>
+                    <input type="text" step="0.01" class="form-control" name="alem" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Телефон</label>
+                    <input type="text" step="0.01" class="form-control" name="telefon" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">СЛР</label>
+                    <input type="text" step="0.01" class="form-control" name="slr" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Код</label>
+                    <input type="text" step="0.01" class="form-control" name="kod" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label class="form-label">Заказ</label>
+                    <input type="text" step="0.01" class="form-control" name="zakaz" value="0" oninput="validateInputedText(event)">
+                    </div>
+                    <div class="col-md-6">
+                    <label class="form-label">Прочее</label>
+                    <input type="text" step="0.01" class="form-control" name="prochee" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Кабель</label>
+                        <input type="text" step="0.01" class="form-control" name="kabel" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+            {% endif %}
+                <h1>Нет начислений kabel</h1>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Кабель</label>
+                        <input type="text" step="0.01" class="form-control" name="kabel" value="0" oninput="validateInputedText(event)">
+                    </div>
+                </div>
+
+            
+        {% endif %}
+        {% endcomment %}
+        <div class="mb-3">
+            <label for="commentTextarea" class="form-label">Ваш комментарий</label>
+            <textarea 
+                class="form-control"
+                name="comment" 
+                id="commentTextarea" 
+                rows="5"
+                placeholder="Введите ваш комментарий здесь..."
+                style="resize: none;"
+            ></textarea>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-primary me-md-2">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endif %}
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all input elements with type 'text'
+    const inputs = document.querySelectorAll('input[type="text"]');
+    
+    // Process each input
+    inputs.forEach(input => {
+        if (input.value.includes(',')) {
+            input.value = input.value.replace(/,/g, '.');
+        }
+    });
+    
+    // Also handle the oninput event to prevent future commas
+    function replaceCommas(event) {
+        if (event.target.value.includes(',')) {
+            event.target.value = event.target.value.replace(/,/g, '.');
+        }
+    }
+    
+    // Add event listeners to all text inputs
+    inputs.forEach(input => {
+        input.addEventListener('input', replaceCommas);
+    });
+});
+
+    function validateInputedText(event) {
+        // Получаем текущее значение поля ввода
+        const input = event.target;
+        let value = input.value;
+
+        // Заменяем запятую на точку
+        value = value.replace(/,/g, '.');
+
+        // Регулярное выражение, которое разрешает цифры, точку и минус
+        // Минус допускается только в начале строки
+        const filteredValue = value.replace(/(?!^[-]?$)[^0-9.-]/g, '') // Убираем недопустимые символы
+                                   .replace(/(?!^[-])[-]+/g, '') // Убираем лишние минусы
+                                   .replace(/(\..*?)\..+/g, '$1'); // Убираем лишние точки
+
+        // Проверяем, не начинается ли строка с точки
+        if (filteredValue.startsWith('.')) {
+            input.value = '0' + filteredValue; // Добавляем 0 перед точкой
+        } else {
+            input.value = filteredValue; // Устанавливаем отфильтрованное значение обратно в поле ввода
+        }
+
+        // Проверяем корректный ввод отрицательного числа и дополнительную точку.
+        // Убедимся в том, что несмотря на наличие символов, и правильный формат перед точкой не нарушается.
+        let segments = input.value.split('.');
+        if (segments.length > 2) {
+            // Если есть больше одной точки, удаляем все после первой.
+            input.value = segments[0] + '.' + segments[1];
+        }
+    }
+
+</script>
+
+
+
+{% endblock content %}
+

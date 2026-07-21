@@ -1,0 +1,595 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Импорт интернет начислений {% endblock %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Обзор данных</h2>
+    <table class="table table-bordered table-hover table-light">
+        <thead class="table-dark">
+            <tr>
+                <th>Категория</th>
+                <th>Количество</th>
+                <th>Цена</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Эдара Хоз (Аренда)</td>
+                <td>{{ edara_hoz_arenda.count }}</td>
+                <td>{{ edara_hoz_arenda.price }}</td>
+            </tr>
+            <tr>
+                <td>Эдара Буд (Аренда)</td>
+                <td>{{ edara_bud_arenda.count }}</td>
+                <td>{{ edara_bud_arenda.price }}</td>
+            </tr>
+            <tr>
+                <td>Илат (Аренда)</td>
+                <td>{{ ilat_arenda.count }}</td>
+                <td>{{ ilat_arenda.price }}</td>
+            </tr>
+            <tr>
+                <td>Эдара Хоз (MB)</td>
+                <td>{{ edara_hoz_MB.count }}</td>
+                <td>{{ edara_hoz_MB.price }}</td>
+            </tr>
+            <tr>
+                <td>Эдара Буд (MB)</td>
+                <td>{{ edara_bud_MB.count }}</td>
+                <td>{{ edara_bud_MB.price }}</td>
+            </tr>
+            <tr>
+                <td>Илат (MB)</td>
+                <td>{{ ilat_MB.count }}</td>
+                <td>{{ ilat_MB.price }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Импортировать начисления интернет (ON-OFF) с XLSX-файла в БД</h2>
+        <p class="text-muted mt-3">
+            Пример правильного имени файла: <code>S.A.Nyyazow_ON_2025_Январь.xlsx</code> регистр не важен
+        </p>
+        {% if error_dict %}
+            <!-- Кнопка для вызова модального окна -->
+            <div class="text-center">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
+                    Скачать ошибки <img src="{% static 'telekom/jpg/error-download.png' %}" width="30">
+                </button>
+            </div>
+
+            <!-- Модальное окно -->
+            <div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">  <!-- modal-xl делает окно большим -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileUploadModalLabel">Скачивание файла с ошибками</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="fileInput" class="form-label">Выберите файл:</label>
+                                    <input type="file" class="form-control" name="xlsx_file" accept=".xlsx">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <input type="hidden" name="month" value="{{month_word}}">
+                                    <input type="hidden" name="etrap" value="{{etrap}}">
+                                    <input type="hidden" name="status" value="{{status}}">
+                                    <input type="hidden" name="action" value="check">
+                                    <input type="hidden" name="download_error">
+                                    <input type="hidden" name="file_name" value="{{file_name}}">
+
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary" onclick = "this.form.submit(); this.disabled=true;">Скачать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if dublicate_dogowors_and_logins %}
+            <!-- Кнопка для вызова модального окна -->
+            <div class="text-center">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dublicate_dogowors_and_logins">
+                    Скачать дубликаты <img src="{% static 'telekom/jpg/error-download.png' %}" width="30">
+                </button>
+            </div>
+
+            <!-- Модальное окно -->
+            <div class="modal fade" id="dublicate_dogowors_and_logins" tabindex="-1" aria-labelledby="dublicate_dogowors_and_loginsLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">  <!-- modal-xl делает окно большим -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="dublicate_dogowors_and_loginsLabel">Скачивание дубликатов</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="fileInput" class="form-label">Выберите файл:</label>
+                                    <input type="file" class="form-control" name="xlsx_file" accept=".xlsx">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <input type="hidden" name="month" value="{{month_word}}">
+                                    <input type="hidden" name="etrap" value="{{etrap}}">
+                                    <input type="hidden" name="status" value="{{status}}">
+                                    <input type="hidden" name="action" value="check">
+                                    <input type="hidden" name="download_error_dublicate_logins">
+                                    <input type="hidden" name="file_name" value="{{file_name}}">
+
+
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary" onclick = "this.form.submit(); this.disabled=true;">Скачать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if dublicate_dogowors_and_logins_old %}
+            <!-- Кнопка для вызова модального окна -->
+            <div class="text-center">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dublicate_dogowors_and_logins_old">
+                    Скачать дубликаты <img src="{% static 'telekom/jpg/error-download.png' %}" width="30">
+                </button>
+            </div>
+
+            <!-- Модальное окно -->
+            <div class="modal fade" id="dublicate_dogowors_and_logins_old" tabindex="-1" aria-labelledby="dublicate_dogowors_and_logins_oldLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">  <!-- modal-xl делает окно большим -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="dublicate_dogowors_and_logins_oldLabel">Скачивание дубликатов в OLD</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="fileInput" class="form-label">Выберите файл:</label>
+                                    <input type="file" class="form-control" name="xlsx_file" accept=".xlsx">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <input type="hidden" name="month" value="{{month_word}}">
+                                    <input type="hidden" name="etrap" value="{{etrap}}">
+                                    <input type="hidden" name="status" value="{{status}}">
+                                    <input type="hidden" name="action" value="check">
+                                    <input type="hidden" name="download_error_dublicate_logins_old">
+                                    <input type="hidden" name="file_name" value="{{file_name}}">
+
+
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary" onclick = "this.form.submit(); this.disabled=true;">Скачать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if error_inenterprises %}
+            <!-- Кнопка для вызова модального окна -->
+            <div class="text-center">
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#fileUploadModal">
+                    Скачать ошибки  <img src="{% static 'telekom/jpg/error-download.png' %}" width="30">
+                </button> в эдара для исправления
+            </div>
+
+            <!-- Модальное окно -->
+            <div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">  <!-- modal-xl делает окно большим -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="fileUploadModalLabel">Скачивание ошибок</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="fileInput" class="form-label">Выберите файл:</label>
+                                    <input type="file" class="form-control" name="xlsx_file" accept=".xlsx">
+                                    <input type="hidden" name="year" value="{{year}}">
+                                    <input type="hidden" name="month" value="{{month_word}}">
+                                    <input type="hidden" name="etrap" value="{{etrap}}">
+                                    <input type="hidden" name="status" value="{{status}}">
+                                    <input type="hidden" name="action" value="check">
+                                    <input type="hidden" name="error_inenterprises">
+                                    <input type="hidden" name="file_name" value="{{file_name}}">
+
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary" onclick = "this.form.submit(); this.disabled=true;">Скачать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="xlsxFile" class="form-label">Выберите XLSX файл</label>
+                <input class="form-control" type="file" id="xlsxFile" name="xlsx_file" accept=".xlsx" required onchange="validateFileName()">
+            </div>
+        
+            <div class="mb-3">
+                <label for="yearSelect" class="form-label">Выберите год</label>
+                <select class="form-select" id="yearSelect" name="year" required>
+                    {% if year %}
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if y == year %} selected {% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    {% else %}
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if y == current_year %} selected {% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="monthSelect" class="form-label">Выберите месяц</label>
+                <select class="form-select" id="monthSelect" name="month" required>
+                    {% if month_word %}
+                        {% for m in months %}
+                            <option value="{{ m }}" {% if m == month_word %} selected {% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    {% else %}
+                        {% for m in months %}
+                            <option value="{{ m }}" {% if m == current_month_word %} selected {% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        
+            <div class="mb-3">
+                <label for="etrapSelect" class="form-label">Выберите этрап</label>
+                <select class="form-select" id="etrapSelect" name="etrap" required>
+                    <option value="no" selected>Выберите этрап</option>
+                    {% for e in etraps %}
+                        <option value="{{ e }}" {% if e == etrap %} selected {% endif %}>{{ e }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3" id="status_container">
+                <label class="form-label">Выберите статус</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" id="onOption" value="on" {% if status != 'off' %} checked {% endif %}>
+                    <label class="form-check-label" for="onOption">ON</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="status" id="offOption" value="off" {% if status == 'off' %} checked {% endif %}>
+                    <label class="form-check-label" for="offOption">OFF</label>
+                </div>
+                <!-- <span style="color: green;" id="off_yes" class="d-none">✔️</span> <span style="color: red;" id="off_no" class="d-none">❌</span>
+                 <span style="color: green;" id="on_yes" class="d-none">✔️</span> <span style="color: red;" id="on_no" class="d-none">❌</span> -->
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Выберите действие</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="action" id="checkOption" value="check" {% if action != 'save' %} checked {% endif %} onchange="updateButton()">
+                    <label class="form-check-label" for="checkOption">Проверить</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="action" id="saveOption" value="save" onchange="updateButton()" {% if not allow_nach %} disabled {% endif %}>
+                    <label class="form-check-label" for="saveOption">Импорт</label>
+                </div>
+            </div>
+            <input type="hidden" name="file_name" value="{{file_name}}">
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary invisible" id="submitButton" onclick = "this.form.submit(); this.disabled=true;">Проверить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if dry %}
+    <h2 class="mb-3 text-center mt-5 text-light">Последние импортированные за 3 месяца</h2>
+    <table class="table table-bordered table-hover container">
+        <thead class="table-dark">
+            <tr>
+                <th>Год</th>
+                <th>Месяц</th>
+                <th>Этрап</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dry %}
+                {% if item %}
+                    <tr class="{% if item.status == 'ON' %}table-success{% else %}table-danger{% endif %}">
+                        <td>{{ item.year }}</td>
+                        <td>{{ item.month }}</td>
+                        <td>{{ item.etrap }}</td>
+                        <td>{{ item.status }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+<h2 class="mb-3 text-center mt-5 text-danger">Импорта за последние 3 месяца нет</h2>
+{% endif %}
+
+<style>
+    .is-invalid {
+        background-color: rgb(239, 158, 158);
+    }
+    .is-valid {
+        background-color: rgb(129, 213, 83);
+    }
+</style>
+
+<script>
+    const yearSelect = document.getElementById('yearSelect');
+    const monthSelect = document.getElementById('monthSelect');
+    const etrapSelect = document.getElementById('etrapSelect');
+    const radios = document.querySelectorAll('input[type="radio"][name="status"]');
+    const fileInput = document.getElementById("xlsxFile");
+    const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+   
+
+    function checkAllInputes() {
+        submitButton = document.getElementById('submitButton')
+        radio_success = false;
+        radios.forEach(radio => {
+            if (radio.checked && radio.classList.contains('is-valid') && !radio.classList.contains('is-invalid')) {
+                radio_success = true
+            }
+        })
+        if (yearSelect.classList.contains('is-valid') && !yearSelect.classList.contains('is-invalid')
+            && monthSelect.classList.contains('is-valid') && !monthSelect.classList.contains('is-invalid')
+            && etrapSelect.classList.contains('is-valid') && !etrapSelect.classList.contains('is-invalid')
+            && radio_success) {
+            if (submitButton.classList.contains('invisible')) {
+                (submitButton.classList.remove('invisible'))
+            }
+        } else {
+            if (!submitButton.classList.contains('invisible')) {
+                (submitButton.classList.add('invisible'))
+            }
+        }
+
+    }
+    
+
+    function radio_f(text) {
+        if (text) {
+            // let matchFound = false;
+            radios.forEach(radio => {
+                const radioStr = radio.value.toLowerCase();
+                const radioChecked = radio.checked;
+
+                // Сбрасываем классы перед новой проверкой
+                radio.classList.remove('is-valid', 'is-invalid');
+          
+           
+
+                if (text.includes(radioStr)) {
+                    // matchFound = true;
+                    if (radioChecked) {
+                        console.log('greengreen');
+                        if (radioStr == 'on') {
+                        
+                        }
+
+                        radio.classList.add('is-valid');
+                        radio.classList.remove('is-invalid');
+                    }
+                } else {
+                    if (radioChecked) {
+                        radio.classList.add('is-invalid');
+                        radio.classList.remove('is-valid');
+                    }
+                }
+            });
+            checkAllInputes()
+        }
+        
+   
+    }
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const fileInput = document.getElementById("xlsxFile");
+            const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+            radio_f(fileName);
+        });
+    });
+
+
+    yearSelect.addEventListener('change', function() {
+        const year = document.getElementById("yearSelect");
+        const year_word = year.value
+        const fileInput = document.getElementById("xlsxFile");
+        const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+
+        if (fileName) {
+            if (!fileName.includes(year_word)) {
+                if (year.classList.contains('is-valid')) {
+                    year.classList.remove('is-valid')
+                }
+                if (!year.classList.contains('is-invalid')) {
+                    year.classList.add('is-invalid')
+                }
+            } else {
+                if (!year.classList.contains('is-valid')) {
+                    year.classList.add('is-valid')
+                }
+                if (year.classList.contains('is-invalid')) {
+                    year.classList.remove('is-invalid')
+                }
+            }
+        }
+        checkAllInputes()
+
+        
+
+    });
+
+    monthSelect.addEventListener('change', function() {
+        const fileInput = document.getElementById("xlsxFile");
+        const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+        const month = document.getElementById("monthSelect");
+        const month_word = month.value.toLowerCase()
+
+        if (fileName) {
+            if (!fileName.includes(month_word)) {
+                if (month.classList.contains('is-valid')) {
+                    month.classList.remove('is-valid')
+                }
+                if (!month.classList.contains('is-invalid')) {
+                    month.classList.add('is-invalid')
+                }
+            } else {
+                if (!month.classList.contains('is-valid')) {
+                    month.classList.add('is-valid')
+                }
+                if (month.classList.contains('is-invalid')) {
+                    month.classList.remove('is-invalid')
+                }
+            }
+            checkAllInputes()
+        }
+        
+    });
+
+    etrapSelect.addEventListener('change', function() {
+        const fileInput = document.getElementById("xlsxFile");
+        const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+        const etrap = document.getElementById("etrapSelect");
+        const etrap_word = etrap.value.toLowerCase()
+        
+        if (fileName) {
+            if (!fileName.includes(etrap_word)) {
+                if (etrap.classList.contains('is-valid')) {
+                    etrap.classList.remove('is-valid')
+                }
+                if (!etrap.classList.contains('is-invalid')) {
+                    etrap.classList.add('is-invalid')
+                }
+            } else {
+                if (!etrap.classList.contains('is-valid')) {
+                    etrap.classList.add('is-valid')
+                }
+                if (etrap.classList.contains('is-invalid')) {
+                    etrap.classList.remove('is-invalid')
+                }
+            }
+            checkAllInputes()
+        }
+        
+    });
+ 
+
+
+    function validateFileName() {
+        const fileInput = document.getElementById("xlsxFile");
+        const fileName = fileInput.files[0] ? fileInput.files[0].name.toLowerCase() : '';
+        const year = document.getElementById("yearSelect");
+        const year_word = year.value
+        const month = document.getElementById("monthSelect");
+        const month_word = month.value.toLowerCase()
+        const etrap = document.getElementById("etrapSelect");
+        const etrap_word = etrap.value.toLowerCase()
+
+        radio_f(fileName)
+        
+
+        if (!fileName.includes(year.value)) {
+            console.log('net net net');
+            if (year.classList.contains('is-valid')) {
+                year.classList.remove('is-valid')
+            }
+            if (!year.classList.contains('is-invalid')) {
+                year.classList.add('is-invalid')
+            }
+        } else {
+            if (!year.classList.contains('is-valid')) {
+                year.classList.add('is-valid')
+            }
+            if (year.classList.contains('is-invalid')) {
+                year.classList.remove('is-invalid')
+            }
+        }
+
+        if (!fileName.includes(month_word)) {
+            if (month.classList.contains('is-valid')) {
+                month.classList.remove('is-valid')
+            }
+            if (!month.classList.contains('is-invalid')) {
+                month.classList.add('is-invalid')
+            }
+        } else {
+            if (!month.classList.contains('is-valid')) {
+                month.classList.add('is-valid')
+            }
+            if (month.classList.contains('is-invalid')) {
+                month.classList.remove('is-invalid')
+            }
+        }
+
+        if (!fileName.includes(etrap_word)) {
+            if (etrap.classList.contains('is-valid')) {
+                etrap.classList.remove('is-valid')
+            }
+            if (!etrap.classList.contains('is-invalid')) {
+                etrap.classList.add('is-invalid')
+            }
+        } else {
+            if (!etrap.classList.contains('is-valid')) {
+                etrap.classList.add('is-valid')
+            }
+            if (etrap.classList.contains('is-invalid')) {
+                etrap.classList.remove('is-invalid')
+            }
+        }
+        checkAllInputes()
+        
+                
+
+    }
+</script>
+
+<script>
+    function updateButton() {
+        let button = document.getElementById("submitButton");
+        let checkOption = document.getElementById("checkOption");
+
+        if (checkOption.checked) {
+            button.textContent = "Проверить";
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-primary");
+        } else {
+            button.textContent = "Импортировать";
+            button.classList.remove("btn-primary");
+            button.classList.add("btn-danger");
+        }
+    }
+
+    window.onload = function() {
+        updateButton()
+    };
+</script>
+
+
+
+{% endblock content %}
