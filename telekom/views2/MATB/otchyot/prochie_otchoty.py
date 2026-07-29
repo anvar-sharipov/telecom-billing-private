@@ -1802,7 +1802,7 @@ def prochie_otchoty(request):
         pays = PayHistory.objects.filter(date__range=[start, end2], kassir_etrap='Dashoguz')
         pays_from_kabel_TV = KabelTvPayHistory.objects.filter(pay_date__range=[start2, end2])
         
-        headers = ("NUMBER","NAME","EDARA_ILAT", "TYPE", "MANAGER", "DATE", "CART", "PRICE")
+        headers = ("NUMBER","NAME","ETRAP","EDARA_ILAT", "TYPE", "MANAGER", "DATE", "CART", "PRICE")
         
         data = []
         data = tablib.Dataset(*data, headers=headers)
@@ -1856,7 +1856,7 @@ def prochie_otchoty(request):
 
 
    
-            data.append((number, name, edara_ilat, type_, manager, date_, cart, price))
+            data.append((number, name, p.abonent.etrap, edara_ilat, type_, manager, date_, cart, price))
 
         for p in pays_from_kabel_TV:
             cart = 'Наличка'
@@ -1867,7 +1867,7 @@ def prochie_otchoty(request):
             if p.user.is_enterprises:
                 edara_ilat = 'ЮЛ'
 
-            data.append((p.user.number, p.user.name, edara_ilat, 'kabel', p.pay_kassir, p.pay_date, cart, p.pay))
+            data.append((p.user.number, p.user.name, 'Dashoguz', edara_ilat, 'kabel', p.pay_kassir, p.pay_date, cart, p.pay))
 
             
         response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')

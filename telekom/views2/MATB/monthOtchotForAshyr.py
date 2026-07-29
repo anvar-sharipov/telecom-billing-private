@@ -268,18 +268,18 @@ def monthOtchotForAshyr(request):
             "Internet", "Dop_Uslugi", "Kabel_TV", "Alem_TW", "Wsego_Nachisl.",
             # КАССА
             "Kassa_Internet", "Kassa_Alem", "Kassa_Abonplata", "Kassa_Kabel_TV", "Kassa_Itogo",
+            # Dostluk Bank
+            "Dostluk_Internet", "Dostluk_Alem", "Dostluk_Abonplata", "Dostluk_Itogo",
             # E-government
             "Egov_Internet", "Egov_Alem", "Egov_Abonplata", "Egov_Itogo",
             # Tolleg APP TMCELL
             "Tolleg_Internet", "Tolleg_Alem", "Tolleg_Abonplata", "Tolleg_Itogo",
-            # Saray Tolegy
-            "Saray_Internet", "Saray_Alem", "Saray_Abonplata", "Saray_Itogo",
-            # Dostluk Bank
-            "Dostluk_Internet", "Dostluk_Alem", "Dostluk_Abonplata", "Dostluk_Itogo",
-            # Turkmen Pochta
-            "Pochta_Internet", "Pochta_Alem", "Pochta_Abonplata", "Pochta_Itogo",
             # HalkBank
             "Halk_Internet", "Halk_Alem", "Halk_Abonplata", "Halk_Itogo",
+            # Saray Tolegy
+            "Saray_Internet", "Saray_Alem", "Saray_Abonplata", "Saray_Itogo",
+            # Turkmen Pochta
+            "Pochta_Internet", "Pochta_Alem", "Pochta_Abonplata", "Pochta_Itogo",
             # Dealers
             "Dealers_Internet", "Dealers_Alem", "Dealers_Abonplata", "Dealers_Itogo",
             # Общий итог
@@ -296,18 +296,18 @@ def monthOtchotForAshyr(request):
                 v[8], v[7], v[9], v[10], v[11],
                 # КАССА
                 v[12], v[13], v[14], v[15], v[16],
+                # Dostluk
+                v[29], v[30], v[31], v[32],
                 # E-government
                 v[17], v[18], v[19], v[20],
                 # Tolleg
                 v[21], v[22], v[23], v[24],
-                # Saray
-                v[25], v[26], v[27], v[28],
-                # Dostluk
-                v[29], v[30], v[31], v[32],
-                # Pochta
-                v[33], v[34], v[35], v[36],
                 # Halk
                 v[37], v[38], v[39], v[40],
+                # Saray
+                v[25], v[26], v[27], v[28],
+                # Pochta
+                v[33], v[34], v[35], v[36],
                 # Dealers
                 v[41], v[42], v[43], v[44],
                 # Общий итог
