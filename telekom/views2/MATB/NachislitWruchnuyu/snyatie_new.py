@@ -134,6 +134,9 @@ def snyatie_new(request):
                         abonplata = u.abonplata,
                         login = u.login,
                         dogowor = u.dogowor,
+                        dogowor_alem = u.dogowor_alem,
+                        dogowor_telefoniya = u.dogowor_telefoniya,
+                        dogowor_belet = u.dogowor_belet,
                         beneficiary = u.beneficiary,
 
                         b_internet = u.b_internet,
@@ -208,6 +211,9 @@ def snyatie_new(request):
                     u.abonplata = ''
                     u.login = ''
                     u.dogowor = ''
+                    u.dogowor_alem = ''
+                    u.dogowor_telefoniya = ''
+                    u.dogowor_belet = ''
                     u.addDate = None
                     u.snyat_date = None
                     u.snyat_bool = False

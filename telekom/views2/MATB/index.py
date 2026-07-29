@@ -211,6 +211,9 @@ def matbIndex(request):
         flat = request.GET.get('flat') if request.GET.get('flat') != None else ''
         login = request.GET.get('login') if request.GET.get('login') != None else ''
         dogowor = request.GET.get('dogowor') if request.GET.get('dogowor') != None else ''
+        dogowor_alem = request.GET.get('dogowor_alem') if request.GET.get('dogowor_alem') != None else ''
+        dogowor_telefoniya = request.GET.get('dogowor_telefoniya') if request.GET.get('dogowor_telefoniya') != None else ''
+        dogowor_belet = request.GET.get('dogowor_belet') if request.GET.get('dogowor_belet') != None else ''
         filter_Naseleniye_or_Edara = request.GET.get('filter_Naseleniye_or_Edara')
         filter_account = request.GET.get('filter_account') if request.GET.get('filter_account') != None else ''
 
@@ -223,6 +226,9 @@ def matbIndex(request):
         context['flat'] = flat
         context['login'] = login
         context['dogowor'] = dogowor
+        context['dogowor_alem'] = dogowor_alem
+        context['dogowor_telefoniya'] = dogowor_telefoniya
+        context['dogowor_belet'] = dogowor_belet
         context['filter_etrap'] = filter_etrap
         context['filter_Naseleniye_or_Edara'] = filter_Naseleniye_or_Edara
         context['filter_account'] = filter_account
@@ -239,6 +245,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat)
                 ).filter(account=filter_account).order_by('number')
@@ -250,6 +259,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat)
                 ).order_by('number')
@@ -263,6 +275,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=True)
@@ -275,6 +290,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=True)
@@ -289,6 +307,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=False)
@@ -301,10 +322,16 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=False)
                 ).order_by('account')
+
+        else:
+            filtered_objs = UserTable.objects.none()
 
         context['filtered_objs'] = filtered_objs
         context['len_filtered_objs'] = len(filtered_objs)
@@ -354,6 +381,9 @@ def matbIndex(request):
         flat = request.POST.get('flat')
         login = request.POST.get('login').lower().strip()
         dogowor = request.POST.get('dogowor').upper().strip()
+        dogowor_alem = request.POST.get('dogowor_alem').strip()
+        dogowor_telefoniya = request.POST.get('dogowor_telefoniya').strip()
+        dogowor_belet = request.POST.get('dogowor_belet').strip()
         filter_Naseleniye_or_Edara = request.POST.get('filter_Naseleniye_or_Edara')
         filter_account = request.POST.get('filter_account') if request.POST.get('filter_account') != None else ''
         
@@ -366,6 +396,9 @@ def matbIndex(request):
         context['flat'] = flat
         context['login'] = login
         context['dogowor'] = dogowor
+        context['dogowor_alem'] = dogowor_alem
+        context['dogowor_telefoniya'] = dogowor_telefoniya
+        context['dogowor_belet'] = dogowor_belet
         context['filter_etrap'] = filter_etrap
         context['filter_Naseleniye_or_Edara'] = filter_Naseleniye_or_Edara
         context['filter_account'] = filter_account
@@ -379,6 +412,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat)
                 ).filter(account=filter_account).order_by('number')
@@ -390,6 +426,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat)
                 ).order_by('number')
@@ -403,6 +442,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=True)
@@ -415,6 +457,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=True)
@@ -429,6 +474,9 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=False)
@@ -441,11 +489,16 @@ def matbIndex(request):
                 Q(street__icontains=street) &
                 Q(login__icontains = login)&
                 Q(dogowor__icontains = dogowor)&
+                Q(dogowor_alem__icontains = dogowor_alem)&
+                Q(dogowor_telefoniya__icontains = dogowor_telefoniya)&
+                Q(dogowor_belet__icontains = dogowor_belet)&
                 Q(home__icontains=home) &
                 Q(flat__icontains=flat) &
                 Q(is_enterprises=False)
                 ).order_by('account')
 
+        else:
+            filtered_objs = UserTable.objects.none()
 
 
 
@@ -472,6 +525,9 @@ def matbIndex(request):
                 old_sotowyy = abonent.sotowyy
                 old_login = abonent.login.lower().strip()
                 old_dogowor = abonent.dogowor.upper().strip()
+                old_dogowor_alem = abonent.dogowor_alem.strip()
+                old_dogowor_telefoniya = abonent.dogowor_telefoniya.strip()
+                old_dogowor_belet = abonent.dogowor_belet.strip()
                 old_account = abonent.account
                 old_abonplata = abonent.abonplata
 
@@ -519,6 +575,9 @@ def matbIndex(request):
                 new_sotowyy = re.sub('[-]', '', request.POST.get('sotowyy')) 
                 new_login = request.POST.get('login').lower().strip()
                 new_dogowor = request.POST.get('dogowor').upper().strip()
+                new_dogowor_alem = request.POST.get('dogowor_alem').strip()
+                new_dogowor_telefoniya = request.POST.get('dogowor_telefoniya').strip()
+                new_dogowor_belet = request.POST.get('dogowor_belet').strip()
                 new_account = None if request.POST.get('account') in ['', None] else int(request.POST.get('account'))
                 new_abonplata = request.POST.get('abonplata')
 
@@ -532,8 +591,11 @@ def matbIndex(request):
 
                 ###
 
-                forHistoryLogin = request.POST.get('reasonLogin')  
+                forHistoryLogin = request.POST.get('reasonLogin')
                 forHistoryDogowor = request.POST.get('reasonDogowor')
+                forHistoryDogoworAlem = request.POST.get('reasonDogoworAlem')
+                forHistoryDogoworTelefoniya = request.POST.get('reasonDogoworTelefoniya')
+                forHistoryDogoworBelet = request.POST.get('reasonDogoworBelet')
 
                 # если логин изменен но причина изменения не выбрана
                 # if new_login != old_login and forHistoryLogin == 'reason':
@@ -547,14 +609,14 @@ def matbIndex(request):
                         messages.error(request, f"Такой договор уже есть в БД")
                         return render(request, 'telekom/MATB/matbIndex.html', context)
 
+                    if old_dogowor:
+                        if OldLoginDogowor.objects.filter(dogowor=new_dogowor).exists() and forHistoryDogowor == 'change':
+                            messages.error(request, f"Такой договор {new_dogowor} уже есть в Old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
 
-                    if OldLoginDogowor.objects.filter(dogowor=new_dogowor).exists() and forHistoryDogowor == 'change':
-                        messages.error(request, f"Такой договор {new_dogowor} уже есть в Old")
-                        return render(request, 'telekom/MATB/matbIndex.html', context)
-
-                    if forHistoryDogowor == 'reason':
-                        messages.error(request, f"Выберите сохранить или нет договор в old")
-                        return render(request, 'telekom/MATB/matbIndex.html', context)
+                        if forHistoryDogowor == 'reason':
+                            messages.error(request, f"Выберите сохранить или нет договор в old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
 
                 if new_login and new_login != old_login:
                     if UserTable.objects.filter(login=new_login).exists():
@@ -568,7 +630,49 @@ def matbIndex(request):
                     if forHistoryDogowor == 'reason':
                         messages.error(request, f"Выберите сохранить или нет логин в old")
                         return render(request, 'telekom/MATB/matbIndex.html', context)
-                
+
+                if new_dogowor_alem and new_dogowor_alem != old_dogowor_alem:
+                    if UserTable.objects.filter(dogowor_alem=new_dogowor_alem).exists():
+                        messages.error(request, f"Такой договор Алем ТВ уже есть в БД")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                    if old_dogowor_alem:
+                        if OldLoginDogowor.objects.filter(dogowor_alem=new_dogowor_alem).exists() and forHistoryDogoworAlem == 'change':
+                            messages.error(request, f"Такой договор Алем ТВ {new_dogowor_alem} уже есть в Old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                        if forHistoryDogoworAlem == 'reason':
+                            messages.error(request, f"Выберите сохранить или нет договор Алем ТВ в old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                if new_dogowor_telefoniya and new_dogowor_telefoniya != old_dogowor_telefoniya:
+                    if UserTable.objects.filter(dogowor_telefoniya=new_dogowor_telefoniya).exists():
+                        messages.error(request, f"Такой договор Телефония уже есть в БД")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                    if old_dogowor_telefoniya:
+                        if OldLoginDogowor.objects.filter(dogowor_telefoniya=new_dogowor_telefoniya).exists() and forHistoryDogoworTelefoniya == 'change':
+                            messages.error(request, f"Такой договор Телефония {new_dogowor_telefoniya} уже есть в Old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                        if forHistoryDogoworTelefoniya == 'reason':
+                            messages.error(request, f"Выберите сохранить или нет договор Телефония в old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                if new_dogowor_belet and new_dogowor_belet != old_dogowor_belet:
+                    if UserTable.objects.filter(dogowor_belet=new_dogowor_belet).exists():
+                        messages.error(request, f"Такой договор Белет уже есть в БД")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                    if old_dogowor_belet:
+                        if OldLoginDogowor.objects.filter(dogowor_belet=new_dogowor_belet).exists() and forHistoryDogoworBelet == 'change':
+                            messages.error(request, f"Такой договор Белет {new_dogowor_belet} уже есть в Old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
+                        if forHistoryDogoworBelet == 'reason':
+                            messages.error(request, f"Выберите сохранить или нет договор Белет в old")
+                            return render(request, 'telekom/MATB/matbIndex.html', context)
+
                 # Если логин изменен и причина это удаления или замена (сохраняем старый логин в OldLoginDogowor)
                 loginChanged = True
                 # if new_login != old_login and forHistoryLogin == 'change':
@@ -618,7 +722,41 @@ def matbIndex(request):
                     #         return render(request, 'telekom/MATB/matbIndex.html', context)
                     #     except:
                     #         OldLoginDogowor.objects.create(number=abonent.number, etrap=abonent.etrap, dogowor=old_dogowor.upper())
-                        
+
+
+                hb_for_old_log_dog_other = ''
+                if abonent.hb:
+                    hb_for_old_log_dog_other = abonent.hb.name
+
+                dogoworAlemChanged = new_dogowor_alem != old_dogowor_alem and forHistoryDogoworAlem == 'change'
+                if dogoworAlemChanged:
+                    try:
+                        OldLoginDogowor.objects.get(dogowor_alem=abonent.dogowor_alem)
+                        messages.error(request, f"Ошибка, не возможно сохранить в old договор Алем ТВ")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+                    except:
+                        pass
+                    OldLoginDogowor.objects.create(number=abonent.number, etrap=abonent.etrap, dogowor_alem=abonent.dogowor_alem, is_enterprises=abonent.is_enterprises, hb=hb_for_old_log_dog_other, operator=request.user.username, saved_in_action='База', account=abonent.account)
+
+                dogoworTelefoniyaChanged = new_dogowor_telefoniya != old_dogowor_telefoniya and forHistoryDogoworTelefoniya == 'change'
+                if dogoworTelefoniyaChanged:
+                    try:
+                        OldLoginDogowor.objects.get(dogowor_telefoniya=abonent.dogowor_telefoniya)
+                        messages.error(request, f"Ошибка, не возможно сохранить в old договор Телефония")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+                    except:
+                        pass
+                    OldLoginDogowor.objects.create(number=abonent.number, etrap=abonent.etrap, dogowor_telefoniya=abonent.dogowor_telefoniya, is_enterprises=abonent.is_enterprises, hb=hb_for_old_log_dog_other, operator=request.user.username, saved_in_action='База', account=abonent.account)
+
+                dogoworBeletChanged = new_dogowor_belet != old_dogowor_belet and forHistoryDogoworBelet == 'change'
+                if dogoworBeletChanged:
+                    try:
+                        OldLoginDogowor.objects.get(dogowor_belet=abonent.dogowor_belet)
+                        messages.error(request, f"Ошибка, не возможно сохранить в old договор Белет")
+                        return render(request, 'telekom/MATB/matbIndex.html', context)
+                    except:
+                        pass
+                    OldLoginDogowor.objects.create(number=abonent.number, etrap=abonent.etrap, dogowor_belet=abonent.dogowor_belet, is_enterprises=abonent.is_enterprises, hb=hb_for_old_log_dog_other, operator=request.user.username, saved_in_action='База', account=abonent.account)
 
                 ####
 
@@ -653,6 +791,8 @@ def matbIndex(request):
                     and old_street == new_street and old_home == new_home
                     and old_flat == new_flat and old_sotowyy == new_sotowyy
                     and old_login == new_login and old_dogowor == new_dogowor
+                    and old_dogowor_alem == new_dogowor_alem and old_dogowor_telefoniya == new_dogowor_telefoniya
+                    and old_dogowor_belet == new_dogowor_belet
                     and old_account == new_account and old_beneficiary == new_beneficiary
                     and old_abonplata == new_abonplata and old_edara == new_edara
                     and old_hb == new_hb and old_snyat == new_snyat
@@ -728,6 +868,24 @@ def matbIndex(request):
                         mess_for_BazaChangeInfo += f"""Договор изменено с {abonent.dogowor} на {new_dogowor.upper()}
             """
                         abonent.dogowor = new_dogowor.upper()
+
+                    if old_dogowor_alem != new_dogowor_alem:
+                        mess += f' Договор Алем ТВ с {old_dogowor_alem} на {new_dogowor_alem},'
+                        mess_for_BazaChangeInfo += f"""Договор Алем ТВ изменено с {abonent.dogowor_alem} на {new_dogowor_alem}
+            """
+                        abonent.dogowor_alem = new_dogowor_alem
+
+                    if old_dogowor_telefoniya != new_dogowor_telefoniya:
+                        mess += f' Договор Телефония с {old_dogowor_telefoniya} на {new_dogowor_telefoniya},'
+                        mess_for_BazaChangeInfo += f"""Договор Телефония изменено с {abonent.dogowor_telefoniya} на {new_dogowor_telefoniya}
+            """
+                        abonent.dogowor_telefoniya = new_dogowor_telefoniya
+
+                    if old_dogowor_belet != new_dogowor_belet:
+                        mess += f' Договор Белет с {old_dogowor_belet} на {new_dogowor_belet},'
+                        mess_for_BazaChangeInfo += f"""Договор Белет изменено с {abonent.dogowor_belet} на {new_dogowor_belet}
+            """
+                        abonent.dogowor_belet = new_dogowor_belet
 
                     if old_intOnDate != new_intOnDate:
                         mess += f' дата установки инт,'
@@ -811,15 +969,15 @@ def matbIndex(request):
                     
                     abonent.save()
                     mess_for_BazaChangeInfo += f"""комментарий {request.POST.get('comment')}"""
-                    BazaChangeInfo.objects.create(etrap=abonent.etrap, number=abonent.number, operator=request.user.username, comment=mess_for_BazaChangeInfo, akt_raport=request.GET.get('akt_raport'))
+                    BazaChangeInfo.objects.create(etrap=abonent.etrap, number=abonent.number, operator=request.user.username, comment=mess_for_BazaChangeInfo, akt_raport=akt_raport)
 
                     # Если добавил нового абонента
                     if old_name == '' and old_surname == '' and (new_name != '' or new_surname != ''):
-                        StaffAction.objects.create(akt_raport=request.GET.get('akt_raport'), user=request.user, comment=f"{request.POST.get('comment')} \n\n Добавление нового абонента в базу данных \n\n {mess} \n\n дата добавления {datetime.now()}, номер {abonent.number}]", action='Добавление абонента в MATB в базе данных')
+                        StaffAction.objects.create(akt_raport=akt_raport, user=request.user, comment=f"{request.POST.get('comment')} \n\n Добавление нового абонента в базу данных \n\n {mess} \n\n дата добавления {datetime.now()}, номер {abonent.number}]", action='Добавление абонента в MATB в базе данных')
 
                     # Если изменил данные существующего абонента
                     else:
-                        StaffAction.objects.create(akt_raport=request.GET.get('akt_raport'), user=request.user, comment=f"{request.POST.get('comment')} \n\n Изменение данных абонента {abonent.number} {abonent.etrap} {abonent.name} {abonent.surname} \n\n {mess} \n\n дата изменения {datetime.now()}", action='Изменение данных абонента в MATB в базе данных')
+                        StaffAction.objects.create(akt_raport=akt_raport, user=request.user, comment=f"{request.POST.get('comment')} \n\n Изменение данных абонента {abonent.number} {abonent.etrap} {abonent.name} {abonent.surname} \n\n {mess} \n\n дата изменения {datetime.now()}", action='Изменение данных абонента в MATB в базе данных')
                         
 
                     messages.success(request, mess)

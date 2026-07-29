@@ -1,3 +1,4 @@
+{% load bazaChangeFormat %}
 <table class="table kassa-userTable fw-bold text-center" >
     <thead>
         <tr>
@@ -1165,12 +1166,11 @@
                                     <div class="container mt-4">
                                         <div class="list-group">
                                             {% for p in baza_info %}
-                                                <div class="list-group-item">
+                                                <div class="list-group-item baza-change-item">
                                                     <div class="d-flex w-100">
                                                         <div class="mb-1">{{ p.operator }} ({{ p.date }}) akt: {{p.akt_raport}}</div>
                                                     </div>
-                                                    <pre class="mb-1 text-start">{{ p.comment }}</pre>
-                                                    
+                                                    <div class="mb-1 text-start">{{ p.comment|format_baza_change }}</div>
                                                 </div>
                                             {% endfor %}
                                         </div>

@@ -301,3 +301,58 @@ receipts.html END ##
 */
 
 
+
+/* #####################################
+baza-change (Информация об изменениях в базе) ##
+   #####################################
+*/
+.baza-change-item {
+    margin-bottom: 14px;
+}
+
+.baza-change-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+    font-size: 13px;
+    text-align: left;
+    line-height: 1.5;
+}
+
+.baza-change-row {
+    padding: 2px 0;
+}
+
+.baza-change-field {
+    font-weight: 600;
+    color: #333;
+}
+
+.baza-change-old {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.baza-change-new {
+    color: #198754;
+    font-weight: 600;
+}
+
+.baza-change-comment {
+    background-color: #f9e7c5;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.baza-change-comment-label {
+    font-style: normal;
+    font-weight: bold;
+}
+
+.baza-change-plain {
+    color: #666;
+    font-size: 12px;
+    padding: 2px 0;
+}

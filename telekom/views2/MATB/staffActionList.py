@@ -14,19 +14,9 @@ def staffActionList(request):
     current_date = str(current_date)
     context['current_date'] = current_date
 
-    actions = StaffAction.objects.all()
-    types = []
-    users = []
-    akt = []
-    for action in actions:
-        if action.action not in types:
-            types.append(action.action)
-        if action.user.username not in users:
-            users.append(action.user.username)
-        if action.akt_raport not in akt:
-            akt.append(action.akt_raport)
-        
-    print('tut', akt)
+    types = list(StaffAction.objects.order_by().values_list('action', flat=True).distinct())
+    users = list(StaffAction.objects.order_by().values_list('user__username', flat=True).distinct())
+    akt = list(StaffAction.objects.order_by().values_list('akt_raport', flat=True).distinct())
 
     
 
@@ -67,28 +57,28 @@ def staffActionList(request):
 
 
         if actionAll and operatorAll and aktAll:
-            objs = StaffAction.objects.filter(date__range=[start,end], comment__icontains=comment).order_by('-date')
+            objs = StaffAction.objects.select_related('user').filter(date__range=[start,end], comment__icontains=comment).order_by('-date')
             print('titti')
 
 
 
         elif actionAll == 'actionAll' and operatorAll == None and aktAll == None:
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')        
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')        
         elif actionAll == 'actionAll' and operatorAll == 'operatorAll' and aktAll == None:
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')    
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')    
         elif actionAll == 'actionAll' and operatorAll == None and aktAll == 'aktAll':
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
 
 
         elif actionAll == None and operatorAll == 'operatorAll' and aktAll == 'aktAll':
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(action__icontains=action)).filter(date__range=[start,end]).order_by('-date')
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(action__icontains=action)).filter(date__range=[start,end]).order_by('-date')
         elif actionAll == None and operatorAll == 'operatorAll' and aktAll == None:
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(action__icontains=action) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(action__icontains=action) & Q(akt_raport__icontains=akt_get)).filter(date__range=[start,end]).order_by('-date')
         elif actionAll == None and operatorAll == None and aktAll == 'aktAll':
-            objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(action__icontains=action) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
+            objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(action__icontains=action) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
 
     else:
-        objs = StaffAction.objects.filter(
+        objs = StaffAction.objects.select_related('user').filter(
             Q(comment__icontains=comment) &
             Q(user__username__icontains=operator) &
             Q(action__icontains=action) &
@@ -96,13 +86,13 @@ def staffActionList(request):
         ).filter(date__range=[start,end]).order_by('-date')
 
     # if actionAll and operatorAll:
-    #     objs = StaffAction.objects.filter(date__range=[start,end], comment__icontains=comment).order_by('-date')
+    #     objs = StaffAction.objects.select_related('user').filter(date__range=[start,end], comment__icontains=comment).order_by('-date')
 
     # elif actionAll == 'actionAll' and operatorAll == None:
-    #     objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
+    #     objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(user__username__icontains=operator)).filter(date__range=[start,end]).order_by('-date')
         
     # elif actionAll == None and operatorAll == 'operatorAll':
-    #     objs = StaffAction.objects.filter(Q(comment__icontains=comment) & Q(action__icontains=action)).filter(date__range=[start,end]).order_by('-date')
+    #     objs = StaffAction.objects.select_related('user').filter(Q(comment__icontains=comment) & Q(action__icontains=action)).filter(date__range=[start,end]).order_by('-date')
        
     # elif actionAll == None and operatorAll == None:
     #     objs = StaffAction.objects.filter(

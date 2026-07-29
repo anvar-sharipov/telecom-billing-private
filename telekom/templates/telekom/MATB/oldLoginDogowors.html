@@ -24,6 +24,18 @@
               <input type="text" name="dogowor_search" class="form-control" value="{{ search_params.dogowor_search }}">
           </div>
           <div class="col-md-4">
+              <label class="form-label text-light">Договор Алем</label>
+              <input type="text" name="dogowor_alem_search" class="form-control" value="{{ search_params.dogowor_alem_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Договор Телефония</label>
+              <input type="text" name="dogowor_telefoniya_search" class="form-control" value="{{ search_params.dogowor_telefoniya_search }}">
+          </div>
+          <div class="col-md-4">
+              <label class="form-label text-light">Договор Белет</label>
+              <input type="text" name="dogowor_belet_search" class="form-control" value="{{ search_params.dogowor_belet_search }}">
+          </div>
+          <div class="col-md-4">
               <label class="form-label text-light">Предприятие</label>
               <select name="is_enterprises_search" class="form-select">
                   <option value="">Все</option>
@@ -45,6 +57,9 @@
                   <th>Этрап</th>
                   <th>Логин</th>
                   <th>Договор</th>
+                  <th>Договор Алем</th>
+                  <th>Договор Телефония</th>
+                  <th>Договор Белет</th>
                   <th>Дата сохранения</th>
                   <th>Предприятие</th>
                   <th>HB</th>
@@ -62,6 +77,9 @@
                   <td>{{ item.etrap }}</td>
                   <td>{{ item.login }}</td>
                   <td>{{ item.dogowor }}</td>
+                  <td>{{ item.dogowor_alem }}</td>
+                  <td>{{ item.dogowor_telefoniya }}</td>
+                  <td>{{ item.dogowor_belet }}</td>
                   <td>{{ item.created_at|date:"d.m.Y" }}</td>
                   <td>{% if item.is_enterprises %}✅{% else %}❌{% endif %}</td>
                   <td>{{ item.hb }}</td>
@@ -103,6 +121,21 @@
                                         <div class="d-flex pb-2" style="align-items: center;">
                                           <label for="change_dogowor{{item.pk}}" style="width: 100px;">Dogowor</label>
                                           <input type="text" name="change_dogowor" class="form-control" value="{{item.dogowor}}" id="change_dogowor{{item.pk}}" oninput="change_dogowor_input({{item.pk}})">
+                                        </div>
+
+                                        <div class="d-flex pb-2" style="align-items: center;">
+                                          <label for="change_dogowor_alem{{item.pk}}" style="width: 100px;">Dogowor Алем</label>
+                                          <input type="text" name="change_dogowor_alem" class="form-control" value="{{item.dogowor_alem}}" id="change_dogowor_alem{{item.pk}}">
+                                        </div>
+
+                                        <div class="d-flex pb-2" style="align-items: center;">
+                                          <label for="change_dogowor_telefoniya{{item.pk}}" style="width: 100px;">Dogowor Телефония</label>
+                                          <input type="text" name="change_dogowor_telefoniya" class="form-control" value="{{item.dogowor_telefoniya}}" id="change_dogowor_telefoniya{{item.pk}}">
+                                        </div>
+
+                                        <div class="d-flex pb-2" style="align-items: center;">
+                                          <label for="change_dogowor_belet{{item.pk}}" style="width: 100px;">Dogowor Белет</label>
+                                          <input type="text" name="change_dogowor_belet" class="form-control" value="{{item.dogowor_belet}}" id="change_dogowor_belet{{item.pk}}">
                                         </div>
 
                                         <div class="d-flex mb-3" style="align-items: center;">
@@ -176,7 +209,8 @@
     <form method="POST">{% csrf_token %}
         <div class="d-flex text-light" style="flex-direction: column; row-gap: 30px;">
 
-            <div class="d-flex" style="align-items:center;">
+            <div class="d-flex my_column_gap10">
+              <div class="d-flex" style="align-items:center;">
                 <label for="etrap_select" style="width:100px;">Этрап:</label>
                 <select class="form-select border border-dark" name="etrap" id="etrap_select">
                     {% if request.user.is_superuser %}
@@ -187,24 +221,40 @@
                         <option value="{{log}}">{{log}}</option>
                     {% endif %}
               </select>
-            </div>
+              </div>
 
-            <div class="d-flex" style="align-items:center;">
-              <label for="old_number" style="width:100px;">Номер:</label>
-              <input type="text" class="form-control" name="old_number" placeholder="Number" id="old_number" autocomplete="off" maxlength="7" value="{{old_number}}">
-            </div>
-            
-
-
-            <div class="d-flex" style="align-items:center;">
-              <label for="old_dogowor" style="width:100px;">Договор:</label>
-              <input type="text" class="form-control" name="old_dogowor" placeholder="Dogowor" id="old_dogowor" autocomplete="off">
+              <div class="d-flex" style="align-items:center;">
+                <label for="old_number" style="width:100px;">Номер:</label>
+                <input type="text" class="form-control" name="old_number" placeholder="Number" id="old_number" autocomplete="off" maxlength="7" value="{{old_number}}">
+              </div>
             </div>
 
 
+            <div class="d-flex my_column_gap10">
+              <div class="d-flex" style="align-items:center;">
+                <label for="old_dogowor" style="width:100px;">Договор:</label>
+                <input type="text" class="form-control" name="old_dogowor" placeholder="Dogowor" id="old_dogowor" autocomplete="off">
+              </div>
+
+              <div class="d-flex" style="align-items:center;">
+                <label for="old_login" style="width:100px;">Логин:</label>
+                <input type="text" class="form-control" name="old_login" placeholder="Login" id="old_login" autocomplete="off" value="{{old_login}}">
+              </div>
+            </div>
+
             <div class="d-flex" style="align-items:center;">
-              <label for="old_login" style="width:100px;">Логин:</label>
-              <input type="text" class="form-control" name="old_login" placeholder="Login" id="old_login" autocomplete="off" value="{{old_login}}">
+              <label for="old_dogowor_alem" style="width:100px;">Договор Алем:</label>
+              <input type="text" class="form-control" name="old_dogowor_alem" placeholder="Dogowor Alem" id="old_dogowor_alem" autocomplete="off">
+            </div>
+
+            <div class="d-flex" style="align-items:center;">
+              <label for="old_dogowor_telefoniya" style="width:100px;">Договор Телефония:</label>
+              <input type="text" class="form-control" name="old_dogowor_telefoniya" placeholder="Dogowor Telefoniya" id="old_dogowor_telefoniya" autocomplete="off">
+            </div>
+
+            <div class="d-flex" style="align-items:center;">
+              <label for="old_dogowor_belet" style="width:100px;">Договор Белет:</label>
+              <input type="text" class="form-control" name="old_dogowor_belet" placeholder="Dogowor Belet" id="old_dogowor_belet" autocomplete="off">
             </div>
 
             

@@ -86,6 +86,9 @@ class UserTable(models.Model):
 
 	login = models.CharField(max_length=100, verbose_name='Логин', blank=True)
 	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
+	dogowor_alem = models.CharField(max_length=100, verbose_name='Договор Алем ТВ', blank=True)
+	dogowor_telefoniya = models.CharField(max_length=100, verbose_name='Договор Телефония', blank=True)
+	dogowor_belet = models.CharField(max_length=100, verbose_name='Договор Белет', blank=True)
 
 	b_internet = models.FloatField(verbose_name=' Баланс Интернет', default=0)
 	b_kabel = models.FloatField(verbose_name=' Баланс Кабель', default=0)
@@ -136,6 +139,9 @@ class OldLoginDogowor (models.Model):
 	etrap = models.CharField(verbose_name='Этрап', max_length=64, null=True, blank=True)
 	login = models.CharField(max_length=100, verbose_name='Логин', blank=True)
 	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
+	dogowor_alem = models.CharField(max_length=100, verbose_name='Договор Алем ТВ', blank=True)
+	dogowor_telefoniya = models.CharField(max_length=100, verbose_name='Договор Телефония', blank=True)
+	dogowor_belet = models.CharField(max_length=100, verbose_name='Договор Белет', blank=True)
 	created_at = models.DateField(verbose_name='Дата сохранения', auto_now_add=True, null=True, blank=True)
 	is_enterprises = models.BooleanField(default=False, verbose_name='Предприятия', blank=True)
 	hb = models.CharField(max_length=20, verbose_name='H или B', blank=True)
@@ -1783,6 +1789,9 @@ class UserTableArhiw(models.Model):
 
 	login = models.CharField(max_length=100, verbose_name='Логин', blank=True)
 	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
+	dogowor_alem = models.CharField(max_length=100, verbose_name='Договор Алем ТВ', blank=True)
+	dogowor_telefoniya = models.CharField(max_length=100, verbose_name='Договор Телефония', blank=True)
+	dogowor_belet = models.CharField(max_length=100, verbose_name='Договор Белет', blank=True)
 
 	b_internet = models.FloatField(verbose_name=' Баланс Интернет', default=0)
 	b_kabel = models.FloatField(verbose_name=' Баланс Кабель', default=0)

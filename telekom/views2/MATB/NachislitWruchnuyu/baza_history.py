@@ -40,8 +40,8 @@ def baza_history(request):
     context['etraps'] = etraps
 
     selected_etrap = request.GET.get('etrap')
-    date_from = request.GET.get('date_from')
-    date_to = request.GET.get('date_to')
+    date_from = request.GET.get('date_from') or f"{current_year}-{current_month}-01"
+    date_to = request.GET.get('date_to') or formatted_date
     akt_raport = request.GET.get('akt_raport')
     comment = request.GET.get('comment')
     number = request.GET.get('number')

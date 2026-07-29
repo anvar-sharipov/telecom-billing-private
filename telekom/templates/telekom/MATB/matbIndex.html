@@ -89,6 +89,21 @@
             </div>
 
             <div class="d-flex">
+              <div class="my_width80">Договор Алем</div>
+              <input type="text" class="form-control border border-dark" {%  if dogowor_alem %} value="{{dogowor_alem}}"{% endif %} name="dogowor_alem" autocomplete="off">
+            </div>
+
+            <div class="d-flex">
+              <div class="my_width80">Договор Телефония</div>
+              <input type="text" class="form-control border border-dark" {%  if dogowor_telefoniya %} value="{{dogowor_telefoniya}}"{% endif %} name="dogowor_telefoniya" autocomplete="off">
+            </div>
+
+            <div class="d-flex">
+              <div class="my_width80">Договор Белет</div>
+              <input type="text" class="form-control border border-dark" {%  if dogowor_belet %} value="{{dogowor_belet}}"{% endif %} name="dogowor_belet" autocomplete="off">
+            </div>
+
+            <div class="d-flex">
               <div class="my_width80">Счет №</div>
               <input type="text" class="form-control border border-dark" {%  if filter_account %} value="{{filter_account}}"{% endif %} name="filter_account" autocomplete="off">
             </div>
@@ -195,30 +210,81 @@
           
   
           <div class="d-flex my_column_gap10">
-            <div>
-              <div>Логин</div>
-              <input type="text" class="form-control my_width200 fw-bold border border-dark" name="login"   {% if abonent.login %} value="{{abonent.login}}" {% endif %} oninput="MtbOninputLogin()" id="myLogin" autocomplete="off" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+            <div class="d-flex flex-column my_column_gap10">
+              <div class="d-flex my_column_gap10">
+                <div>
+                  <div>Логин Интернет</div>
+                  <input type="text" class="form-control my_width200 fw-bold border border-dark" name="login"   {% if abonent.login %} value="{{abonent.login}}" {% endif %} oninput="MtbOninputLogin()" id="myLogin" autocomplete="off" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+                </div>
+                <!-- <div class="d-none" id="MtbOldLoginInputContainer">
+                  <div>.</div>
+                  <select name="reasonLogin" class="form-select my_width200 col8">
+                    <option value="reason">Сохранить в old?</option>
+                    <option value="correctError">Нет</option>
+                    <option value="change">Да</option>
+                  </select>
+                </div> -->
+              </div>
+
+              <div class="d-flex my_column_gap10">
+                <div>
+                  <div>Договор Алем ТВ</div>
+                  <input type="text" class="form-control my_width200 fw-bold border" name="dogowor_alem" {% if abonent.dogowor_alem %} value="{{abonent.dogowor_alem}}" {% endif %} oninput="{% if abonent.dogowor_alem %}MtbOninputDogoworAlem(){% endif %}" id="myDogoworAlem" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+                </div>
+                <div class="d-none" id="MtbOldDogoworAlemInputContainer">
+                  <div>.</div>
+                  <select name="reasonDogoworAlem" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
+                    <option value="reason"  >Сохранить в old Алем?</option>
+                    <option value="correctError">Нет</option>
+                    <option value="change">да</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex my_column_gap10">
+                <div>
+                  <div>Договор Телефония</div>
+                  <input type="text" class="form-control my_width200 fw-bold border" name="dogowor_telefoniya" {% if abonent.dogowor_telefoniya %} value="{{abonent.dogowor_telefoniya}}" {% endif %} oninput="{% if abonent.dogowor_telefoniya %}MtbOninputDogoworTelefoniya(){% endif %}" id="myDogoworTelefoniya" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+                </div>
+                <div class="d-none" id="MtbOldDogoworTelefoniyaInputContainer">
+                  <div>.</div>
+                  <select name="reasonDogoworTelefoniya" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
+                    <option value="reason"  >Сохранить в old Телефония?</option>
+                    <option value="correctError">Нет</option>
+                    <option value="change">да</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex my_column_gap10">
+                <div>
+                  <div>Договор Белет</div>
+                  <input type="text" class="form-control my_width200 fw-bold border" name="dogowor_belet" {% if abonent.dogowor_belet %} value="{{abonent.dogowor_belet}}" {% endif %} oninput="{% if abonent.dogowor_belet %}MtbOninputDogoworBelet(){% endif %}" id="myDogoworBelet" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+                </div>
+                <div class="d-none" id="MtbOldDogoworBeletInputContainer">
+                  <div>.</div>
+                  <select name="reasonDogoworBelet" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
+                    <option value="reason"  >Сохранить в old Белет?</option>
+                    <option value="correctError">Нет</option>
+                    <option value="change">да</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <!-- <div class="d-none" id="MtbOldLoginInputContainer">
-              <div>.</div>
-              <select name="reasonLogin" class="form-select my_width200 col8">
-                <option value="reason">Сохранить в old?</option>
-                <option value="correctError">Нет</option>
-                <option value="change">Да</option>
-              </select>
-            </div> -->
-    
-            <div>
-              <div>Договор</div>
-              <input type="text" class="form-control my_width200 fw-bold border" name="dogowor" {% if abonent.dogowor %} value="{{abonent.dogowor}}" {% endif %} oninput="MtbOninputDogowor()" id="myDogowor" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
-            </div>
-            <div class="d-none" id="MtbOldDogoworInputContainer">
-              <div>.</div>
-              <select name="reasonDogowor" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
-                <option value="reason"  >Сохранить в old?</option>
-                <option value="correctError">Нет</option>
-                <option value="change">да</option>
-              </select>
+
+            <div class="d-flex my_column_gap10">
+              <div>
+                <div>Договор Интернет</div>
+                <input type="text" class="form-control my_width200 fw-bold border" name="dogowor" {% if abonent.dogowor %} value="{{abonent.dogowor}}" {% endif %} oninput="{% if abonent.dogowor %}MtbOninputDogowor(){% endif %}" id="myDogowor" {% if is_allow_to_cahnge_base == False %}  readonly {% endif %} {% if not matbIndex %} onkeydown="return event.key !== 'Enter';" {% endif %}>
+              </div>
+              <div class="d-none" id="MtbOldDogoworInputContainer">
+                <div>.</div>
+                <select name="reasonDogowor" class="form-select my_width200 col8" {% if is_allow_to_cahnge_base == False %}  disable {% endif %}>
+                  <option value="reason"  >Сохранить в old Интернет?</option>
+                  <option value="correctError">Нет</option>
+                  <option value="change">да</option>
+                </select>
+              </div>
             </div>
 
             <div>
@@ -458,7 +524,19 @@ function MtbOninputLogin() {
 
 // Если при изменении договора открыть select причины изменения
 function MtbOninputDogowor() {
-  document.getElementById('MtbOldDogoworInputContainer').classList.remove('d-none') 
+  document.getElementById('MtbOldDogoworInputContainer').classList.remove('d-none')
+}
+
+function MtbOninputDogoworAlem() {
+  document.getElementById('MtbOldDogoworAlemInputContainer').classList.remove('d-none')
+}
+
+function MtbOninputDogoworTelefoniya() {
+  document.getElementById('MtbOldDogoworTelefoniyaInputContainer').classList.remove('d-none')
+}
+
+function MtbOninputDogoworBelet() {
+  document.getElementById('MtbOldDogoworBeletInputContainer').classList.remove('d-none')
 }
 
 // если при открытии страницы абонент edara то показать 2 input hb и account

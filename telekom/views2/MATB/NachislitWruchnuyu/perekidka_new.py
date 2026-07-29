@@ -1564,16 +1564,38 @@ def perekidka_new(request):
                         
 
                         # Сохраняем логин и договор user2 в OldLoginDogowor если такие есть
+                        hb_for_old_log_dog = ''
+                        if user2.hb:
+                            hb_for_old_log_dog = user2.hb.name
+
                         save_old_login_dogowor = False
                         if user2.dogowor and user2.login:
                             if OldLoginDogowor.objects.filter(login=user2.login, dogowor=user2.dogowor).exists():
                                 messages.error(request, f'Невозможно сохранить login dogowor абонента {user2.number} в old так как такой old login dogowor уже есть')
                                 return render(request, 'telekom/MATB/NachislitWruchnuyu/perekidka_new.html', context)
                             else:
-                                hb_for_old_log_dog = ''
-                                if user2.hb:
-                                    hb_for_old_log_dog = user2.hb.name
                                 save_old_login_dogowor = True
+
+                        save_old_dogowor_alem = False
+                        if user2.dogowor_alem:
+                            if OldLoginDogowor.objects.filter(dogowor_alem=user2.dogowor_alem).exists():
+                                messages.error(request, f'Невозможно сохранить договор Алем ТВ абонента {user2.number} в old так как такой договор уже есть в old')
+                                return render(request, 'telekom/MATB/NachislitWruchnuyu/perekidka_new.html', context)
+                            save_old_dogowor_alem = True
+
+                        save_old_dogowor_telefoniya = False
+                        if user2.dogowor_telefoniya:
+                            if OldLoginDogowor.objects.filter(dogowor_telefoniya=user2.dogowor_telefoniya).exists():
+                                messages.error(request, f'Невозможно сохранить договор Телефония абонента {user2.number} в old так как такой договор уже есть в old')
+                                return render(request, 'telekom/MATB/NachislitWruchnuyu/perekidka_new.html', context)
+                            save_old_dogowor_telefoniya = True
+
+                        save_old_dogowor_belet = False
+                        if user2.dogowor_belet:
+                            if OldLoginDogowor.objects.filter(dogowor_belet=user2.dogowor_belet).exists():
+                                messages.error(request, f'Невозможно сохранить договор Белет абонента {user2.number} в old так как такой договор уже есть в old')
+                                return render(request, 'telekom/MATB/NachislitWruchnuyu/perekidka_new.html', context)
+                            save_old_dogowor_belet = True
 
         # Для начало надо сохранить perekidka_info_new для того чтобы взять его id и по id искать все инфы этого изменения по всем таблицам, то нужно для того чтобы при отмене быстро найти всю инфу в таблицах и отменить их 
                         # mess Для в PerekidkaInfoNew
@@ -1648,6 +1670,12 @@ def perekidka_new(request):
         # Для начало надо сохранить perekidka_info_new
                         if save_old_login_dogowor:
                             OldLoginDogowor.objects.create(login=user2.login, dogowor=user2.dogowor, etrap=user2.etrap, number=user2.number, is_enterprises=user2.is_enterprises, hb=hb_for_old_log_dog, operator=request.user.username, saved_in_action='Перекидка всех данных', account=user2.account)
+                        if save_old_dogowor_alem:
+                            OldLoginDogowor.objects.create(dogowor_alem=user2.dogowor_alem, etrap=user2.etrap, number=user2.number, is_enterprises=user2.is_enterprises, hb=hb_for_old_log_dog, operator=request.user.username, saved_in_action='Перекидка всех данных', account=user2.account)
+                        if save_old_dogowor_telefoniya:
+                            OldLoginDogowor.objects.create(dogowor_telefoniya=user2.dogowor_telefoniya, etrap=user2.etrap, number=user2.number, is_enterprises=user2.is_enterprises, hb=hb_for_old_log_dog, operator=request.user.username, saved_in_action='Перекидка всех данных', account=user2.account)
+                        if save_old_dogowor_belet:
+                            OldLoginDogowor.objects.create(dogowor_belet=user2.dogowor_belet, etrap=user2.etrap, number=user2.number, is_enterprises=user2.is_enterprises, hb=hb_for_old_log_dog, operator=request.user.username, saved_in_action='Перекидка всех данных', account=user2.account)
 
                     # Сохраняем user2 в архив если он занят
                         if user2.name or user2.surname:
@@ -1671,6 +1699,9 @@ def perekidka_new(request):
                                 abonplata = user2.abonplata,
                                 login = user2.login,
                                 dogowor = user2.dogowor,
+                                dogowor_alem = user2.dogowor_alem,
+                                dogowor_telefoniya = user2.dogowor_telefoniya,
+                                dogowor_belet = user2.dogowor_belet,
                                 beneficiary = user2.beneficiary,
 
                                 b_internet = user2.b_internet,
@@ -1724,6 +1755,9 @@ def perekidka_new(request):
                             abonplata = user1.abonplata,
                             login = user1.login,
                             dogowor = user1.dogowor,
+                            dogowor_alem = user1.dogowor_alem,
+                            dogowor_telefoniya = user1.dogowor_telefoniya,
+                            dogowor_belet = user1.dogowor_belet,
                             beneficiary = user1.beneficiary,
 
                             b_internet = user1.b_internet,
@@ -1879,7 +1913,10 @@ def perekidka_new(request):
 
                         user2.login = user1.login
                         user2.dogowor = user1.dogowor
-                        
+                        user2.dogowor_alem = user1.dogowor_alem
+                        user2.dogowor_telefoniya = user1.dogowor_telefoniya
+                        user2.dogowor_belet = user1.dogowor_belet
+
                         if s_korrect_checkbox:
                             user2.b_prochee += s_korrect_telefoniya
                             user2.b_internet += s_korrect_internet
@@ -1919,6 +1956,9 @@ def perekidka_new(request):
                         user1.abonplata = ''
                         user1.login = ''
                         user1.dogowor = ''
+                        user1.dogowor_alem = ''
+                        user1.dogowor_telefoniya = ''
+                        user1.dogowor_belet = ''
                         user1.addDate = None
                         user1.snyat_date = None
                         user1.snyat_bool = False
@@ -2294,11 +2334,17 @@ def perekidka_new(request):
                         else:
                             count = 0
                             dogowor = ''
+                            dogowor_alem = ''
+                            dogowor_telefoniya = ''
+                            dogowor_belet = ''
                             for u in arhiw:
                                 user = UserTable.objects.get(number=u.number, etrap=u.etrap)
                                 if perekidka_info.user2Number:
                                     if u.number == perekidka_info.user2Number:
                                         dogowor = u.dogowor
+                                        dogowor_alem = u.dogowor_alem
+                                        dogowor_telefoniya = u.dogowor_telefoniya
+                                        dogowor_belet = u.dogowor_belet
 
                                 user.surname = u.surname
                                 user.name = u.name
@@ -2312,6 +2358,9 @@ def perekidka_new(request):
                                 user.beneficiary = u.beneficiary
                                 user.login = u.login
                                 user.dogowor = u.dogowor
+                                user.dogowor_alem = u.dogowor_alem
+                                user.dogowor_telefoniya = u.dogowor_telefoniya
+                                user.dogowor_belet = u.dogowor_belet
                                 user.b_internet = u.b_internet
                                 user.b_kabel = u.b_kabel
                                 user.b_alem = u.b_alem
@@ -2356,6 +2405,9 @@ def perekidka_new(request):
                                 u2.ids = ''
                                 u2.login = ''
                                 u2.dogowor = ''
+                                u2.dogowor_alem = ''
+                                u2.dogowor_telefoniya = ''
+                                u2.dogowor_belet = ''
                                 u2.b_internet = 0
                                 u2.b_kabel = 0
                                 u2.b_alem = 0
@@ -2388,7 +2440,13 @@ def perekidka_new(request):
                             UstanowkaSnyatieDopUslugHistory.objects.filter(perekidka_info_new_pk=change_perekidka).delete()
                             StaffAction.objects.filter(perekidka_info_new_pk=change_perekidka).delete() 
                             OldLoginDogowor.objects.filter(number=number2, etrap=etrap2, dogowor=dogowor).delete()
-                            
+                            if dogowor_alem:
+                                OldLoginDogowor.objects.filter(number=number2, etrap=etrap2, dogowor_alem=dogowor_alem).delete()
+                            if dogowor_telefoniya:
+                                OldLoginDogowor.objects.filter(number=number2, etrap=etrap2, dogowor_telefoniya=dogowor_telefoniya).delete()
+                            if dogowor_belet:
+                                OldLoginDogowor.objects.filter(number=number2, etrap=etrap2, dogowor_belet=dogowor_belet).delete()
+
                             arhiw.delete()
                             perekidka_info.delete()
                         

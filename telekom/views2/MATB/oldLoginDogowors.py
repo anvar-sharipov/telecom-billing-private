@@ -56,9 +56,12 @@ def oldLoginDogowors(request):
     etrap_search = request.GET.get("etrap_search", "")
     login_search = request.GET.get("login_search", "")
     dogowor_search = request.GET.get("dogowor_search", "")
+    dogowor_alem_search = request.GET.get("dogowor_alem_search", "")
+    dogowor_telefoniya_search = request.GET.get("dogowor_telefoniya_search", "")
+    dogowor_belet_search = request.GET.get("dogowor_belet_search", "")
     is_enterprises_search = request.GET.get("is_enterprises_search", "")
 
-    if number_search or etrap_search or login_search or dogowor_search or is_enterprises_search:
+    if number_search or etrap_search or login_search or dogowor_search or dogowor_alem_search or dogowor_telefoniya_search or dogowor_belet_search or is_enterprises_search:
         if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp':
             results = OldLoginDogowor.objects.all().order_by('-created_at')
         else:
@@ -73,6 +76,12 @@ def oldLoginDogowors(request):
             results = results.filter(login__icontains=login_search)
         if dogowor_search:
             results = results.filter(dogowor__icontains=dogowor_search)
+        if dogowor_alem_search:
+            results = results.filter(dogowor_alem__icontains=dogowor_alem_search)
+        if dogowor_telefoniya_search:
+            results = results.filter(dogowor_telefoniya__icontains=dogowor_telefoniya_search)
+        if dogowor_belet_search:
+            results = results.filter(dogowor_belet__icontains=dogowor_belet_search)
         if is_enterprises_search in ["1", "true", "да"]:
             results = results.filter(is_enterprises=True)
         elif is_enterprises_search in ["0", "false", "нет"]:
@@ -84,6 +93,9 @@ def oldLoginDogowors(request):
                 "etrap_search": etrap_search,
                 "login_search": login_search,
                 "dogowor_search": dogowor_search,
+                "dogowor_alem_search": dogowor_alem_search,
+                "dogowor_telefoniya_search": dogowor_telefoniya_search,
+                "dogowor_belet_search": dogowor_belet_search,
                 "is_enterprises_search": is_enterprises_search,
             }
 
@@ -100,8 +112,11 @@ def oldLoginDogowors(request):
             account = request.POST.get('account')
             
 
-            old_login = request.POST.get('old_login')
-            old_dogowor = request.POST.get('old_dogowor')
+            old_login = request.POST.get('old_login').strip()
+            old_dogowor = request.POST.get('old_dogowor').strip()
+            old_dogowor_alem = request.POST.get('old_dogowor_alem').strip()
+            old_dogowor_telefoniya = request.POST.get('old_dogowor_telefoniya').strip()
+            old_dogowor_belet = request.POST.get('old_dogowor_belet').strip()
 
             edara = request.POST.get('edara')
             hozOrBud = request.POST.get('hozOrBud')
@@ -111,55 +126,75 @@ def oldLoginDogowors(request):
             context['edara'] = edara
             context['hozOrBud'] = hozOrBud
 
-            if not is_valid(old_dogowor):
-                messages.error(request, f"Ошибка! Введите корректный Dogowor")
-                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
-
             if len(old_number) != 5:
                 messages.error(request, f"Ошибка! Введите корректный номер телефона")
                 return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
 
             if edara and (not hozOrBud or not account):
                 messages.error(request, f"Ошибка! Выберите Hoz или Bud и account")
-                return render(request, 'telekom/MATB/oldLoginDogowors.html', context) 
-
-            if not old_login and not old_dogowor:
-                messages.error(request, f"Ошибка! Заполните и логин и договор")
-                return render(request, 'telekom/MATB/oldLoginDogowors.html', context) 
-            
-
-            if old_login and old_dogowor:
-
-
-                if OldLoginDogowor.objects.filter(dogowor=old_dogowor).exists():
-                    messages.error(request, f"Такой договор уже есть в Базе")
-                    return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
-
-       
-                if OldLoginDogowor.objects.filter(login=old_login).exists():
-                    messages.error(request, f"Такой логин уже есть в Базе")
-                    return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
-
-                
-        
-                is_enterprises = False
-                if edara:
-                    is_enterprises = True
-
-                try:
-                    with transaction.atomic():
-                        if edara:
-                            OldLoginDogowor.objects.create(number=old_number, login=old_login, dogowor=old_dogowor, etrap=request.POST.get('etrap'), is_enterprises=is_enterprises, hb=hozOrBud, operator=request.user.username, saved_in_action='При сохранении в Old', account=account)
-                        else:
-                            OldLoginDogowor.objects.create(number=old_number, login=old_login, dogowor=old_dogowor, etrap=request.POST.get('etrap'), operator=request.user.username, saved_in_action='При сохранении в Old')
-                        StaffAction.objects.create(user=request.user, action="Old Login Dogowor Save", comment=str(datetime.datetime.now()))
-                        messages.success(request, f"Успешное сохранение номера {old_number} этрап {request.POST.get('etrap')} логин {old_login} договор {old_dogowor}")
-                except Exception as e:
-                    messages.error(request, f'Откат при сохранении OLD ошибка с transaction == {e}')
-                    logger.error(f'==== Откат при сохранении OLD ошибка с transaction == {e}')
-            else:
-                messages.error(request, f"Ошибка! логин и договор не может быть пустым")
                 return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            # Логин и Договор (интернет) — либо оба заполнены, либо оба пустые
+            if (old_dogowor and not old_login) or (old_login and not old_dogowor):
+                messages.error(request, f"Ошибка! Логин и Договор Интернет должны быть заполнены оба или оба пустые")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            # Хотя бы один из договоров должен быть заполнен
+            if not old_dogowor and not old_dogowor_alem and not old_dogowor_telefoniya and not old_dogowor_belet:
+                messages.error(request, f"Ошибка! Заполните хотя бы один договор (Интернет, Алем, Телефония, Белет)")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_dogowor and not is_valid(old_dogowor):
+                messages.error(request, f"Ошибка! Введите корректный Dogowor")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_dogowor and OldLoginDogowor.objects.filter(dogowor=old_dogowor).exists():
+                messages.error(request, f"Такой договор уже есть в Базе")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_login and OldLoginDogowor.objects.filter(login=old_login).exists():
+                messages.error(request, f"Такой логин уже есть в Базе")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_dogowor_alem and OldLoginDogowor.objects.filter(dogowor_alem=old_dogowor_alem).exists():
+                messages.error(request, f"Такой договор Алем уже есть в Базе")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_dogowor_telefoniya and OldLoginDogowor.objects.filter(dogowor_telefoniya=old_dogowor_telefoniya).exists():
+                messages.error(request, f"Такой договор Телефония уже есть в Базе")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if old_dogowor_belet and OldLoginDogowor.objects.filter(dogowor_belet=old_dogowor_belet).exists():
+                messages.error(request, f"Такой договор Белет уже есть в Базе")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            is_enterprises = False
+            if edara:
+                is_enterprises = True
+
+            try:
+                with transaction.atomic():
+                    create_kwargs = dict(
+                        number=old_number,
+                        etrap=request.POST.get('etrap'),
+                        operator=request.user.username,
+                        saved_in_action='При сохранении в Old',
+                        login=old_login,
+                        dogowor=old_dogowor,
+                        dogowor_alem=old_dogowor_alem,
+                        dogowor_telefoniya=old_dogowor_telefoniya,
+                        dogowor_belet=old_dogowor_belet,
+                    )
+                    if edara:
+                        create_kwargs['is_enterprises'] = is_enterprises
+                        create_kwargs['hb'] = hozOrBud
+                        create_kwargs['account'] = account
+                    OldLoginDogowor.objects.create(**create_kwargs)
+                    StaffAction.objects.create(user=request.user, action="Old Login Dogowor Save", comment=str(datetime.datetime.now()))
+                    messages.success(request, f"Успешное сохранение номера {old_number} этрап {request.POST.get('etrap')} логин {old_login} договор {old_dogowor} алем {old_dogowor_alem} телефония {old_dogowor_telefoniya} белет {old_dogowor_belet}")
+            except Exception as e:
+                messages.error(request, f'Откат при сохранении OLD ошибка с transaction == {e}')
+                logger.error(f'==== Откат при сохранении OLD ошибка с transaction == {e}')
 
 
         else:
@@ -172,13 +207,15 @@ def oldLoginDogowors(request):
         item_id = request.POST.get('item_id')
         change_etrap = request.POST.get('change_etrap')
         change_number = request.POST.get('change_number')
-        change_login = request.POST.get('change_login')
-        change_dogowor = request.POST.get('change_dogowor')
+        change_login = request.POST.get('change_login').strip()
+        change_dogowor = request.POST.get('change_dogowor').strip()
+        change_dogowor_alem = request.POST.get('change_dogowor_alem').strip()
+        change_dogowor_telefoniya = request.POST.get('change_dogowor_telefoniya').strip()
+        change_dogowor_belet = request.POST.get('change_dogowor_belet').strip()
         change_edara = True if request.POST.get('change_edara') else False
         change_hozOrBud = request.POST.get('change_hozOrBud')
         change_account = request.POST.get('change_account') if request.POST.get('change_account') else None
-        
-        
+
 
         o = OldLoginDogowor.objects.get(pk=item_id)
         old_account  = str(o.account) if o.account else None
@@ -188,6 +225,9 @@ def oldLoginDogowors(request):
             and o.etrap == change_etrap
             and o.login == change_login
             and o.dogowor == change_dogowor
+            and o.dogowor_alem == change_dogowor_alem
+            and o.dogowor_telefoniya == change_dogowor_telefoniya
+            and o.dogowor_belet == change_dogowor_belet
             and o.hb == change_hozOrBud
             and old_account == change_account
             and old_is_enterprises == change_edara):
@@ -196,8 +236,16 @@ def oldLoginDogowors(request):
             if len(change_number) != 5:
                 messages.error(request, f"Ошибка в поле номер")
                 return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
-            
-            if not is_valid(change_dogowor):
+
+            if (change_dogowor and not change_login) or (change_login and not change_dogowor):
+                messages.error(request, f"Ошибка! Логин и Договор Интернет должны быть заполнены оба или оба пустые")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if not change_dogowor and not change_dogowor_alem and not change_dogowor_telefoniya and not change_dogowor_belet:
+                messages.error(request, f"Ошибка! Заполните хотя бы один договор (Интернет, Алем, Телефония, Белет)")
+                return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
+
+            if change_dogowor and not is_valid(change_dogowor):
                 messages.error(request, f"Ошибка в поле Договор")
                 return render(request, 'telekom/MATB/oldLoginDogowors.html', context)
 
@@ -220,6 +268,12 @@ def oldLoginDogowors(request):
                         o.login = change_login
                     if o.dogowor != change_dogowor:
                         o.dogowor = change_dogowor
+                    if o.dogowor_alem != change_dogowor_alem:
+                        o.dogowor_alem = change_dogowor_alem
+                    if o.dogowor_telefoniya != change_dogowor_telefoniya:
+                        o.dogowor_telefoniya = change_dogowor_telefoniya
+                    if o.dogowor_belet != change_dogowor_belet:
+                        o.dogowor_belet = change_dogowor_belet
                     if o.hb != change_hozOrBud:
                         o.hb = change_hozOrBud
                     if old_account != change_account:

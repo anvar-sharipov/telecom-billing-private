@@ -14,9 +14,6 @@
     <!--input Задолженность-->
     <div class="d-flex"><div class="input_label">Задолжность</div><div><input type="text" class="kassa_second_row" disabled id="kassa__zadol_pay_row"></div></div>
 
-    <!-- Логин -->
-    <div class="d-flex"><div class="input_label">Логин</div><div><input type="text" class="kassa_second_row" disabled value="{{abonent.login}}"></div></div>
-
     <!-- Кабель фильтр поиск -->
     <div class="dropdown">
         <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,6 +76,23 @@
 
     
 </div>  
+
+<div class="d-flex" style="column-gap: 5px; margin-left: 20px; margin-top: 5px;">
+    <!-- Login Интернет -->
+    <div class="d-flex"><div class="input_label">Login int</div><div><input type="text" class="kassa_second_row" style="width: 140px;" disabled value="{{abonent.login}}"></div></div>
+
+    <!-- Договор Интернет -->
+    <div class="d-flex"><div class="input_label">Договор int</div><div><input type="text" class="kassa_second_row" style="width: 140px;" disabled value="{{abonent.dogowor}}"></div></div>
+
+    <!-- Договор Алем -->
+    <div class="d-flex"><div class="input_label">Договор Алем</div><div><input type="text" class="kassa_second_row" style="width: 140px;" disabled value="{{abonent.dogowor_alem}}"></div></div>
+
+    <!-- Договор Телефония -->
+    <div class="d-flex"><div class="input_label">Договор Tel</div><div><input type="text" class="kassa_second_row" style="width: 140px;" disabled value="{{abonent.dogowor_telefoniya}}"></div></div>
+
+    <!-- Договор Белет -->
+    <div class="d-flex"><div class="input_label">Договор Белет</div><div><input type="text" class="kassa_second_row" style="width: 140px;" disabled value="{{abonent.dogowor_belet}}"></div></div>
+</div>
 
 <script>
     try {
