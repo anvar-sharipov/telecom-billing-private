@@ -42,6 +42,17 @@
                                 </div>
                             </div>
                             <div>
+                                <div style="color: #949494;">
+                                    Договор
+                                    {% if errorEnteredDogowor %}
+                                    <div style="color: red;">
+                                        Договор {{errorDogoworIsAlreadyExist}} уже занят
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div><input type="text" class="form-control" name="dogowor" {% if add_user_dogowor %} value="{{add_user_dogowor}}" {% endif %} autocomplete="off"></div>
+                            </div>
+                            <div>
                                 <div style="color: #949494;">Фамилия {% if errorEnteredNameSurname %}<div style="color: red;">Фамили не может буть пустым</div>{% endif %}</div>
                                 <div><input type="text" class="form-control" name="surname" {% if add_user_surname %} value="{{add_user_surname}}" {% endif %} autocomplete="off"></div>
                             </div>

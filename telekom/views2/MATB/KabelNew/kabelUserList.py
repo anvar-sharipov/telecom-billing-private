@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 def get_user_data_from_request(request):
     number = request.POST.get('number')
+    dogowor = request.POST.get('dogowor', '').strip()
     surname = request.POST.get('surname').capitalize()
     name = request.POST.get('name').capitalize()
     street = request.POST.get('street')
@@ -33,6 +34,7 @@ def get_user_data_from_request(request):
 
     return {
         'number': number,
+        'dogowor': dogowor,
         'surname': surname,
         'name': name,
         'street': street,
@@ -228,6 +230,10 @@ def kabelUserList(request):
                 if not (user_data['name'] or user_data['surname']):
                     currect = False
                     context['errorEnteredNameSurname'] = True
+                if user_data['dogowor'] and KabelTvNew.objects.filter(dogowor=user_data['dogowor']).exists():
+                    currect = False
+                    context['errorEnteredDogowor'] = True
+                    context['errorDogoworIsAlreadyExist'] = user_data['dogowor']
                 if len(user_data['sotowyy']) not in {0, 11}:
                     context['errorEnteredSotowyy'] = True
                     currect = False
@@ -253,6 +259,7 @@ def kabelUserList(request):
                 if currect:
                     user = KabelTvNew.objects.create(
                         number = user_data['number'],
+                        dogowor = user_data['dogowor'],
                         surname = user_data['surname'],
                         name = user_data['name'],
                         street = user_data['street'],
@@ -276,9 +283,10 @@ def kabelUserList(request):
                     KabelComment.objects.create(
                         user=user,
                         worker = request.user.username,
-                        comment = f"""Комментарий: {user_data['comment']}  
+                        comment = f"""Комментарий: {user_data['comment']}
                             Имя: {user.surname} {user.name}
                             Номер: {user.number}
+                            Договор: {user.dogowor}
                             Улица: {user.street}
                             Дом: {user.home}
                             Квартира: {user.flat}
@@ -291,6 +299,7 @@ def kabelUserList(request):
                 else:
                     context.update({
                     'add_user_number': user_data['number'],
+                    'add_user_dogowor': user_data['dogowor'],
                     'add_user_name': user_data['name'],
                     'add_user_surname': user_data['surname'],
                     'add_user_street': user_data['street'],
@@ -342,6 +351,10 @@ def kabelUserList(request):
                 if not (user_data['name'] or user_data['surname']):
                     context['errorEnteredNameSurname'] = True
                     currect = False
+                if user_data['dogowor'] and KabelTvNew.objects.filter(dogowor=user_data['dogowor']).exclude(pk=user.pk).exists():
+                    context['errorEnteredDogowor'] = True
+                    context['errorDogoworIsAlreadyExist'] = user_data['dogowor']
+                    currect = False
                 if len(user_data['sotowyy']) not in {0, 11}:
                     context['errorEnteredSotowyy'] = True
                     currect = False
@@ -369,7 +382,8 @@ def kabelUserList(request):
                 if currect:
 
                     if (
-                        user.number == int(user_data['number']) 
+                        user.number == int(user_data['number'])
+                        and user.dogowor == user_data['dogowor']
                         and user.surname == user_data['surname']
                         and user.name == user_data['name']
                         and user.street == user_data['street']
@@ -401,6 +415,10 @@ def kabelUserList(request):
                             comment_parts += (f"""Смена Номера с {user.number} на {user_data['number']}
                             """)
                             user.number = int(user_data['number'])
+                        if user.dogowor != user_data['dogowor']:
+                            comment_parts += (f"""Смена Договора с {user.dogowor} на {user_data['dogowor']}
+                            """)
+                            user.dogowor = user_data['dogowor']
                         if user.surname != user_data['surname']:
                             comment_parts += (f"""Смена Фамилии с {user.surname} на {user_data['surname']}
                             """)
@@ -454,6 +472,7 @@ def kabelUserList(request):
                 else:
                     context.update({
                         'change_user_number': user_data['number'],
+                        'change_user_dogowor': user_data['dogowor'],
                         'change_user_name': user_data['name'],
                         'change_user_surname': user_data['surname'],
                         'change_user_street': user_data['street'],

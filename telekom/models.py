@@ -2230,6 +2230,7 @@ class AccountBalance(models.Model):
 # Kabel New ###########################################################################################################################################################################
 class KabelTvNew(models.Model):
 	number = models.IntegerField(verbose_name='Номер', unique=True)
+	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
 	name = models.CharField(max_length=500, verbose_name='Имя', blank=True)
 	surname = models.CharField(max_length=500, verbose_name='Фамилия', blank=True)
 	street = models.CharField(max_length=500, verbose_name='Улица', blank=True)

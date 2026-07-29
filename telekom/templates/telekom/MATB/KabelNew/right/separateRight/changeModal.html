@@ -53,6 +53,29 @@
                             </div>
                         </div>
                         <div>
+                            <div class="text-start" style="color: #c6c5c5; font-size: 15px;">
+                                Договор
+                                {% if errorEnteredDogowor %}
+                                    <div style="color: red;">
+                                        Договор {{errorDogoworIsAlreadyExist}} уже занят
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <input
+                                type="text"
+                                class="form-control"
+                                name="dogowor"
+                                value="{% if change_user_dogowor %}{{change_user_dogowor}}{% else %}{{u.dogowor}}{% endif %}"
+                                autocomplete="off"
+                                id="dogowor_input_in_change_user_modal{{u.pk}}"
+                                {% if change_user_dogowor and change_user_dogowor != u.dogowor and not errorEnteredDogowor %} style="background-color:rgb(241, 255, 170);" {% endif %}
+                                onkeydown="changeDBInChangeInput(this.id, `{{u.dogowor}}`, {{u.pk}}, event)"
+                                oninput="changeDBInChangeInput2(this.id, `{{u.dogowor}}`, {{u.pk}}, event)"
+                                >
+                            </div>
+                        </div>
+                        <div>
                             <div class="text-start" style="color: #c6c5c5; font-size: 15px;">Фамилия {% if errorEnteredNameSurname %}<div style="color: red;">Фамилия не может буть пустым</div>{% endif %}</div>
                             <div>
                                 <input 
