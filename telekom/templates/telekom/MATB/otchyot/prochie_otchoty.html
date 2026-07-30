@@ -62,6 +62,7 @@
                     <input class="btn btn-success btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} оплата по населению карт или налич {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_oplatyCardOrNo" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
             <li class="list-group-item" onclick="makeActive(this)">
                 {% if year and month and etrap %}
@@ -154,6 +155,7 @@
                     <input class="btn btn-success btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Список интернет платежей {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_internetKassaTolegleri" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
             <li class="list-group-item" onclick="makeActive(this)">
                 {% if year and month and etrap %}
@@ -197,6 +199,17 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Лена Платежи Dashoguz {% if month %} за {{month}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_lena_plateji" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
+            </li>
+
+            <li class="list-group-item" onclick="makeActive(this)">
+                {% if year and month and etrap %}
+                <form method="POST" style="display: inline;">{% csrf_token %}
+                    <input type="hidden" name="lena_plateji_2">
+                    <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
+                </form>
+                {% else %}Скачать{% endif %} Лена Платежи 2 Dashoguz {% if month %} за {{month}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#lenaPlateji2InfoModal" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -215,6 +228,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} все платежи {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_all_tolegler" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -224,6 +238,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} платежи Alem для DT KT {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_only_alem_for_DT_KT" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -233,6 +248,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} платежи с ДЗ кассиров на этап все столбцы {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_plateji_s_DZ_na_etrapy" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -242,6 +258,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} платежи с ДЗ кассиров на этап только 2 столбца номер и сумма в отрицательном виде {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_plateji_s_DZ_naEtrapy2" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -251,6 +268,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} платежи абонентов {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_plateji_po_abonentam" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -260,6 +278,7 @@
                     <input class="btn btn-danger btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} начисления абонентов {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_nach_po_abonentam" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             <li class="list-group-item" onclick="makeActive(this)">
@@ -278,6 +297,7 @@
                     <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} все платежи {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_all_toleg_po_month" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
             </li>
 
             {% if etrap == 'Dashoguz' %}
@@ -308,6 +328,7 @@
                 <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
             </form>
             {% else %}Скачать{% endif %} все начисления {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_all_nach_po_month" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
         </li>
 
         <li class="list-group-item" onclick="makeActive(this)">
@@ -317,6 +338,7 @@
                 <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
             </form>
             {% else %}Скачать{% endif %} все платежи по дням {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#infoModal_all_toleg_po_day_telefoniya" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
         </li>
 
 
@@ -373,6 +395,266 @@
     </ol>
 </div>
 
+<div class="modal fade" id="lenaPlateji2InfoModal" tabindex="-1" aria-labelledby="lenaPlateji2InfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lenaPlateji2InfoModalLabel">Лена Платежи 2 Dashoguz — что даёт отчёт</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Hasabat saýlanan aý üçin ähli abonent töleglerini çykarýar, olarda Dashoguz ýa tölegi kabul
+                eden kassiriň etraby (ETRAP_KASSIROV sütüni), ýa tölegi tölän abonentiň etraby (ETRAP sütüni),
+                ýa-da ikisi hem bolýar.</p>
+                <p>Bu «Lena Plateji» hasabatynyň giňeldilen görnüşi: köne hasabat diňe Dashoguz kassirleriniň
+                kabul eden töleglerini görkezýärdi we başga etrapdaky kassiriň Dashoguz abonentinden kabul
+                eden tölegini hasaba almaýardy. Täze hasabatda abonentiň etraby bilen kassiriň etraby aýratyn
+                sütünlerde görkezilýär, şeýlelikde bu iki ýagdaýy tapawutlandyryp bolýar.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Отчёт выгружает все платежи абонентов за выбранный месяц, у которых Dashoguz является
+                этрапом ЛИБО кассира, принявшего платёж (столбец ETRAP_KASSIROV), ЛИБО абонента, за которого
+                внесён платёж (столбец ETRAP), либо оба сразу.</p>
+                <p>Это расширенная версия отчёта «Лена Платежи»: старый отчёт показывал только платежи,
+                принятые кассирами Dashoguz, и не учитывал случаи, когда кассир из другого этрапа принял
+                платёж за абонента из Dashoguz. В новом отчёте этрап абонента и этрап кассира указаны
+                отдельными столбцами, чтобы эти два случая можно было различить.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoModal_oplatyCardOrNo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Оплата по населению карт/налич — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Bu hasabat saýlanan aý we etrap üçin ilatyň (FL) kassa arkaly eden töleglerini nagt/kartoçka boýunça bölüp jemleýär.
+            4 topar: Telefoniýa (abonplata), Internet, Alem TV we Kabel TV (diňe Dashoguz). Her topar üçin nagt bilen kartoçka
+            arkaly edilen töleglerň sany we jemi summasy görkezilýär. Diňe saýlanan etrabyň kassirleriniň kabul eden töleglerine degişli.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт суммирует платежи населения (ФЛ), принятые кассирами выбранного этрапа за выбранный месяц, разбивая их
+            по 4 категориям: Телефония (абонплата), Интернет, Alem TV и Kabel TV (только Dashoguz), и по способу оплаты —
+            наличные/карта. Для каждой категории и способа оплаты показаны количество платежей и сумма. Учитываются только
+            платежи, где этрап кассира совпадает с выбранным этрапом.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_internetKassaTolegleri" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Список интернет платежей — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň kassirleriniň kabul eden, diňe ilat (FL) üçin internet tölegli ýazgylaryny sanaw görnüşinde
+            çykarýar: abonent belgisi, ady, dogowor belgisi we tölenen summa.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт выгружает построчный список интернет-платежей населения (ФЛ), принятых кассирами выбранного этрапа:
+            номер абонента, имя, номер договора и сумма платежа.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_lena_plateji" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Лена Платежи Dashoguz — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Bu hasabat saýlanan aý üçin diňe Dashoguz kassirleriniň kabul eden ähli abonent töleglerini setir-setir
+            çykarýar: abonent belgisi, ady, abonentiň etraby, ФЛ/ЮЛ, töleg görnüşi (internet, alem, abonplata, kod, zakaz,
+            dop_uslugi, slr, kabel), kassir, sene, nagt/kart, summa. Diňe kassiriň etraby Dashoguz bolan töleglere degişli —
+            başga etrapdaky kassiriň Dashoguz abonentinden kabul eden tölegi bu hasabata girmeýär (muny «Лена Платежи 2» görkezýär).</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт выгружает построчно все платежи, принятые кассирами Dashoguz, за выбранный месяц: номер абонента, имя,
+            этрап абонента, ФЛ/ЮЛ, тип платежа (интернет, alem, абонплата, код, заказ, доп.услуги, СЛР, кабель), кассир,
+            дата, наличные/карта, сумма. Учитываются только платежи, где этрап КАССИРА — Dashoguz; платёж, принятый
+            кассиром другого этрапа за абонента из Dashoguz, сюда не попадает (это показывает «Лена Платежи 2»).</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_all_tolegler" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Все платежи (all_tolegler) — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan aý we etrap üçin, abonenti şol etrapdan bolan we tölegi ýa şol etrabyň kassirleri, ýa-da
+            «Daşarky tölegler» (bank/programma arkaly) kabul eden ähli töleg ýazgylaryny doly sütünler bilen
+            (internet, kabel, alem, telefon, slr, kod, zakaz, prochee, dop_uslugi, nagt/kart, kassir, kassa, sene,
+            ФЛ/ЮЛ, kassiriň etraby) çykarýar. Hasap diňe abonentiň etraby boýunça edilýär.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт выгружает полный построчный дамп платежей за выбранный месяц для абонентов выбранного этрапа, у которых
+            кассир — либо из того же этрапа, либо это «Внешние платежи» (банк/приложение). Показаны все столбцы: интернет,
+            кабель, alem, телефон, СЛР, код, заказ, прочее, доп.услуги, наличные/карта, кассир, касса, дата, ФЛ/ЮЛ,
+            этрап кассира. Фильтрация идёт по этрапу АБОНЕНТА.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_only_alem_for_DT_KT" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Платежи Alem для DT KT — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrap üçin 20000–104999 aralygyndaky (edara belgileri 80000–89999 aýrylan) ähli abonent belgileri
+            boýunça diňe Alem TV töleg jemini çykarýar, minus alamaty bilen (-summa). Sanaw doly, tölegi bolmadyk
+            belgiler hem 0 bilen görkezilýär — bu faýl DT/KT (daşarky) ulgama ýüklemek üçin niýetlenen.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт выгружает только сумму платежей Alem TV по каждому номеру абонента в диапазоне 20000–104999 (кроме
+            предприятий 80000–89999) выбранного этрапа, со знаком минус (-сумма). В выгрузку попадают ВСЕ номера
+            диапазона, даже если платежей не было (тогда 0) — файл предназначен для загрузки во внешнюю систему DT/KT.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_plateji_s_DZ_na_etrapy" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Платежи с ДЗ кассиров на этап (все столбцы) — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Kassiri saýlanan etrapdan bolan, emma abonenti BAŞGA etrapdan bolan ähli töleg ýazgylaryny doly sütünler
+            bilen çykarýar (kassir başga etrabyň abonentinden pul kabul eden ýagdaýlar). Bu pullar hasaplaşyk üçin
+            degişli etraba geçirilmeli tölegleri görkezýär.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт выгружает полным дампом платежи, где кассир — из выбранного этрапа, а АБОНЕНТ — из другого этрапа
+            (случаи, когда кассир принял оплату за абонента чужого этрапа). Эти суммы показывают, какие платежи нужно
+            передать/зачесть в расчётах с другим этрапом.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_plateji_s_DZ_naEtrapy2" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Платежи с ДЗ кассиров на этап (2 столбца) — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Öňki hasabat ýaly, kassiri saýlanan etrapdan, abonenti başga etrapdan bolan ilat (FL) töleglerini alýar
+            (Alem TV töleglerinden başga), ýöne diňe gysga görnüşde: abonentiň hakyky etraby, belgisi we tölegiň
+            jemi minus alamaty bilen (-summa) — başga etraba geçirmek üçin taýýar sanaw.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            То же, что и предыдущий отчёт (кассир — из выбранного этрапа, абонент — из другого, только ФЛ, без учёта
+            платежей Alem TV), но в сокращённом виде — только этрап абонента, номер и итоговая сумма со знаком минус
+            (-сумма), готовые для передачи в расчёты другого этрапа.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_plateji_po_abonentam" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Платежи абонентов — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň her bir abonent belgisi (20000–104999, edara 80000–89999 aýrylan) üçin, aýyň dowamynda
+            edilen ähli töleglerini (telefon, slr, kod, zakaz, prochee, dop_uslugi, internet, Dashoguz üçin kabel, alem)
+            jemläp, bir setirde görkezýär. Sanawda saýlanan etrabyň ähli belgileri bar, tölegi bolmadyklary-da 0 bilen.
+            Kim kabul edenine garamazdan, abonentiň özi boýunça jemlenýär.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Для каждого номера абонента выбранного этрапа (20000–104999, кроме предприятий 80000–89999) суммирует за
+            месяц все платежи (телефон, СЛР, код, заказ, прочее, доп.услуги, интернет, кабель — только для Dashoguz,
+            alem) в одну строку. В выгрузке присутствуют ВСЕ номера этрапа, даже без платежей (тогда 0). Группировка
+            идёт по абоненту, независимо от того, какой кассир принял платёж.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_nach_po_abonentam" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Начисления абонентов — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň her bir abonent belgisi üçin, saýlanan aýda hasaplanan (начисление) jemleri (telefon,
+            slr, kod, zakaz, prochee, dop_uslugi, internet, Dashoguz üçin kabel, alem) bir setirde görkezýär.
+            Bu — TÖLEG DÄL, hasaplama maglumaty; sanawda etrabyň ähli belgileri bar.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Для каждого номера абонента выбранного этрапа показывает суммы НАЧИСЛЕНИЙ (не платежей) за выбранный
+            месяц: телефон, СЛР, код, заказ, прочее, доп.услуги, интернет, кабель (только Dashoguz), alem. Это данные
+            начисления (из NachMinus), а не фактической оплаты. В выгрузке — все номера этрапа.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_all_toleg_po_month" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Все платежи (all_toleg_po_month) — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň ähli abonent belgileri (20000–104999) üçin aýyň dowamynda edilen töleg jemlerini
+            (telefon, slr, kod, zakaz, prochee, dop_uslugi, internet, kabel — Dashoguz üçin, alem) hem-de iň soňky
+            töleg maglumatlaryny (kassir, kassa, sene, nagt/kart, ФЛ/ЮЛ, kassiriň etraby) bir setirde görkezýär.
+            «admin» kassiriniň girizen ýazgylary hasaba alynmaýar. Sanawda etrabyň ähli belgileri bar, tölegi
+            bolmadyklary-da boş/0 bilen.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Для всех номеров абонентов выбранного этрапа (20000–104999) суммирует платежи за месяц (телефон, СЛР,
+            код, заказ, прочее, доп.услуги, интернет, кабель — только Dashoguz, alem) и дополнительно показывает
+            данные последнего платежа (кассир, касса, дата, наличные/карта, ФЛ/ЮЛ, этрап кассира). Платежи, внесённые
+            кассиром «admin», не учитываются. В выгрузке — все номера этрапа, даже без платежей.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_all_nach_po_month" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Все начисления — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň özboluşly belgi aralygyndaky (her etrap üçin öz diapazony) ähli abonent belgileri üçin
+            aýyň hasaplanan (начисление) jemlerini (telefon, slr, kod, zakaz, prochee, dop_uslugi, internet, kabel —
+            Dashoguz üçin, alem) görkezýär, goşmaça iki alamat bilen: «edara» (+ bolsa edara/ЮЛ) we «is_active»
+            (adynda/familiýasynda maglumat bar bolsa — diňe häzirki ýa-da öňki aý üçin). Bu «начисления абонентов»-yň
+            giňeldilen görnüşi.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Отчёт похож на «начисления абонентов», но для более широкого диапазона номеров этрапа (свой диапазон под
+            каждый этрап) и с двумя дополнительными пометками: «edara» (+ если предприятие/ЮЛ) и «is_active» (стоит
+            «active», если у абонента заполнены имя/фамилия — эта проверка выполняется только для текущего или
+            предыдущего месяца). Показывает начисления (не оплату) за месяц: телефон, СЛР, код, заказ, прочее,
+            доп.услуги, интернет, кабель (только Dashoguz), alem.</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
+
+<div class="modal fade" id="infoModal_all_toleg_po_day_telefoniya" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">Все платежи по дням — что даёт отчёт</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <p><strong>Türkmençe:</strong><br>
+            Saýlanan etrabyň ähli abonent belgileri üçin, diňe abonplata (telefoniýa) tölegini gün-güne bölüp
+            (1–31), aýyň dowamynda haýsy günde näçe töleg edilenini we aýyň jemini (jemi) görkezýär. Diňe «prochee»
+            (abonplata) meýdany hasaba alynýar, beýleki hyzmatlar (internet, alem, kabel we ş.m.) girmeýär.</p>
+            <hr>
+            <p><strong>По-русски:</strong><br>
+            Для всех номеров абонентов выбранного этрапа показывает платежи ТОЛЬКО по абонплате/телефонии, разбитые
+            по дням месяца (столбцы 1–31) плюс итог за месяц (jemi). Другие услуги (интернет, alem, кабель и т.д.) в
+            этот отчёт не входят — учитывается только поле «прочее» (абонплата).</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button></div>
+    </div></div>
+</div>
 
 
 {% if listAbonplata %}

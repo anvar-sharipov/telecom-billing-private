@@ -1873,9 +1873,83 @@ def prochie_otchoty(request):
         response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
         response['Content-Disposition'] = f"attachment; filename= Dashoguz_Lena_plateji_za_{year}-{month_digit}.xlsx"
 
-        return response 
+        return response
 
 
+    if request.method == 'POST' and 'lena_plateji_2' in request.POST:
+
+        # В отличие от 'lena_plateji': берём платежи, где Dashoguz — этрап КАССИРА,
+        # ИЛИ где Dashoguz — этрап АБОНЕНТА (объединение, без дублей, т.к. связь FK одиночная)
+        pays = PayHistory.objects.filter(
+            date__range=[start, end2]
+        ).filter(
+            Q(kassir_etrap='Dashoguz') | Q(abonent__etrap='Dashoguz')
+        )
+        pays_from_kabel_TV = KabelTvPayHistory.objects.filter(pay_date__range=[start2, end2])
+
+        headers = ("NUMBER","NAME","ETRAP","ETRAP_KASSIROV","EDARA_ILAT", "TYPE", "MANAGER", "DATE", "CART", "PRICE")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+
+        for p in pays:
+            number = p.abonent.number
+            name = f"{p.abonent.surname} {p.abonent.name}"
+            if p.internet:
+                type_ = 'internet'
+                price = p.internet
+            elif p.alem:
+                type_ = 'alem'
+                price = p.alem
+            elif p.prochee:
+                type_ = 'abonplata'
+                price = p.prochee
+            elif p.kabel:
+                continue
+            elif p.kod:
+                type_ = 'kod'
+                price = p.kod
+            elif p.zakaz:
+                type_ = 'zakaz'
+                price = p.zakaz
+            elif p.dop_uslugi:
+                type_ = 'dop_uslugi'
+                price = p.dop_uslugi
+            elif p.slr:
+                type_ = 'slr'
+                price = p.slr
+
+            cart = 'Наличка'
+            if p.is_card:
+                cart = 'Карточка'
+
+            date_ = p.date
+
+            manager = p.kassir
+
+            edara_ilat = 'ФЛ'
+            if p.edara_ilat == 'ЮЛ':
+                edara_ilat = 'ЮЛ'
+
+            data.append((number, name, p.abonent.etrap, p.kassir_etrap, edara_ilat, type_, manager, date_, cart, price))
+
+        for p in pays_from_kabel_TV:
+            cart = 'Наличка'
+            if p.card:
+                cart = 'Карточка'
+
+            edara_ilat = 'ФЛ'
+            if p.user.is_enterprises:
+                edara_ilat = 'ЮЛ'
+
+            data.append((p.user.number, p.user.name, 'Dashoguz', 'Dashoguz', edara_ilat, 'kabel', p.pay_kassir, p.pay_date, cart, p.pay))
+
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= Dashoguz_Lena_plateji_2_za_{year}-{month_digit}.xlsx"
+
+        return response
 
 
     if request.method == 'POST' and 'kod_8_lik_10_lyk_gepleshikleri' in request.POST:
