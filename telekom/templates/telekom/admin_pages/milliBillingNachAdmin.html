@@ -1,0 +1,113 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}MilliBillingNach - откат начисления{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>MilliBillingNach - откат начисления
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#milliBillingNachAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+    <p class="text-muted">Откатывает начисление файла: возвращает балансы абонентов назад и удаляет созданные PayHistory/KabelTvPayHistory. После отката файл снова станет "не начислен" и его можно будет откатить целиком на странице MilliBillingPay.</p>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Файл</th>
+                    <th>Кто добавил</th>
+                    <th>Когда добавлено</th>
+                    <th>Платежей</th>
+                    <th>Сумма</th>
+                    <th>Откат начисления</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in files %}
+                <tr>
+                    <td>{{ f.file_name }}</td>
+                    <td>{{ f.who_add_file }}</td>
+                    <td>{{ f.when_added_file }}</td>
+                    <td>{{ f.count }}</td>
+                    <td>{{ f.total_price|floatformat:2 }}</td>
+                    <td>
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление файла {{ f.file_name }}? Балансы {{ f.count }} платежей будут уменьшены обратно.');">
+                            {% csrf_token %}
+                            <input type="hidden" name="rollback_nach_file_name" value="{{ f.file_name }}">
+                            <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат начисления</button>
+                            <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                            <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Начисленных файлов пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="milliBillingNachAdminInfoModal" tabindex="-1" aria-labelledby="milliBillingNachAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="milliBillingNachAdminInfoModalLabel">MilliBillingNach (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Bu sahypa "Toleg milli billing Nachisleniya" arkaly edilen nachisleniýäni yzyna öwürmek üçin.
+                Sanawda diňe eýýäm nachislenie edilen (is_nach=True) faýllar görünýär. Diňe admin1 girip bilýär.</p>
+                <p><strong>Откат едilende näme bolýar:</strong></p>
+                <ul>
+                    <li>Şol faýl bilen bagly ähli PayHistory/KabelTvPayHistory ýazgylary (milli_billing_file_name
+                        arkaly bellenen) tapylýar.</li>
+                    <li>Olaryň summalary boýunça UserTable-iň b_internet/b_prochee/b_alem we KabelTvNew.balance
+                        yzyna (aýrylyp) düzedilýär — takyk şol edilen mukdarda, başga hiç zat üýtgemeýär.</li>
+                    <li>Şol PayHistory/KabelTvPayHistory ýazgylary pozulýar.</li>
+                    <li>MilliBillingPay.is_nach ýene False bolýar — indi "MilliBillingPay" sahypasynda faýly
+                        pozup bolýar.</li>
+                    <li><strong>Sverka/gulplama hem awtomatiki pozulýar:</strong> eger şol gün/kassir/etrap üçin
+                        "Milli Billing сверка платежей" sahypasynda tassyklama ýa-da "gün gulplama" bar bolsa, olar
+                        hem pozulýar — sebäbi olaryň esasy bolan sanlar indi ýok.</li>
+                </ul>
+                <p><strong>Parol:</strong> "Откат начисления" basylanda parol meýdany açylýar, dogry parolsyz hiç
+                zat üýtgemeýär.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Страница для отката начисления, сделанного через "Toleg milli billing Nachisleniya". В списке —
+                только уже начисленные (is_nach=True) файлы. Доступ только у admin1.</p>
+                <p><strong>Что происходит при откате:</strong></p>
+                <ul>
+                    <li>Находятся все PayHistory/KabelTvPayHistory, помеченные этим файлом (milli_billing_file_name).</li>
+                    <li>На их суммы уменьшаются обратно `b_internet`/`b_prochee`/`b_alem` у UserTable и
+                        `KabelTvNew.balance` — ровно на ту же величину, что была начислена, ничего больше.</li>
+                    <li>Эти записи PayHistory/KabelTvPayHistory удаляются.</li>
+                    <li>`MilliBillingPay.is_nach` возвращается в False — после этого файл можно откатить (удалить)
+                        на странице "MilliBillingPay".</li>
+                    <li><strong>Сверка/закрытие дня тоже откатываются автоматически:</strong> если для затронутого
+                        дня/кассира/этрапа было подтверждение или закрытие дня на странице "Milli Billing сверка
+                        платежей" — эти записи тоже удаляются, так как цифры, которые они подтверждали, больше не существуют.</li>
+                </ul>
+                <p><strong>Пароль:</strong> при нажатии "Откат начисления" появляется поле пароля — без верного
+                пароля ничего не изменится.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

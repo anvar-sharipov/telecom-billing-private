@@ -210,6 +210,10 @@ userTableSection.html ##
     background-color: #CCCCFF !important;
 }
 
+.colBelet {
+    background-color: #fff3b0 !important;
+}
+
 .kassa-userTable th:nth-of-type(1), .kassa-userTable td:nth-of-type(1){width: 100px; border: 1px black solid;}
 .kassa-userTable th:nth-of-type(2), .kassa-userTable td:nth-of-type(2){width: 100px; border: 1px black solid;}
 .kassa-userTable th:nth-of-type(3), .kassa-userTable td:nth-of-type(3){width: 100px; border: 1px black solid;}
@@ -218,8 +222,9 @@ userTableSection.html ##
 .kassa-userTable th:nth-of-type(6), .kassa-userTable td:nth-of-type(6){width: 100px; border: 1px black solid;}
 .kassa-userTable th:nth-of-type(7), .kassa-userTable td:nth-of-type(7){width: 130px; border: 1px black solid;}
 .kassa-userTable th:nth-of-type(8), .kassa-userTable td:nth-of-type(8){width: 100px; border: 1px black solid;}
-.kassa-userTable th:nth-of-type(9), .kassa-userTable td:nth-of-type(9){width: 130px; border: 1px black solid;}
-.kassa-userTable th:nth-of-type(10), .kassa-userTable td:nth-of-type(10){width: 100px; border: 1px black solid;}
+.kassa-userTable th:nth-of-type(9), .kassa-userTable td:nth-of-type(9){width: 100px; border: 1px black solid;}
+.kassa-userTable th:nth-of-type(10), .kassa-userTable td:nth-of-type(10){width: 130px; border: 1px black solid;}
+.kassa-userTable th:nth-of-type(11), .kassa-userTable td:nth-of-type(11){width: 100px; border: 1px black solid;}
 
 .kassa-userTable th {
     text-align: center;

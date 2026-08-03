@@ -10,9 +10,10 @@
 
             <th class="col1">Услуги</th>
 
-            <th class="col1">Прочее</th>
+            <th class="col1">Телефония</th>
             
             <th class="col8">Интернет</th>
+            <th class="colBelet">Белет</th>
             <th class="col9">Каб TV</th>
             <th class="col10">Al TV</th>
         </tr>
@@ -32,6 +33,7 @@
             <td class="col1" style="background-color: rgb(218, 218, 218) !important; border-bottom: 2px black solid;">{% if current_year == selected_year %}{{abonent.s_prochee|floatformat:2}}{% else %}{{saldo_balans.s_prochee|floatformat:2}}{% endif %}</td>
             
             <td class="col8" style="background-color: rgb(218, 218, 218) !important; border-bottom: 2px black solid;">{% if current_year == selected_year %}{{abonent.s_internet|floatformat:2}}{% else %}{{saldo_balans.s_internet|floatformat:2}}{% endif %}</td>
+            <td class="colBelet" style="background-color: rgb(218, 218, 218) !important; border-bottom: 2px black solid;"></td>
             <td class="col9" style="background-color: rgb(218, 218, 218) !important; border-bottom: 2px black solid;">{% if current_year == selected_year %}{{abonent.s_kabel|floatformat:2}}{% else %}{{saldo_balans.s_kabel|floatformat:2}}{% endif %}</td>
             <td class="col10" style="background-color: rgb(218, 218, 218) !important; border-bottom: 2px black solid;">{% if current_year == selected_year %}{{abonent.s_alem|floatformat:2}}{% else %}{{saldo_balans.s_alem|floatformat:2}}{% endif %} </td>
         </tr>
@@ -97,6 +99,13 @@
             <td class="col8" id="internetMonth01">{% if jan.internet != 0 %}{{jan.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth01"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if jan %}
+            <td class="colBelet" id="beletMonth01">{% if jan.belet != 0 %}{{jan.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth01"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -180,6 +189,13 @@
             <td class="col8" id="internetMonth02">{% if feb.internet != 0 %}{{feb.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth02"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if feb %}
+            <td class="colBelet" id="beletMonth02">{% if feb.belet != 0 %}{{feb.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth02"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -266,6 +282,13 @@
             <td class="col8" id="internetMonth03"></td>
             {% endif %}
 
+            <!-- Belet -->
+            {% if mar %}
+            <td class="colBelet" id="beletMonth03">{% if mar.belet != 0 %}{{mar.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth03"></td>
+            {% endif %}
+
             <!-- Kabel TV -->
             <!-- {% if mar %}
             <td class="col9" id="kabelMonth03">{% if mar.kabel != 0 %}{% if request.user.is_superuser %}{{mar.kabel|floatformat:2}}{% endif %}{% endif %}</td>
@@ -348,6 +371,13 @@
             <td class="col8" id="internetMonth04">{% if apr.internet != 0 %}{{apr.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth04"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if apr %}
+            <td class="colBelet" id="beletMonth04">{% if apr.belet != 0 %}{{apr.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth04"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -433,6 +463,13 @@
             <td class="col8" id="internetMonth05"></td>
             {% endif %}
 
+            <!-- Belet -->
+            {% if may %}
+            <td class="colBelet" id="beletMonth05">{% if may.belet != 0 %}{{may.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth05"></td>
+            {% endif %}
+
             <!-- Kabel TV -->
             <!-- {% if may %}
             <td class="col9" id="kabelMonth05">{% if may.kabel != 0 %}{% if request.user.is_superuser %}{{may.kabel|floatformat:2}}{% endif %}{% endif %}</td>
@@ -514,6 +551,13 @@
             <td class="col8" id="internetMonth06">{% if jun.internet != 0 %}{{jun.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth06"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if jun %}
+            <td class="colBelet" id="beletMonth06">{% if jun.belet != 0 %}{{jun.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth06"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -600,6 +644,13 @@
             <td class="col8" id="internetMonth07"></td>
             {% endif %}
 
+            <!-- Belet -->
+            {% if jul %}
+            <td class="colBelet" id="beletMonth07">{% if jul.belet != 0 %}{{jul.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth07"></td>
+            {% endif %}
+
             <!-- Kabel TV -->
             <!-- {% if jul %}
             <td class="col9" id="kabelMonth07">{% if jul.kabel != 0 %}{{jul.kabel|floatformat:2}}{% endif %}</td>
@@ -681,6 +732,13 @@
             <td class="col8" id="internetMonth08">{% if aug.internet != 0 %}{{aug.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth08"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if aug %}
+            <td class="colBelet" id="beletMonth08">{% if aug.belet != 0 %}{{aug.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth08"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -766,6 +824,13 @@
             <td class="col8" id="internetMonth09"></td>
             {% endif %}
 
+            <!-- Belet -->
+            {% if sep %}
+            <td class="colBelet" id="beletMonth09">{% if sep.belet != 0 %}{{sep.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth09"></td>
+            {% endif %}
+
             <!-- Kabel TV -->
             <!-- {% if sep %}
             <td class="col9" id="kabelMonth09">{% if sep.kabel != 0 %}{{sep.kabel|floatformat:2}}{% endif %}</td>
@@ -847,6 +912,13 @@
             <td class="col8" id="internetMonth10">{% if oct.internet != 0 %}{{oct.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth10"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if oct %}
+            <td class="colBelet" id="beletMonth10">{% if oct.belet != 0 %}{{oct.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth10"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -932,6 +1004,13 @@
             <td class="col8" id="internetMonth11"></td>
             {% endif %}
 
+            <!-- Belet -->
+            {% if nov %}
+            <td class="colBelet" id="beletMonth11">{% if nov.belet != 0 %}{{nov.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth11"></td>
+            {% endif %}
+
             <!-- Kabel TV -->
             <!-- {% if nov %}
             <td class="col9" id="kabelMonth11">{% if nov.kabel != 0 %}{{nov.kabel|floatformat:2}}{% endif %}</td>
@@ -1015,6 +1094,13 @@
             <td class="col8" id="internetMonth12">{% if dec.internet != 0 %}{{dec.internet|floatformat:2}}{% endif %}</td>
             {% else %}
             <td class="col8" id="internetMonth12"></td>
+            {% endif %}
+
+            <!-- Belet -->
+            {% if dec %}
+            <td class="colBelet" id="beletMonth12">{% if dec.belet != 0 %}{{dec.belet|floatformat:2}}{% endif %}</td>
+            {% else %}
+            <td class="colBelet" id="beletMonth12"></td>
             {% endif %}
 
             <!-- Kabel TV -->
@@ -1457,6 +1543,9 @@
             </td>
             {% endif %}
 
+            <!-- Belet -->
+            <td class="colBelet" style="background-color: rgb(218, 218, 218) !important; border-top: 2px black solid;"></td>
+
             <!-- Kabel TV -->
             <!-- {% if abonent.kabel_count and abonent.is_on and request.user.is_superuser %}
             <td class="col9">
@@ -1528,7 +1617,7 @@
             <td class="col1" id="prochee_balance_in_kassa_table" style="background-color: rgb(218, 218, 218) !important;">{% if current_year == selected_year %}{{abonent.b_prochee|floatformat:2}}{% else %}{{saldo_balans.b_prochee|floatformat:2}}{% endif %}</td>
             
 
-            <td class="col8" id="internet_balance_in_kassa_table" style="background-color: rgb(218, 218, 218) !important;">{% if current_year == selected_year %}{{abonent.b_internet|floatformat:2}}{% else %}{{saldo_balans.b_internet|floatformat:2}}{% endif %}</td>
+            <td class="col8" id="internet_balance_in_kassa_table" colspan="2" style="background-color: rgb(218, 218, 218) !important;">{% if current_year == selected_year %}{{abonent.b_internet|floatformat:2}}{% else %}{{saldo_balans.b_internet|floatformat:2}}{% endif %}</td>
 
             <td class="col9" id="kabel_balance_in_kassa_table" style="background-color: rgb(218, 218, 218) !important;">{% if current_year == selected_year %}{% if user_kabel %}{{user_kabel.balance|floatformat:2}}{% else %}0{% endif %}{% else %}{{saldo_balans.b_kabel|floatformat:2}}{% endif %}</td>
 
@@ -1542,6 +1631,7 @@
             <td colspan="2" style="background-color: rgb(71, 71, 71);"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Интернет:</span><span>{{total_p_int|floatformat:2}}</span></div></td>
             <td colspan="2" style="background-color: rgb(71, 71, 71);"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Alem TV:</span><span>{{total_p_alem|floatformat:2}}</span></div></td>
             <td colspan="2" style="background-color: rgb(71, 71, 71);"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Кабельное:</span><span>{{total_p_kabel|floatformat:2}}</span></div></td>
+            <td style="background-color: rgb(71, 71, 71);"></td>
         </tr>
 
         <!-- Начисления за год -->
@@ -1551,6 +1641,7 @@
             <td colspan="2"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Интернет:</span><span>{{total_n_int|floatformat:2}}</span></div></td>
             <td colspan="2"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Alem TV:</span><span>{{total_n_alem|floatformat:2}}</span></div></td>
             <td colspan="2"><div class="d-flex justify-content-around" style="color: rgb(169, 169, 169);"><span>Кабельное:</span><span>{{total_n_kabel|floatformat:2}}</span></div></td>
+            <td></td>
         </tr>
 
     </tbody>

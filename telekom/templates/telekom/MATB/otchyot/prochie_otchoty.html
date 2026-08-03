@@ -385,12 +385,15 @@
             {% if etrap %} etrap {{etrap}} {% endif %}
         </li>
 
-       
-
-        
-
-        
-        
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="milli_billing_tolegler">
+                <input class="btn btn-primary btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Milli Billing Tolegler {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#milliBillingTologlerInfoModal" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
+        </li>
 
     </ol>
 </div>
@@ -420,6 +423,33 @@
                 принятые кассирами Dashoguz, и не учитывал случаи, когда кассир из другого этрапа принял
                 платёж за абонента из Dashoguz. В новом отчёте этрап абонента и этрап кассира указаны
                 отдельными столбцами, чтобы эти два случая можно было различить.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="milliBillingTologlerInfoModal" tabindex="-1" aria-labelledby="milliBillingTologlerInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="milliBillingTologlerInfoModalLabel">Milli Billing Tolegler — что даёт отчёт</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Hasabat saýlanan aý we etrap üçin MilliBillingPay tablisasyndan ähli sütünleri bilen doly
+                dökümini çykarýar (töleg belgisi, kassa, contractCode, abonentiň ady, töleg görnüşi, tapyldymy/
+                başlandymy we ş.m.), ýa kassiriň etraby (KASSIR_ETRAP), ýa abonentiň etraby (USER_ETRAP)
+                saýlanan etraba deň bolan ýagdaýynda.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Отчёт выгружает полный дамп всех полей модели MilliBillingPay (номер платежа, касса,
+                contractCode, ФИО абонента, категория услуги, сопоставлен/начислен и т.д.) за выбранный месяц,
+                у которых выбранный этрап является ЛИБО этрапом кассира (KASSIR_ETRAP), ЛИБО этрапом абонента
+                (USER_ETRAP), как в отчёте «Лена Платежи 2».</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>

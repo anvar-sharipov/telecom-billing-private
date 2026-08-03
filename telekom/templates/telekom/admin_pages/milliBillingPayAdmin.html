@@ -1,0 +1,116 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}MilliBillingPay - откат{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>MilliBillingPay - файлы и откат
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#milliBillingPayAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Файл</th>
+                    <th>Кто добавил</th>
+                    <th>Когда добавлено</th>
+                    <th>Всего строк</th>
+                    <th>Сопоставлено</th>
+                    <th>Без договора</th>
+                    <th>Сумма</th>
+                    <th>Начислено</th>
+                    <th>Откат</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in files %}
+                <tr>
+                    <td>{{ f.file_name }}</td>
+                    <td>{{ f.who_add_file }}</td>
+                    <td>{{ f.when_added_file }}</td>
+                    <td>{{ f.count }}</td>
+                    <td>{{ f.matched_count }}</td>
+                    <td>{{ f.unmatched_count }}</td>
+                    <td>{{ f.total_price|floatformat:2 }}</td>
+                    <td>
+                        {% if f.is_nach %}
+                            <span class="badge bg-success">Да</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if f.is_nach %}
+                            <button class="btn btn-sm btn-secondary" disabled title="Уже начислено, откат запрещён">Откат запрещён</button>
+                        {% else %}
+                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить файл {{ f.file_name }}? Будут удалены {{ f.count }} записей из MilliBillingPay.');">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_file_name" value="{{ f.file_name }}">
+                                <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат</button>
+                                <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                                <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center">Файлов пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="milliBillingPayAdminInfoModal" tabindex="-1" aria-labelledby="milliBillingPayAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="milliBillingPayAdminInfoModalLabel">MilliBillingPay (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Bu sahypa "Toleg milli billing goşmak" arkaly goşulan ähli faýllaryň sanawyny görkezýär (kim, haçan,
+                näçe setir, näçesi tapyldy) we olary bütinleý pozmaga (goşmakdan öň bolan ýagdaýa gaýtarmaga) rugsat
+                berýär. Diňe admin1 girip bilýär.</p>
+                <p><strong>Haçan откат mümkin däl:</strong> Eger faýl eýýäm NAÇYSLENIÝE edilen bolsa (islendik setirde
+                is_nach = True), "Откат" düwmesi işlemeýär — ilki "MilliBillingNach" sahypasynda nachislenie yzyna
+                öwrülmeli, ondan soň bu ýerde faýl pozulyp bilner.</p>
+                <p><strong>Parol:</strong> "Откат" basylanda parol meýdany açylýar — dogry parol girizilmese hiç zat
+                pozulmaýar (habar bilen ret edilýär). Bu goşmaça goragdyr.</p>
+                <p>Откат едилende: şol file_name-e degişli ähli MilliBillingPay setirleri we
+                SaveInfoAboutWhoAddAndNachPaysFromBilling ýazgysy pozulýar — şeýlelik bilen şol faýly gaýtadan
+                goşmak (upload) mümkin bolýar.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Страница показывает список всех файлов, добавленных через "Toleg milli billing goşmak" (кто, когда,
+                сколько строк, сколько сопоставлено), и позволяет полностью откатить (удалить) файл — вернуть к
+                состоянию "как будто не загружали". Доступ только у admin1.</p>
+                <p><strong>Когда откат НЕ сработает:</strong> если файл уже НАЧИСЛЕН (у любой строки is_nach = True),
+                кнопка "Откат" будет заблокирована и заменена на "Откат запрещён" — сначала нужно откатить
+                начисление на странице "MilliBillingNach", и только после этого файл можно будет откатить здесь.</p>
+                <p><strong>Пароль:</strong> при нажатии "Откат" появляется поле для пароля — без верного пароля
+                ничего не удалится (покажет ошибку). Это дополнительная защита от случайного нажатия.</p>
+                <p>При успешном откате удаляются все строки MilliBillingPay этого файла и запись
+                SaveInfoAboutWhoAddAndNachPaysFromBilling — после этого файл можно загрузить заново.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

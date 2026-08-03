@@ -43,6 +43,8 @@
               <li><a class="dropdown-item {% if saldo_po_godam_save %} myActiveLinkLight {% endif %}" href="{% url 'saldo_po_godam_save' %}">SaldoBalancePoGodam save</a></li>
               <li><a class="dropdown-item {% if saldo_po_godam_save2 %} myActiveLinkLight {% endif %}" href="{% url 'saldo_po_godam_save2' %}">SaldoBalancePoGodam save2</a></li>
               <li><a class="dropdown-item {% if add_nachisleniya_from_excel %} myActiveLinkLight {% endif %}" href="{% url 'add_nachisleniya_from_excel' %}">save nach from excel</a></li>
+              <li><a class="dropdown-item {% if milliBillingPayAdmin %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingPayAdmin' %}">MilliBillingPay</a></li>
+              <li><a class="dropdown-item {% if milliBillingNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingNachAdmin' %}">MilliBillingNach</a></li>
             </ul>
           </li> 
           {% endif %}
@@ -56,11 +58,14 @@
               </li>
             {% endif %}
             {% if request.user.is_superuser or request.user.username == 'AyshatGoroglyMtb' or request.user.username == 'intizar_gorogly' or request.user.username == 'testMTBDZ' or request.user.username == 'GuljahanAkdepeMtb' or request.user.username == 'AzizShabatMtb' or request.user.username == 'Saryyewa_Gozel_Shabat_MTB' or request.user.username == 'BaharKoneurgenchKassa' or request.user.username == 'Merjen_Yylally_MTB' or request.user.username == 'GozelGubadagMtb' or request.user.username == 'SelbiBoldumsazMtb' or request.user.username == 'MahymAkdepeMtb' or request.user.username == 'Aramedowa_Oguljemal' or request.user.username == 'Jumyazowa_Oguljemal' or request.user.username == 'Kurbanowa_Gulnabat_Koneurgench' or 'Baltabayewa_Sewara_MTB_DGE' or request.user.username == 'Ishangulyyewa_Nurjemal_Koneurgench_kassa' %}
-              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing %} myActiveLink {% endif %}">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing or addPlatejiMilliBilling %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MB kassa toleg</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
                   <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+                  <li><a class="dropdown-item {% if addPlatejiMilliBilling %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiMilliBilling' %}">Toleg milli billing goşmak</a></li>
+                  <li><a class="dropdown-item {% if nachMilliBillingPay %} myActiveLinkLight {% endif %}" href="{% url 'nachMilliBillingPay' %}">Toleg milli billing Nachisleniya</a></li>
+                  <li><a class="dropdown-item {% if milliBillingCheckPays %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingCheckPays' %}">Milli Billing сверка платежей</a></li>
                 </ul>
               </li>
             {% endif %}
@@ -244,11 +249,14 @@
             </li>  
             {% endif %}
             {% if request.user.is_superuser %}
-              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing or check_pays %} myActiveLink {% endif %}">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+              <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing or check_pays or addPlatejiMilliBilling %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MB kassa toleg</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
                   <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+                  <li><a class="dropdown-item {% if addPlatejiMilliBilling %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiMilliBilling' %}">Toleg milli billing goşmak</a></li>
+                  <li><a class="dropdown-item {% if nachMilliBillingPay %} myActiveLinkLight {% endif %}" href="{% url 'nachMilliBillingPay' %}">Toleg milli billing Nachisleniya</a></li>
+                  <li><a class="dropdown-item {% if milliBillingCheckPays %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingCheckPays' %}">Milli Billing сверка платежей</a></li>
                 </ul>
               </li>
             {% endif %}
@@ -368,11 +376,14 @@
               </li>  
             {% endif %}
             {% if request.user.username == 'lenashb' %}
-            <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing %} myActiveLink {% endif %}">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">$</a>
+            <li class="nav-item dropdown {% if addPlatejiForKassirs2 or nach_pays_from_billing or addPlatejiMilliBilling %} myActiveLink {% endif %}">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MB kassa toleg</a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item {% if addPlatejiForKassirs2 %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiForKassirs2' %}">Add</a></li>
                 <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Nach</a></li>
+                <li><a class="dropdown-item {% if addPlatejiMilliBilling %} myActiveLinkLight {% endif %}" href="{% url 'addPlatejiMilliBilling' %}">Toleg milli billing goşmak</a></li>
+                <li><a class="dropdown-item {% if nachMilliBillingPay %} myActiveLinkLight {% endif %}" href="{% url 'nachMilliBillingPay' %}">Toleg milli billing Nachisleniya</a></li>
+                <li><a class="dropdown-item {% if milliBillingCheckPays %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingCheckPays' %}">Milli Billing сверка платежей</a></li>
               </ul>
             </li>
             {% endif %}

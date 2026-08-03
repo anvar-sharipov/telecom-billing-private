@@ -129,6 +129,9 @@ from telekom.views2.Kassa.kassaReestr import kassaReestr
 from telekom.views2.Kassa.kassaAccount import kassaAccount
 from telekom.views2.Kassa.addPlatejiForKassirs import addPlatejiForKassirs
 from telekom.views2.Kassa.addPlatejiForKassirs2 import addPlatejiForKassirs2
+from telekom.views2.Kassa.addPlatejiMilliBilling import addPlatejiMilliBilling, exportMilliBillingUnmatched
+from telekom.views2.Kassa.nachMilliBillingPay import nachMilliBillingPay
+from telekom.views2.Kassa.milliBillingCheckPays import milliBillingCheckPays
 from telekom.views2.Kassa.kassirs_billing_names import kassirs_billing_names
 #  # Kassa Rezerw
 # from telekom.views2.kassaRezerw.KassaIndex import kassaIndexRezerw
@@ -200,6 +203,8 @@ from telekom.views2.MATB.newNachisleniya.abonplata import newAbonplataNachisleni
 from telekom.views2.admin_pages.saldo_po_godam_save import saldo_po_godam_save
 from telekom.views2.admin_pages.saldo_po_godam_save2 import saldo_po_godam_save2
 from telekom.views2.admin_pages.add_nachisleniya_from_excel import add_nachisleniya_from_excel
+from telekom.views2.admin_pages.milliBillingPayAdmin import milliBillingPayAdmin
+from telekom.views2.admin_pages.milliBillingNachAdmin import milliBillingNachAdmin
 
 
 
@@ -319,6 +324,10 @@ urlpatterns = [
     path('account-page', kassaAccount, name='account-page'),
     path('addPlatejiForKassirs', addPlatejiForKassirs, name='addPlatejiForKassirs'),
     path('addPlatejiForKassirs2', addPlatejiForKassirs2, name='addPlatejiForKassirs2'),
+    path('addPlatejiMilliBilling', addPlatejiMilliBilling, name='addPlatejiMilliBilling'),
+    path('nachMilliBillingPay', nachMilliBillingPay, name='nachMilliBillingPay'),
+    path('milliBillingCheckPays', milliBillingCheckPays, name='milliBillingCheckPays'),
+    path('exportMilliBillingUnmatched', exportMilliBillingUnmatched, name='exportMilliBillingUnmatched'),
     path('kassirs_billing_names', kassirs_billing_names, name='kassirs_billing_names'),
 
     # Kassa Rezerw
@@ -400,6 +409,8 @@ urlpatterns = [
     path('saldo_po_godam_save', saldo_po_godam_save, name='saldo_po_godam_save'),
     path('saldo_po_godam_save2', saldo_po_godam_save2, name='saldo_po_godam_save2'),
     path('add_nachisleniya_from_excel', add_nachisleniya_from_excel, name='add_nachisleniya_from_excel'),
+    path('milliBillingPayAdmin', milliBillingPayAdmin, name='milliBillingPayAdmin'),
+    path('milliBillingNachAdmin', milliBillingNachAdmin, name='milliBillingNachAdmin'),
   
 
 

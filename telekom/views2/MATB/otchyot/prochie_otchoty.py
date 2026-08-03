@@ -1952,6 +1952,50 @@ def prochie_otchoty(request):
         return response
 
 
+    if request.method == 'POST' and 'milli_billing_tolegler' in request.POST:
+
+        # Как 'Лена Платежи 2': этрап КАССИРА, ИЛИ этрап АБОНЕНТА совпадает с выбранным
+        milli_pays = MilliBillingPay.objects.filter(
+            date__range=[start2, end2]
+        ).filter(
+            Q(kassir_etrap=etrap) | Q(user_etrap=etrap)
+        ).order_by('-date')
+
+        headers = ("ID", "NUMBER", "USER_ETRAP", "KASSIR_ETRAP", "TYPE_PAY", "IS_MATCHED", "IS_NACH", "PAYMENT_NUMBER", "DEPOSITORY_NAME", "CONTRACT_CODE", "SUBSCRIBER_FULL_NAME", "TARIFF_GROUP_NAME", "CURRENCY_NAME", "DESCRIPTION", "MANAGER", "DATE", "PRICE", "FILE_NAME", "WHO_ADD_FILE", "WHEN_ADDED_FILE")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        for p in milli_pays:
+            data.append((
+                p.pk,
+                p.number,
+                p.user_etrap,
+                p.kassir_etrap,
+                p.type_pay,
+                p.is_matched,
+                p.is_nach,
+                p.payment_number,
+                p.depository_name,
+                p.contract_code,
+                p.subscriber_full_name,
+                p.tariff_group_name,
+                p.currency_name,
+                p.description,
+                p.manager,
+                p.date,
+                p.price,
+                p.file_name,
+                p.who_add_file,
+                p.when_added_file,
+            ))
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= Milli_Billing_Tolegler_{etrap}_za_{year}-{month_digit}.xlsx"
+
+        return response
+
+
     if request.method == 'POST' and 'kod_8_lik_10_lyk_gepleshikleri' in request.POST:
 
         calls = NonLocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], SUB_A_etrap=etrap)

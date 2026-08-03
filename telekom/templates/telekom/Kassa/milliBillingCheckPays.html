@@ -1,0 +1,341 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load humanize %}
+{% block title %}Milli Billing сверка платежей{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light">
+    <h1 class="text-center">Milli Billing сверка платежей
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#checkMilliBillingInfoModal" title="Что это за страница?">?</button>
+    </h1>
+    <p class="text-muted text-center">Учитываются только платежи, начисленные из Milli Billing (PayHistory/KabelTvPayHistory с меткой файла). Удаление платежей делается на странице MilliBillingNach (Админ), не здесь.</p>
+
+    <form method="GET" class="mb-4" id="optionsForm">
+        <div class="row">
+            <div class="col">
+                <label for="etrap" class="form-label">Этрап</label>
+                <select class="form-select" id="etrap" name="etrap">
+                    {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' %}
+                    {% for etrap in etraps %}
+                        <option value="{{ etrap }}" {% if etrap == request.GET.etrap %}selected{% endif %}>{{ etrap }}</option>
+                    {% endfor %}
+                    {% else %}
+                        <option value="{{ request_user_etrap }}" selected>{{ request_user_etrap }}</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="col">
+                <label for="date_from" class="form-label">Дата от</label>
+                <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+            </div>
+            <div class="col">
+                <label for="date_to" class="form-label">Дата до</label>
+                <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="options" id="po_kassiram" value="po_kassiram" {% if options == 'po_kassiram' %}checked{% endif %}>
+                <label class="form-check-label" for="po_kassiram">Сортировка этрапа по кассирам</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="options" id="po_abonentam" value="po_abonentam" {% if options == 'po_abonentam' %}checked{% endif %}>
+                <label class="form-check-label" for="po_abonentam">Сортировка этрапа по абонентам</label>
+            </div>
+        </div>
+
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-primary">Применить фильтр</button>
+        </div>
+    </form>
+
+    {% if dict_ %}
+    <hr>
+    <div class="container mt-5">
+        <h1 class="text-center">Данные платежей</h1>
+        <table class="table table-hover table-primary">
+            <thead>
+                <tr>
+                    <th scope="col">Кассир</th>
+                    <th scope="col">Телефония</th>
+                    <th scope="col">Интернет</th>
+                    <th scope="col">Алем</th>
+                    <th scope="col">Кабель</th>
+                    <th scope="col" style="background-color: rgb(255, 241, 192);">Всего</th>
+                    <th>Download</th>
+                    <th>Проверено</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kassir, payments in dict_.items %}
+                <tr>
+                    <td>{{ kassir }}</td>
+                    <td>{{ payments.telefoniya|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.internet|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.alem|floatformat:"-2"|intcomma }}</td>
+                    <td>{{ payments.kabel|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ payments.total_kassir|floatformat:"-2"|intcomma }}</td>
+                    <td>
+                        <form method="POST">{% csrf_token %}
+                            <input type="hidden" name="download_pays">
+                            <input type="hidden" name="manager" value="{{ kassir }}">
+                            <button class="btn btn-info" onclick="this.form.submit(); this.disabled=true; setTimeout(() => {this.disabled=false}, 3000);">Скачать</button>
+                        </form>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="form-check-input" {% if len_date_list == 1 and kassir not in dont_checked_managers_name %} checked {% endif %} disabled>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" style="background-color: rgb(255, 241, 192);">Итого</th>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.telefoniya|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.internet|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.alem|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.kabel|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">{{ total.umumy|floatformat:"-2"|intcomma }}</td>
+                    <td style="background-color: rgb(255, 241, 192);">
+                        {% if len_date_list == 1 and not dont_cheked_days and options == 'po_kassiram' %}
+                            {% if day_is_closed %}
+                                <button class="btn btn-success btn-sm" disabled>День закрыт</button>
+                            {% else %}
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ClosaDayPaysModal">Закрыть день</button>
+                                <form method="POST">{% csrf_token %}
+                                    <div class="modal fade text-dark" id="ClosaDayPaysModal" tabindex="-1" aria-labelledby="ClosaDayPaysLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ClosaDayPaysLabel">Закрыть день?</h5>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input type="hidden" name="close_day">
+                                                    <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td style="background-color: rgb(255, 241, 192);">
+                        {% if len_date_list == 1 and not dont_cheked_days %}
+                        <input type="checkbox" class="form-check-input" {% if day_is_closed %} checked {% endif %} disabled>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <br><br>
+
+    {% if options == 'po_kassiram' %}
+    <hr>
+    <div class="d-flex justify-content-around">
+        <div>
+            {% if closed_days_dict %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Закрытые дни</div>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#closedDaysModal">Просмотр</button>
+                </div>
+                <div class="modal fade text-dark" id="closedDaysModal" tabindex="-1" aria-labelledby="closedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(207, 234, 207);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="closedDaysLabel">Закрытые дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for d, u in closed_days_dict.items %}
+                                <div class="card my-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-around">
+                                            <div style="font-size: 12px;">{{d}}</div>
+                                            <div style="font-size: 12px;">{{u}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            {% if opened_days_list %}
+                <div class="d-flex" style="flex-direction: column;">
+                    <div>Открытые дни</div>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#openedDaysModal">Просмотр</button>
+                </div>
+                <div class="modal fade text-dark" id="openedDaysModal" tabindex="-1" aria-labelledby="openedDaysLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="background-color: rgb(207, 234, 207);">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="openedDaysLabel">Открытые дни</h5>
+                            </div>
+                            <div class="modal-body">
+                                {% for d in opened_days_list %}
+                                <div class="card my-3">
+                                    <div class="card-body">
+                                        <div style="font-size: 12px;">{{d}}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <br>
+    {% if mojno_nachislyat and dont_cheked_days and options == 'po_kassiram' and allow_podtwerdit %}
+    <hr>
+        {% if len_date_list == 1 %}
+            <h3 class="text-center text-light mt-5">Подтверждение Проверки</h3>
+
+            <label for="type" class="form-label">Кассир</label>
+            <select class="form-select" id="type" name="kassir" required form="postForm1">
+                <option value="">Выберите кассира</option>
+                {% for k in managers_list %}
+                    <option value="{{k}}" {% if k not in dont_checked_managers_name %} disabled {% endif %}>{{k}} {% if k not in dont_checked_managers_name %} (ПРОВЕРЕНО) {% endif %}</option>
+                {% endfor %}
+            </select>
+
+            <div class="mt-3">
+                <div class="text-center">
+                    <label for="comment" class="form-label">Комментарий</label>
+                    <textarea class="form-control" id="comment" placeholder="Комментарии" autocomplete="off" name="comment" rows="4" style="resize: none;" form="postForm1">Комментарий: </textarea>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success mt-5 d-none" data-bs-toggle="modal" data-bs-target="#checkPaysModal" id="podtwerdit">Подтвердить</button>
+                </div>
+            </div>
+        {% endif %}
+        <br><br><br><br><br>
+
+        <form method="POST" id="postForm1">{% csrf_token %}
+            <div class="modal fade text-dark" id="checkPaysModal" tabindex="-1" aria-labelledby="checkPaysLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="checkPaysLabel">Вы уверены?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="check_button">
+                            <button type="submit" class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;">Да</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+<div class="d-none" id="dontScroll">{{dontScroll}}</div>
+
+<script>
+    const optionsForm = document.getElementById('optionsForm');
+    const type = document.getElementById('type');
+
+    if (type) {
+        type.addEventListener('change', function(event) {
+            const selectedValue = event.target.value;
+            const podtwerdit = document.getElementById('podtwerdit')
+            if (selectedValue === '') {
+                if (!podtwerdit.classList.contains('d-none')) {
+                    podtwerdit.classList.add('d-none')
+                }
+            } else {
+                if (podtwerdit.classList.contains('d-none')) {
+                    podtwerdit.classList.remove('d-none')
+                }
+            }
+        })
+    }
+
+    const dontScroll = document.getElementById('dontScroll')
+    if (dontScroll.innerText !== 'True') {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+<div class="modal fade" id="checkMilliBillingInfoModal" tabindex="-1" aria-labelledby="checkMilliBillingInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkMilliBillingInfoModalLabel">Milli Billing сверка платежей — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Bu sahypa diňe eýýäm NAÇYSLENIÝE edilen Milli Billing tölegleri (PayHistory/KabelTvPayHistory,
+                milli_billing_file_name bellenen) üçin. "Toleg milli billing goşmak" sahypasynda goşulan, ýöne heniz
+                nachislenie edilmedik faýllar bu ýerde görünmeýär — olar üçin ilki "Toleg milli billing Nachisleniya"
+                sahypasynda nachislenie etmeli.</p>
+                <p><strong>Nädip işlemeli:</strong></p>
+                <ol>
+                    <li>Etrap, "Дата от"/"Дата до" (başda şu günki sene bellenen), "по кассирам" ýa "по абонентам" saýlaň → "Применить фильтр".</li>
+                    <li>Jedwelde her kassiriň jemi (telefoniýa/internet/alem/kabel) görkezilýär.</li>
+                    <li>"Скачать" — şol kассiriň şol döwürdäki tölegleriniň Excel dökümi.</li>
+                    <li>"Подтвердить" — diňe 1 GÜN saýlanan we "по кассирам" bolan ýagdaýynda, komментарий bilen bir
+                        kassiriň şol güni tassyklamak (CheckMilliBillingPaysWithKassirs ýazgysy döreýär).</li>
+                    <li>"Закрыть день" — şol gün üçin ähli kassirler tassyklanandan soň, güni gulplamak (üýtgedip
+                        bolmaz).</li>
+                </ol>
+                <p><strong>Haçan bolmaýar:</strong></p>
+                <ul>
+                    <li>Etrap/senesi saýlanmadyk bolsa — jedwel asla görünmeýär.</li>
+                    <li>Başga etrabyň işgäri özüniňki bolmadyk etraby saýlap bilmez (diňe admin1/Gayyp/superuser
+                        islendik etraby görüp biler).</li>
+                    <li>"Подтвердить" diňe 1 senäni öz içine alýan filtr üçin (Дата от = Дата до) we "по кассирам"
+                        rejiminde işleýär, komментарий hökmany.</li>
+                    <li>"Закрыть день" diňe şol 1 gün üçin ähli görkezilen kassirler eýýäm tassyklanan bolsa mümkin.</li>
+                    <li>Bu sahypada TÖLEG POZMAK ýok — muny diňe "MilliBillingNach" (Admin, parol bilen) edip bolýar;
+                        ol ýerde nachislenie yzyna öwrülende degişli sverka/gulplama ýazgylary hem awtomatiki pozulýar.</li>
+                </ul>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Эта страница показывает только УЖЕ НАЧИСЛЕННЫЕ платежи Milli Billing (PayHistory/KabelTvPayHistory
+                с меткой файла). Файлы, которые загружены на "Toleg milli billing goşmak", но ещё не начислены,
+                здесь не видны — сначала их нужно начислить на странице "Toleg milli billing Nachisleniya".</p>
+                <p><strong>Как работать:</strong></p>
+                <ol>
+                    <li>Выбрать этрап, "Дата от"/"Дата до" (по умолчанию сегодня), режим "по кассирам" или "по абонентам" → "Применить фильтр".</li>
+                    <li>В таблице — итоги по каждому кассиру (телефония/интернет/alem/кабель).</li>
+                    <li>"Скачать" — Excel-выгрузка платежей этого кассира за выбранный период.</li>
+                    <li>"Подтвердить" — только при выбранном ровно 1 дне и режиме "по кассирам", с обязательным
+                        комментарием: фиксирует итоги кассира за день (создаёт запись CheckMilliBillingPaysWithKassirs).</li>
+                    <li>"Закрыть день" — когда все кассиры за день подтверждены, закрывает день (защита от изменений).</li>
+                </ol>
+                <p><strong>Когда не получится:</strong></p>
+                <ul>
+                    <li>Не выбраны этрап/даты — таблица вообще не покажется.</li>
+                    <li>Сотрудник не может выбрать чужой этрап (только admin1/Gayyp/суперюзер видят любой).</li>
+                    <li>"Подтвердить" работает только при диапазоне ровно в 1 день (Дата от = Дата до) и режиме
+                        "по кассирам", комментарий обязателен.</li>
+                    <li>"Закрыть день" — только если ВСЕ показанные кассиры за этот день уже подтверждены.</li>
+                    <li>Удаления платежей здесь НЕТ — это делается только через "MilliBillingNach" (Админ, с паролем);
+                        при откате начисления там же автоматически удаляются и связанные записи сверки/закрытия дня.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

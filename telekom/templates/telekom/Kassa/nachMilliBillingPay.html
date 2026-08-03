@@ -1,0 +1,167 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Начисление Milli Billing{% endblock %}
+{% block content %}
+
+<div class="text-end my_width500 my_block_center" style="margin-top: 20px;">
+    <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#nachMilliBillingInfoModal" title="Что это за страница?">?</button>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div>
+        <div style="margin-top: 10px; padding: 0 5px; background-color:#ffffff; border-radius:10px;" class="my_width500 my_block_center main_block">
+            <form method="GET" id="nameForm">
+                <div class="d-flex my_row_gap10 p-2" style="flex-direction: column;">
+                    {% for f in pending_files %}
+                        <label class="d-flex justify-content-between p-2 {% if f.file_name in need_nach_file_names %}my_bg{% endif %}" id="row_{{ forloop.counter }}" onclick="label_clicked('row_{{ forloop.counter }}', 'input_{{ forloop.counter }}')" style="border-radius: 5px;">
+                            <div class="my_width400">
+                                {{ f.file_name }}
+                                <div class="small text-muted">{{ f.count }} платежей, {{ f.total_price|floatformat:2 }} манат, {{ f.when_added_file }}</div>
+                            </div>
+                            <input type="checkbox" id="input_{{ forloop.counter }}" name="{{ f.file_name }}" {% if f.file_name in need_nach_file_names %}checked{% endif %} class="form-check-input">
+                        </label>
+                    {% empty %}
+                        <div class="p-2">Нет файлов, добавленных вами и ожидающих начисления</div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="text-center">
+            <button class="btn btn-success btn-sm" form="nameForm">Просмотр</button>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px;" class="my_width500">
+        <div>
+            {% if total_count %}
+                <div class="my_block_center mt-4 p-2" style="background-color:#ffe1b4; border-radius:8px;">
+                    <div class="d-flex"><div class="my_width200">TYPE</div><div class="my_width150">PRICE</div><div class="my_width80">COUNT</div></div>
+                    <hr>
+                    {% if totals.Internet %}
+                        <div class="d-flex"><div class="my_width200">Интернет:</div><div class="my_width150">{{totals.Internet}}</div><div class="my_width80">{{counts.Internet}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if totals.Abonplata %}
+                        <div class="d-flex"><div class="my_width200">Телефония:</div><div class="my_width150">{{totals.Abonplata}}</div><div class="my_width80">{{counts.Abonplata}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if totals.Alem %}
+                        <div class="d-flex"><div class="my_width200">Alem TV:</div><div class="my_width150">{{totals.Alem}}</div><div class="my_width80">{{counts.Alem}}</div></div>
+                        <hr>
+                    {% endif %}
+                    {% if totals.Kabel %}
+                        <div class="d-flex"><div class="my_width200">Кабель TV:</div><div class="my_width150">{{totals.Kabel}}</div><div class="my_width80">{{counts.Kabel}}</div></div>
+                        <hr>
+                    {% endif %}
+                    <div class="d-flex"><div class="my_width200">Всего платежей:</div><div class="my_width150">{{total_price}}</div><div class="my_width80">{{total_count}}</div></div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if need_nach_file_names %}
+        <br>
+        <div class="text-end">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#nachislitBtnModal" style="margin-left: 20px;">Начислить</button>
+        </div>
+        {% endif %}
+
+        <!-- Modal -->
+        <div class="modal fade" id="nachislitBtnModal" tabindex="-1" aria-labelledby="nachislitBtnModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <form method="POST">{% csrf_token %}
+                            <div>Комментарий</div>
+                            <textarea name="comment" id="comment" cols="55" rows="5" placeholder="Оставьте комментарий" class="p-2"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <input type="hidden" name="nachislit">
+                                <div class="pt-2 fw-bold text-danger">Вы уверены? Это реально изменит балансы абонентов.</div>
+                                <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Начислить</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .my_bg {
+        background-color:#f1f696;
+    }
+
+    .main_block {
+        height: 50vh;
+        overflow-y: auto;
+    }
+</style>
+
+<script>
+    function label_clicked(rowId, inputId) {
+        if (document.getElementById(inputId).checked == true) {
+            document.getElementById(rowId).classList.add('my_bg')
+        } else {
+            document.getElementById(rowId).classList.remove('my_bg')
+        }
+    }
+</script>
+
+<div class="modal fade" id="nachMilliBillingInfoModal" tabindex="-1" aria-labelledby="nachMilliBillingInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nachMilliBillingInfoModalLabel">Toleg milli billing Nachisleniya — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Bu sahypa "Toleg milli billing goşmak" sahypasynda goşulan (ýöne heniz nachislenie edilmedik) faýllary
+                hakyky balanslara geçirýär: UserTable-iň b_internet/b_prochee/b_alem meýdanlaryny we KabelTvNew balansyny
+                üýtgedýär, PayHistory/KabelTvPayHistory ýazgylaryny döredýär.</p>
+                <p><strong>Kim näme edip bilýär:</strong> Sanawda diňe SIZ goşan faýllar görkezilýär (who_add_file =
+                siziň username-iňiz). Başga biriniň goşan faýlyny başlangyç nachislenie etjek bolsaňyz, ol sanawda
+                asla görünmez we serwer tarapyndan hem gadagan ediler.</p>
+                <p><strong>Nädip işlemeli:</strong> Faýl(lar)y bellik ediň → "Просмотр" → jemi görüň → "Начислить" →
+                komментарий ýazyň (boş bolup bilmez) → tassyklaň. Bu hereket real balanslary üýtgedýär, seresap boluň.</p>
+                <p><strong>Haçan bolmaýar:</strong></p>
+                <ul>
+                    <li>Faýl hiç bir belgi saýlanmadyk bolsa.</li>
+                    <li>Komментарий boş bolsa.</li>
+                    <li>Faýl siziň goşan faýlyňyz bolmasa (who_add_file başga biri).</li>
+                    <li>Faýlyň setirlerinde abonent (dogowor) tapylmasa — ýöne bu ýagdaý ýüze çykmaz, sebäbi
+                        "goşmak" sahypasy dogowory tapylmadyk faýllary asla ýatda saklamaýar.</li>
+                </ul>
+                <p>Başlangyç nachislenie edilenden soň, MilliBillingPay.is_nach = True bolýar — şondan soň bu faýl
+                diňe "MilliBillingNach" (Admin) sahypasynda parol bilen yzyna öwrülip bilner.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Эта страница переводит уже загруженные (на "Toleg milli billing goşmak"), но ещё не начисленные файлы
+                в реальные балансы: изменяет `b_internet`/`b_prochee`/`b_alem` у `UserTable` и баланс `KabelTvNew`,
+                создаёт записи `PayHistory`/`KabelTvPayHistory`.</p>
+                <p><strong>Кто что может:</strong> в списке видны только файлы, которые загрузили именно ВЫ
+                (who_add_file = ваш username). Начислить чужой файл нельзя — он даже не появится в списке, и сервер
+                дополнительно проверяет это при попытке начисления.</p>
+                <p><strong>Как работать:</strong> отметить файл(ы) → "Просмотр" → увидеть итоги по типам →
+                "Начислить" → обязательно написать комментарий → подтвердить. Это реально меняет балансы абонентов,
+                действовать аккуратно.</p>
+                <p><strong>Когда не получится:</strong></p>
+                <ul>
+                    <li>Не выбран ни один файл.</li>
+                    <li>Пустой комментарий.</li>
+                    <li>Файл загружен не вами (who_add_file другого пользователя).</li>
+                    <li>Не найден абонент по строке файла — на практике такого не будет, т.к. страница загрузки
+                        не сохраняет файлы, где есть хоть один платёж без найденного договора.</li>
+                </ul>
+                <p>После начисления `MilliBillingPay.is_nach` становится `True` — после этого откатить файл можно
+                только через страницу "MilliBillingNach" (Админ) с паролем.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

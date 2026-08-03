@@ -368,7 +368,43 @@ class CheckPaysWithKassirs(models.Model):
 		return f"{self.etrap} {self.checked_date}"
 	class Meta:
 		verbose_name = 'Информация о сверках платежей'
-		verbose_name_plural = 'Информация о сверках платежей'	
+		verbose_name_plural = 'Информация о сверках платежей'
+
+
+# Сверка платежей Milli Billing - отдельная от CheckPaysWithKassirs (lanbilling), чтобы не путать источники
+class CheckMilliBillingPaysWithKassirs(models.Model):
+	etrap = models.CharField(verbose_name='Этрап', max_length=64, blank=True)
+
+	checked_kassir = models.CharField(verbose_name='Проверенный кассир', max_length=500, blank=True)
+
+	# день проверки в формате '2024-01-01'
+	checked_date = models.CharField(max_length=16, verbose_name='Какой день сверил', blank=True)
+
+	day_is_closed = models.BooleanField(default=False, verbose_name='День Закрыт')
+	who_close_the_day = models.CharField(verbose_name='Кто закрыл день', max_length=500, blank=True)
+
+	operator = models.CharField(verbose_name='Кто Проверил', max_length=500, blank=True)
+	date = models.DateTimeField(verbose_name='Когда проверил', auto_now_add=True)
+	comment = models.TextField(verbose_name='Комментарий', blank=True, null=True)
+
+	total_telefon = models.FloatField(verbose_name='сумма телефонии', default=0)
+	total_alem = models.FloatField(verbose_name='сумма Alem', default=0)
+	total_internet = models.FloatField(verbose_name='сумма интернет', default=0)
+	total_kabel = models.FloatField(verbose_name='сумма кабель', default=0)
+	itogo_kassir = models.FloatField(verbose_name='itogo для этого кассира', default=0)
+
+	total_telefon_when_closed_day = models.FloatField(verbose_name='сумма телефонии за весь день (при закрытии дня)', default=0)
+	total_alem_when_closed_day = models.FloatField(verbose_name='сумма Alem за весь день (при закрытии дня)', default=0)
+	total_internet_when_closed_day = models.FloatField(verbose_name='сумма интернет за весь день (при закрытии дня)', default=0)
+	total_kabel_when_closed_day = models.FloatField(verbose_name='сумма кабель за весь день (при закрытии дня)', default=0)
+	itogo_when_closed_day = models.FloatField(verbose_name='итого за весь день (при закрытии дня)', default=0)
+
+	def __str__(self):
+		return f"{self.etrap} {self.checked_date}"
+
+	class Meta:
+		verbose_name = 'Информация о сверках платежей Milli Billing'
+		verbose_name_plural = 'Информация о сверках платежей Milli Billing'
 
 
 # таблица для сохранения инфы о том кто добавил платеж с Lan Billinga и кто ее начислил
@@ -718,6 +754,9 @@ class PayHistory(models.Model):
 
 	# Кассир etrap
 	kassir_etrap = models.CharField(max_length=32, verbose_name='etrap кассира', null=True, blank=True, choices=etraps)
+
+	# Если начислено из MilliBillingPay - хранит file_name, для точного отката начисления
+	milli_billing_file_name = models.CharField(max_length=500, verbose_name='Файл Milli Billing', blank=True, null=True)
 
 	def __str__(self):
 		return f"{self.abonent.number} {self.abonent.etrap} {self.abonent.name} {self.abonent.surname}"
@@ -1245,6 +1284,7 @@ class NachMinus(models.Model):
 	month = models.CharField(max_length=100, verbose_name='Месяц')
 
 	internet = models.FloatField(verbose_name='Интернет', default=0)
+	belet = models.FloatField(verbose_name='Белет', default=0)
 	kabel = models.FloatField(verbose_name='Кабель', default=0)
 	alem = models.FloatField(verbose_name='Alem TV', default=0)
 	telefon = models.FloatField(verbose_name='Телефон', default=0)
@@ -2056,6 +2096,39 @@ class PlatejiWhichAddKassirsEveryDay(models.Model):
 		verbose_name_plural = 'Платежи c биллинга кассиров'
 
 
+# Платежи из выгрузки Milli Billing (пришёл на смену lanbilling), формат csv
+class MilliBillingPay(models.Model):
+	number = models.CharField(max_length=32, verbose_name='Номер абонента', blank=True)
+	user_etrap = models.CharField(max_length=32, choices=etraps, verbose_name="Этрап абонента", blank=True)
+	kassir_etrap = models.CharField(max_length=32, choices=etraps_wn, verbose_name="Этрап кассира", blank=True)
+
+	type_pay = models.CharField(max_length=50, verbose_name='Тип платежа (Internet, Telefon, Alem, Kabel)', blank=True)
+	is_matched = models.BooleanField(default=False, verbose_name='Абонент найден в базе')
+	is_nach = models.BooleanField(default=False, verbose_name='Начислено в UserTable')
+
+	payment_number = models.CharField(max_length=100, verbose_name='Номер платежа Milli Billing', blank=True)
+	depository_name = models.CharField(max_length=200, verbose_name='Касса/терминал', blank=True)
+	contract_code = models.CharField(max_length=100, verbose_name='Номер договора (contractCode)', blank=True)
+	subscriber_full_name = models.CharField(max_length=300, verbose_name='ФИО абонента (из файла)', blank=True)
+	tariff_group_name = models.CharField(max_length=100, verbose_name='Категория услуги (tariffGroupName)', blank=True)
+	currency_name = models.CharField(max_length=50, verbose_name='Валюта', blank=True)
+	description = models.CharField(max_length=500, verbose_name='Комментарий', blank=True)
+
+	manager = models.CharField(max_length=500, verbose_name='Менеджер', blank=True)
+	date = models.DateTimeField(verbose_name='Дата платежа', null=True, blank=True)
+	price = models.FloatField(verbose_name='Сумма платежа', default=0)
+
+	file_name = models.CharField(max_length=500, verbose_name='Файл', blank=True)
+	who_add_file = models.CharField(max_length=500, verbose_name='Кто добавил файл', blank=True)
+	when_added_file = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='Когда файл добавлен в БД')
+
+	def __str__(self):
+		return f"{self.contract_code} {self.subscriber_full_name} {self.price}"
+
+	class Meta:
+		verbose_name = 'Платежи Milli Billing'
+		verbose_name_plural = 'Платежи Milli Billing'
+
 
 # class MonthPaysFromBillingToMyProgramm(models.Model):
 # 	number = models.CharField(max_length=32, verbose_name='Номер', blank=True)
@@ -2270,6 +2343,9 @@ class KabelTvPayHistory(models.Model):
 	pay_date = models.DateTimeField(verbose_name='Дата платежа')
 	pay_kassir = models.CharField(max_length=100, verbose_name='Платеж принял кассир', blank=True)
 	card = models.BooleanField(default=False, verbose_name='Платеж корточкой?')
+
+	# Если начислено из MilliBillingPay - хранит file_name, для точного отката начисления
+	milli_billing_file_name = models.CharField(max_length=500, verbose_name='Файл Milli Billing', blank=True, null=True)
 
 	class Meta:
 		verbose_name = 'КабельTVNew Исторя платежей'
