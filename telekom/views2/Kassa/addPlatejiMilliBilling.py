@@ -42,6 +42,37 @@ TARIFF_TO_TYPE = {
     'Kabel TW': 'Kabel',
 }
 
+REQUIRED_COLUMNS = {'paymentNumber', 'date', 'userName', 'depositoryName', 'contractCode', 'subscriberFullName', 'tariffGroupName', 'amount', 'currencyName', 'description'}
+
+
+def normalize_cell(value):
+    if value is None:
+        return ''
+    if isinstance(value, datetime):
+        return value.strftime('%d.%m.%Y %H:%M')
+    return str(value).strip()
+
+
+def load_milli_billing_rows(uploaded_file):
+    """Читает csv или xlsx выгрузку Milli Billing, возвращает (fieldnames, rows) со строковыми значениями."""
+    name_lower = uploaded_file.name.lower()
+
+    if name_lower.endswith('.xlsx'):
+        dataset = tablib.Dataset()
+        dataset.load(uploaded_file.read(), format='xlsx')
+        fieldnames = [str(h).strip() if h is not None else '' for h in (dataset.headers or [])]
+        rows = [dict(zip(fieldnames, (normalize_cell(v) for v in row))) for row in dataset]
+        return fieldnames, rows
+
+    if name_lower.endswith('.csv'):
+        decoded = uploaded_file.read().decode('utf-8-sig')
+        reader = csv.DictReader(io.StringIO(decoded), delimiter=';')
+        fieldnames = reader.fieldnames or []
+        rows = list(reader)
+        return fieldnames, rows
+
+    raise ValueError('Файл должен быть формата csv или xlsx (Milli Billing)')
+
 
 def build_unmatched_xlsx_response(rows, filename_prefix='milli_billing_bez_dogowora'):
     headers = ('paymentNumber', 'date', 'kassir', 'depositoryName', 'contractCode', 'subscriberFullName', 'tariffGroupName', 'amount', 'currency', 'description', 'file_name', 'who_add_file')
@@ -123,29 +154,26 @@ def addPlatejiMilliBilling(request):
         month2 = monthСonvert(month)
 
         try:
-            csv_file = request.FILES['my_file_milli']
+            uploaded_file = request.FILES['my_file_milli']
         except Exception:
             messages.error(request, f'Выберите Файл')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
 
         try:
-            decoded = csv_file.read().decode('utf-8-sig')
-            reader = csv.DictReader(io.StringIO(decoded), delimiter=';')
-            rows = list(reader)
+            fieldnames, rows = load_milli_billing_rows(uploaded_file)
         except Exception as e:
-            messages.error(request, f'Файл должен быть формата csv (Milli Billing), ошибка чтения: {e}')
+            messages.error(request, f'Ошибка чтения файла: {e}')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
 
-        required_columns = {'paymentNumber', 'date', 'userName', 'depositoryName', 'contractCode', 'subscriberFullName', 'tariffGroupName', 'amount', 'currencyName', 'description'}
-        if not required_columns.issubset(set(reader.fieldnames or [])):
-            messages.error(request, f'Не хватает колонок в файле, ожидались: {", ".join(sorted(required_columns))}')
+        if not REQUIRED_COLUMNS.issubset(set(fieldnames)):
+            messages.error(request, f'Не хватает колонок в файле, ожидались: {", ".join(sorted(REQUIRED_COLUMNS))}')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
 
         # Защита от дурака: имя файла должно содержать выбранную дату
         need_str = [f'{year}-{month2}-{day2}', f'{day2}-{month2}-{year}', f'{year}.{month2}.{day2}', f'{day2}.{month2}.{year}', f'{year}_{month2}_{day2}', f'{day2}_{month2}_{year}', f'{year} {month2} {day2}', f'{day2} {month2} {year}']
-        have_date_in_name = any(i in str(csv_file) for i in need_str)
+        have_date_in_name = any(i in str(uploaded_file) for i in need_str)
         if not have_date_in_name:
-            messages.error(request, f'!Ошибка, дата в названии файла не совпадает с выбранной датой {day2}.{month2}.{year}: {str(csv_file)}')
+            messages.error(request, f'!Ошибка, дата в названии файла не совпадает с выбранной датой {day2}.{month2}.{year}: {str(uploaded_file)}')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
 
         # Защита от дурака: даты в колонке date файла должны совпадать с выбранной датой
@@ -166,13 +194,13 @@ def addPlatejiMilliBilling(request):
 
         # Защита от дурака: имя кассира в названии файла должно совпадать с userName во всех строках
         unique_usernames = {(d.get('userName') or '').strip() for d in rows if (d.get('userName') or '').strip()}
-        mismatched_names = [name for name in unique_usernames if name.replace(' ', '_') not in str(csv_file) and name not in str(csv_file)]
+        mismatched_names = [name for name in unique_usernames if name.replace(' ', '_') not in str(uploaded_file) and name not in str(uploaded_file)]
         if mismatched_names:
-            messages.error(request, f'!Ошибка, кассир в файле не совпадает с именем в названии файла {str(csv_file)}: {", ".join(sorted(mismatched_names))}')
+            messages.error(request, f'!Ошибка, кассир в файле не совпадает с именем в названии файла {str(uploaded_file)}: {", ".join(sorted(mismatched_names))}')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
 
         try:
-            SaveInfoAboutWhoAddAndNachPaysFromBilling.objects.get(file_name=str(csv_file))
+            SaveInfoAboutWhoAddAndNachPaysFromBilling.objects.get(file_name=str(uploaded_file))
             messages.error(request, f'Файл уже добавлен в БД')
             return render(request, 'telekom/Kassa/addPlatejiMilliBilling.html', context)
         except SaveInfoAboutWhoAddAndNachPaysFromBilling.DoesNotExist:
@@ -259,7 +287,7 @@ def addPlatejiMilliBilling(request):
                     kassir_etrap=managarNames.get(manager, ''),
                     date=pay_date,
                     price=price,
-                    file_name=str(csv_file),
+                    file_name=str(uploaded_file),
                     who_add_file=request.user.username,
                 ))
                 unmatched_count += 1
@@ -340,7 +368,7 @@ def addPlatejiMilliBilling(request):
                 manager=manager,
                 date=pay_date,
                 price=price,
-                file_name=str(csv_file),
+                file_name=str(uploaded_file),
                 who_add_file=request.user.username,
             ))
 
@@ -373,14 +401,14 @@ def addPlatejiMilliBilling(request):
                 with transaction.atomic():
                     if bulk_create:
                         MilliBillingPay.objects.bulk_create(bulk_create)
-                    StaffAction.objects.create(user=request.user, comment=f'Добавления платежей Milli Billing в Базу Данных, файл {str(csv_file)}, дата добавления {datetime.now()}, добавил {request.user.username}', action='Добавления платежей в базу')
+                    StaffAction.objects.create(user=request.user, comment=f'Добавления платежей Milli Billing в Базу Данных, файл {str(uploaded_file)}, дата добавления {datetime.now()}, добавил {request.user.username}', action='Добавления платежей в базу')
                     SaveInfoAboutWhoAddAndNachPaysFromBilling.objects.create(
-                        file_name=str(csv_file),
+                        file_name=str(uploaded_file),
                         etrap_add=request_user_etrap,
                         who_add=request.user.username,
                         when_add=datetime.now()
                     )
-                    KassaExcelFiles.objects.create(operator=request.user, document=csv_file)
+                    KassaExcelFiles.objects.create(operator=request.user, document=uploaded_file)
                     messages.success(request, f"Успешно добавлено в БД ({matched_count} сопоставлено, {unmatched_count} ожидают заведения договора)")
             except Exception as e:
                 messages.error(request, f'ошибка с transaction при сохранении, тип ошибки == {e}')

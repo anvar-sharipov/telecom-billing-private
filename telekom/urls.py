@@ -205,6 +205,7 @@ from telekom.views2.admin_pages.saldo_po_godam_save2 import saldo_po_godam_save2
 from telekom.views2.admin_pages.add_nachisleniya_from_excel import add_nachisleniya_from_excel
 from telekom.views2.admin_pages.milliBillingPayAdmin import milliBillingPayAdmin
 from telekom.views2.admin_pages.milliBillingNachAdmin import milliBillingNachAdmin
+from telekom.views2.admin_pages.intizarInternetNyrhnamaSort import intizarInternetNyrhnamaSort
 
 
 
@@ -411,6 +412,7 @@ urlpatterns = [
     path('add_nachisleniya_from_excel', add_nachisleniya_from_excel, name='add_nachisleniya_from_excel'),
     path('milliBillingPayAdmin', milliBillingPayAdmin, name='milliBillingPayAdmin'),
     path('milliBillingNachAdmin', milliBillingNachAdmin, name='milliBillingNachAdmin'),
+    path('intizarInternetNyrhnamaSort', intizarInternetNyrhnamaSort, name='intizarInternetNyrhnamaSort'),
   
 
 

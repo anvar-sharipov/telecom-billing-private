@@ -1,0 +1,51 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Intizar internet nyrhnama sort{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px; max-width: 700px;">
+    <h4>Intizar internet nyrhnama sort
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#intizarNyrhnamaInfoModal" title="Что это за страница?">?</button>
+    </h4>
+    <p class="text-muted">Загрузите PDF-отчёт Milli Billing "Döredilen Şertnamalar" (созданные договора) — получите Excel с 2 вкладками: сырые данные 1:1 и количество абонентов по каждому Nyrhnama (тарифу).</p>
+
+    <form method="POST" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input type="file" name="pdf_file" class="form-control" accept=".pdf" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Скачать Excel</button>
+    </form>
+</div>
+
+<div class="modal fade" id="intizarNyrhnamaInfoModal" tabindex="-1" aria-labelledby="intizarNyrhnamaInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="intizarNyrhnamaInfoModalLabel">Intizar internet nyrhnama sort — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Türkmençe:</strong><br>
+                Bu sahypa Milli Billing-den göçürilen "Döredilen Şertnamalar" PDF hasabatyny (Şertnama Belgisi,
+                Telefon Belgisi, Nyrhnama, Login, Ip-salgysy, Doly Ady, Doly Salgysy sütünli) okap, 2 sahypaly
+                Excel faýlyna öwürýär: 1-nji sahypada PDF-däki setirler 1:1 (üýtgewsiz), 2-nji sahypada her
+                Nyrhnama (tarif) boýunça näçe abonentiň bardygynyň sanawy.</p>
+                <p>Diňe admin1 girip bilýär. PDF islendik etrap/aý üçin bolup biler — sahypa PDF-iň özündäki
+                setir çyzgylaryndan sütünleriň ýerleşişini awtomatiki kesgitleýär.</p>
+                <hr>
+                <p><strong>По-русски:</strong><br>
+                Страница читает PDF-отчёт из Milli Billing "Döredilen Şertnamalar" (созданные договора) с
+                колонками Şertnama Belgisi, Telefon Belgisi, Nyrhnama, Login, Ip-salgysy, Doly Ady, Doly Salgysy
+                и превращает его в Excel с 2 вкладками: на первой — строки 1:1 как в PDF, на второй — по каждому
+                Nyrhnama (тарифу) сколько абонентов на нём сидит.</p>
+                <p>Доступ только у admin1. PDF может быть за любой этрап/месяц — страница сама определяет границы
+                колонок по разметке самого файла.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть / Ýap</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
