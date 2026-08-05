@@ -1,0 +1,644 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load static %}
+
+{% block title %}Чат{% endblock %}
+
+{% block content %}
+<style>
+	.tchat { display: flex; height: calc(100vh - 62px); margin: 8px; border: 1px solid #dde1e6; border-radius: 10px; overflow: hidden; background: #fff; font-size: 14px; }
+
+	/* ===== сайдбар ===== */
+	.tchat-side { width: 300px; min-width: 240px; display: flex; flex-direction: column; border-right: 1px solid #e3e6ea; background: #fff; }
+	.tchat-side-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #e3e6ea; }
+	.tchat-side-head .title { font-weight: 600; color: #222; }
+	.tchat-new-btn { width: 30px; height: 30px; border: none; border-radius: 50%; background: #3390ec; color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
+	.tchat-new-btn:hover { background: #2f80d8; }
+	.tchat-search { padding: 8px 10px; border-bottom: 1px solid #e3e6ea; }
+	.tchat-search input { width: 100%; border: 1px solid #e3e6ea; border-radius: 999px; padding: 5px 14px; font-size: 13px; background: #f0f2f5; outline: none; }
+	.tchat-search input:focus { border-color: #3390ec; }
+	.tchat-convs { flex: 1; overflow-y: auto; }
+	.tchat-conv { display: flex; gap: 10px; align-items: center; width: 100%; padding: 9px 12px; border: none; border-bottom: 1px solid #f1f3f5; background: transparent; cursor: pointer; text-align: left; }
+	.tchat-conv:hover { background: #f5f7fa; }
+	.tchat-conv.active { background: rgba(51, 144, 236, .12); }
+	.tchat-ava { width: 40px; height: 40px; border-radius: 50%; background: #7d8a99; color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.tchat-conv.active .tchat-ava { background: #3390ec; }
+	.tchat-conv-body { flex: 1; min-width: 0; }
+	.tchat-conv-top { display: flex; justify-content: space-between; gap: 6px; }
+	.tchat-conv-name { font-weight: 600; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.tchat-conv.active .tchat-conv-name { color: #3390ec; }
+	.tchat-conv-time { font-size: 11px; color: #98a2ad; flex-shrink: 0; }
+	.tchat-conv-bottom { display: flex; justify-content: space-between; gap: 6px; margin-top: 2px; }
+	.tchat-conv-last { font-size: 12px; color: #98a2ad; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.tchat-unread { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: #3390ec; color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.tchat-empty-side { text-align: center; color: rgba(51, 144, 236, .5); padding: 30px 10px; }
+
+	/* ===== окно ===== */
+	.tchat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #f0f2f5; }
+	.tchat-head { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: #fff; border-bottom: 1px solid #e3e6ea; }
+	.tchat-head .tchat-ava { background: #3390ec; width: 36px; height: 36px; }
+	.tchat-head-name { font-weight: 600; color: #222; }
+	.tchat-head-sub { font-size: 11px; color: #98a2ad; }
+	.tchat-head-sub.typing { color: #3390ec; }
+	.tchat-msgs-wrap { position: relative; flex: 1; overflow: hidden; }
+	.tchat-bg { position: absolute; inset: 0; background: url("{% static 'telekom/jpg/chat-bg.webp' %}") center / cover no-repeat; opacity: .5; pointer-events: none; }
+	.tchat-msgs { position: relative; height: 100%; overflow-y: auto; padding: 10px 6px; }
+	.tchat-placeholder { position: relative; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: rgba(51, 144, 236, .45); }
+	.tchat-placeholder .big { font-size: 52px; }
+	.tchat-placeholder button { border: none; border-radius: 999px; background: rgba(51, 144, 236, .15); color: #3390ec; padding: 8px 18px; cursor: pointer; }
+	.tchat-placeholder button:hover { background: rgba(51, 144, 236, .25); }
+
+	.trow { display: flex; align-items: flex-end; gap: 8px; padding: 2px 8px; }
+	.trow.mine { flex-direction: row-reverse; }
+	.trow .row-ava { width: 28px; height: 28px; border-radius: 6px; background: #7d8a99; color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-bottom: 4px; }
+	.tcol { display: flex; flex-direction: column; max-width: 70%; align-items: flex-start; }
+	.trow.mine .tcol { align-items: flex-end; }
+	.tsender { font-size: 11px; color: #6c7bd9; margin: 0 4px 2px; }
+	.tbubble { position: relative; padding: 6px 12px; border-radius: 16px; border-bottom-left-radius: 4px; background: #fff; border: 1px solid #e9ecef; color: #222; box-shadow: 0 1px 1px rgba(0,0,0,.04); white-space: pre-wrap; word-break: break-word; }
+	.trow.mine .tbubble { background: #3390ec; border: none; color: #fff; border-radius: 16px; border-bottom-right-radius: 4px; }
+	.tbubble.deleted { font-style: italic; color: #8a939c !important; background: #eceff2 !important; border: 1px solid #e3e6ea !important; }
+	.tmeta { display: flex; align-items: center; gap: 4px; justify-content: flex-end; margin-top: 2px; font-size: 10px; color: #98a2ad; }
+	.trow.mine .tmeta { color: rgba(255,255,255,.75); }
+	.tcheck { font-size: 11px; letter-spacing: -2px; }
+	.tdel-btn { border: none; background: transparent; color: #b7bec6; cursor: pointer; font-size: 13px; visibility: hidden; margin-bottom: 6px; }
+	.trow.mine:hover .tdel-btn { visibility: visible; }
+	.tdel-btn:hover { color: #e35d6a; }
+
+	.tatt-img { display: block; max-width: 100%; max-height: 240px; border-radius: 8px; margin-bottom: 4px; cursor: pointer; }
+	.tatt-file { display: flex; align-items: center; gap: 8px; border-radius: 8px; padding: 6px 10px; margin-bottom: 4px; text-decoration: none; background: #f0f2f5; color: #222; }
+	.tatt-file:hover { background: #e4e8ec; color: #222; }
+	.trow.mine .tatt-file { background: rgba(255,255,255,.15); color: #fff; }
+	.trow.mine .tatt-file:hover { background: rgba(255,255,255,.25); color: #fff; }
+	.tatt-file .fname { font-size: 12px; font-weight: 600; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.tatt-file .fsize { font-size: 10px; opacity: .7; }
+
+	.tchat-input-bar { display: flex; gap: 8px; padding: 8px 12px; background: #fff; border-top: 1px solid #e3e6ea; }
+	.tchat-att-btn { width: 40px; height: 40px; border: none; border-radius: 50%; background: #f0f2f5; color: #6a737c; font-size: 17px; cursor: pointer; flex-shrink: 0; }
+	.tchat-att-btn:hover { background: #e4e8ec; color: #3390ec; }
+	.tchat-att-btn:disabled { opacity: .5; cursor: wait; }
+	.tchat-input-bar input { flex: 1; border: 1px solid #e3e6ea; border-radius: 999px; background: #f0f2f5; padding: 8px 16px; outline: none; }
+	.tchat-input-bar input:focus { border-color: #3390ec; }
+	.tchat-send-btn { width: 40px; height: 40px; border: none; border-radius: 50%; background: #3390ec; color: #fff; font-size: 17px; cursor: pointer; flex-shrink: 0; }
+	.tchat-send-btn:hover { background: #2f80d8; }
+
+	/* ===== модалка ===== */
+	.tmodal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, .55); display: none; align-items: center; justify-content: center; z-index: 1050; }
+	.tmodal-overlay.open { display: flex; }
+	.tmodal { width: 420px; max-width: 94vw; background: #fff; border-radius: 12px; padding: 18px; box-shadow: 0 15px 40px rgba(0,0,0,.25); }
+	.tmodal h5 { margin: 0 0 12px; font-weight: 700; }
+	.tmodal-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+	.tmodal-tab { flex: 1; padding: 8px; border: none; border-radius: 8px; background: #eef1f4; color: #4a5560; font-weight: 600; cursor: pointer; }
+	.tmodal-tab.active { background: #3390ec; color: #fff; }
+	.tmodal input[type=text] { width: 100%; border: 1px solid #dde1e6; border-radius: 8px; padding: 7px 12px; margin-bottom: 10px; outline: none; }
+	.tmodal input[type=text]:focus { border-color: #3390ec; }
+	.tmodal-users { max-height: 240px; overflow-y: auto; border: 1px solid #e3e6ea; border-radius: 8px; }
+	.tmodal-user { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: none; border-bottom: 1px solid #f1f3f5; background: transparent; cursor: pointer; text-align: left; }
+	.tmodal-user:hover { background: #f5f7fa; }
+	.tmodal-user.selected { background: rgba(51, 144, 236, .12); color: #3390ec; }
+	.tmodal-user .tchat-ava { width: 32px; height: 32px; font-size: 11px; }
+	.tmodal-user.selected .tchat-ava { background: #3390ec; }
+	.tmodal-user .uname { font-weight: 600; font-size: 13px; }
+	.tmodal-user .ulogin { font-size: 11px; color: #98a2ad; }
+	.tmodal-user .ucheck { margin-left: auto; color: #3390ec; font-weight: 700; }
+	.tmodal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+	.tmodal-footer .btn-cancel { border: none; border-radius: 8px; padding: 8px 16px; background: #eef1f4; color: #4a5560; cursor: pointer; }
+	.tmodal-footer .btn-create { border: none; border-radius: 8px; padding: 8px 16px; background: #3390ec; color: #fff; cursor: pointer; }
+	.tmodal-footer .btn-create:disabled { opacity: .5; cursor: not-allowed; }
+	.tmodal-selected-count { font-size: 12px; color: #3390ec; margin-top: 8px; }
+
+	/* ===== справка ===== */
+	.thelp-body { max-height: 62vh; overflow-y: auto; padding-right: 4px; }
+	.thelp-body h6 { margin: 12px 0 3px; font-size: 13px; font-weight: 700; color: #222; }
+	.thelp-body h6:first-child { margin-top: 0; }
+	.thelp-body p { margin: 0 0 4px; font-size: 13px; color: #374151; line-height: 1.45; }
+</style>
+
+<div class="tchat">
+	<div class="tchat-side">
+		<div class="tchat-side-head">
+			<span class="title">Сообщения</span>
+			<div style="display:flex; gap:6px;">
+				<button type="button" class="tchat-new-btn" id="tchatHelpBtn" title="Справка / Kömek" style="background:#eef1f4; color:#4a5560; font-size:15px;">?</button>
+				<button type="button" class="tchat-new-btn" id="tchatNewBtn" title="Новая беседа">+</button>
+			</div>
+		</div>
+		<div class="tchat-search">
+			<input type="text" id="tchatSearch" placeholder="Поиск" autocomplete="off">
+		</div>
+		<div class="tchat-convs" id="tchatConvs"></div>
+	</div>
+
+	<div class="tchat-main">
+		<div class="tchat-head" id="tchatHead" style="display:none;">
+			<div class="tchat-ava" id="tchatHeadAva"></div>
+			<div>
+				<div class="tchat-head-name" id="tchatHeadName"></div>
+				<div class="tchat-head-sub" id="tchatHeadSub"></div>
+			</div>
+		</div>
+		<div class="tchat-msgs-wrap">
+			<div class="tchat-bg"></div>
+			<div class="tchat-placeholder" id="tchatPlaceholder">
+				<div class="big">💬</div>
+				<div>Выберите чат</div>
+				<button type="button" id="tchatNewBtn2">+ Новая беседа</button>
+			</div>
+			<div class="tchat-msgs" id="tchatMsgs" style="display:none;"></div>
+		</div>
+		<form class="tchat-input-bar" id="tchatForm" style="display:none;" autocomplete="off">
+			{% csrf_token %}
+			<button type="button" class="tchat-att-btn" id="tchatAttBtn" title="Прикрепить файл (макс 20 МБ)">📎</button>
+			<input type="file" id="tchatFile" style="display:none;">
+			<input type="text" id="tchatText" maxlength="2000" placeholder="Сообщение...">
+			<button type="submit" class="tchat-send-btn" title="Отправить">➤</button>
+		</form>
+	</div>
+</div>
+
+<!-- модалка новой беседы -->
+<div class="tmodal-overlay" id="tmodalOverlay">
+	<div class="tmodal">
+		<h5>Новая беседа</h5>
+		<div class="tmodal-tabs">
+			<button type="button" class="tmodal-tab active" data-type="direct">Личный</button>
+			<button type="button" class="tmodal-tab" data-type="group">Группа</button>
+		</div>
+		<input type="text" id="tmodalGroupName" placeholder="Название группы" style="display:none;" maxlength="255">
+		<input type="text" id="tmodalSearch" placeholder="Поиск сотрудника" autocomplete="off">
+		<div class="tmodal-users" id="tmodalUsers"></div>
+		<div class="tmodal-selected-count" id="tmodalCount" style="display:none;"></div>
+		<div class="tmodal-footer">
+			<button type="button" class="btn-cancel" id="tmodalCancel">Отмена</button>
+			<button type="button" class="btn-create" id="tmodalCreate" disabled>Создать</button>
+		</div>
+	</div>
+</div>
+
+<!-- модалка справки -->
+<div class="tmodal-overlay" id="thelpOverlay">
+	<div class="tmodal">
+		<h5>Справка / Kömek</h5>
+		<div class="tmodal-tabs">
+			<button type="button" class="tmodal-tab active" data-lang="ru">Русский</button>
+			<button type="button" class="tmodal-tab" data-lang="tm">Türkmençe</button>
+		</div>
+		<div class="thelp-body" id="thelpRu">
+			<h6>💬 Что это?</h6>
+			<p>Внутренний чат PyView для сотрудников. Можно переписываться лично, создавать группы и отправлять файлы.</p>
+			<h6>✍️ Как написать</h6>
+			<p>Выберите беседу в списке слева или нажмите «+» и выберите сотрудника. Введите текст внизу и нажмите ➤ (или Enter).</p>
+			<h6>👥 Группы</h6>
+			<p>Нажмите «+» → вкладка «Группа» → введите название → отметьте участников → «Создать». Сообщение в группе видят все участники.</p>
+			<h6>📎 Файлы</h6>
+			<p>Кнопка 📎 внизу — можно отправить любой файл до 20 МБ: фото, Excel, PDF и т.д. Фото показываются прямо в переписке, остальные файлы скачиваются по клику.</p>
+			<h6>✓ Галочки и статусы</h6>
+			<p>✓ — отправлено, ✓✓ — прочитано. «печатает...» в шапке — собеседник сейчас набирает сообщение.</p>
+			<h6>🔔 Уведомления</h6>
+			<p>При новом сообщении звучит сигнал и возле «💬 Чат» наверху появляется красный счётчик — на любой странице программы.</p>
+			<h6>🗑 Удаление</h6>
+			<p>Наведите курсор на своё сообщение и нажмите 🗑. Собеседники увидят «Сообщение удалено».</p>
+			<h6>🟢 Кто онлайн</h6>
+			<p>Меню MTB → «Список юзеров» — видно, кто сейчас работает в программе, с фильтрами по этрапам.</p>
+		</div>
+		<div class="thelp-body" id="thelpTm" style="display:none;">
+			<h6>💬 Bu näme?</h6>
+			<p>PyView-iň işgärler üçin içerki çaty. Özara hat alşyp, topar döredip we faýl iberip bolýar.</p>
+			<h6>✍️ Nädip hat ýazmaly</h6>
+			<p>Çep tarapdaky sanawdan söhbetdeşligi saýlaň ýa-da «+» basyp işgäri saýlaň. Aşakdaky meýdana ýazyp ➤ basyň (ýa-da Enter).</p>
+			<h6>👥 Toparlar</h6>
+			<p>«+» basyň → «Группа» bölümi → topara at beriň → agzalary belläň → «Создать». Topardaky haty ähli agzalar görýär.</p>
+			<h6>📎 Faýllar</h6>
+			<p>Aşakdaky 📎 düwmesi — 20 MB çenli islendik faýly iberip bolýar: surat, Excel, PDF we ş.m. Suratlar hatyň içinde görkezilýär, beýleki faýllary basyp ýükläp bolýar.</p>
+			<h6>✓ Bellikler we ýagdaýlar</h6>
+			<p>✓ — iberildi, ✓✓ — okaldy. Ýokarda «печатает...» görünse — söhbetdeşiňiz häzir hat ýazýar.</p>
+			<h6>🔔 Habarnamalar</h6>
+			<p>Täze habar gelende ses çykýar we ýokardaky «💬 Чат» ýanynda gyzyl sanjyk görkezilýär — programmanyň islendik sahypasynda.</p>
+			<h6>🗑 Pozmak</h6>
+			<p>Öz habaryňyzyň üstüne baryp 🗑 basyň. Söhbetdeşler «Сообщение удалено» diýen ýazgyny görer.</p>
+			<h6>🟢 Kim onlaýn</h6>
+			<p>MTB menýusy → «Список юзеров» — häzir programmada kimiň işleýändigini, etraplar boýunça süzgüç bilen görüp bolýar.</p>
+		</div>
+		<div class="tmodal-footer">
+			<button type="button" class="btn-cancel" id="thelpClose">Закрыть / Ýapmak</button>
+		</div>
+	</div>
+</div>
+
+<audio id="tchatSndIn"><source src="{% static 'telekom/audio/chat-in.mp3' %}" type="audio/mp3"></audio>
+<audio id="tchatSndOut"><source src="{% static 'telekom/audio/chat-out.mp3' %}" type="audio/mp3"></audio>
+
+{{ chat_users|json_script:"tchatUsersData" }}
+
+<script>
+(function () {
+	var MY_ID = {{ request.user.pk }};
+	var URLS = {
+		convs: "{% url 'chat-conversations' %}",
+		create: "{% url 'chat-conversation-create' %}",
+		messages: "{% url 'chat-messages' %}",
+		send: "{% url 'chat-send' %}",
+		read: "{% url 'chat-read' %}",
+		del: "{% url 'chat-delete' %}",
+		typing: "{% url 'chat-typing' %}"
+	};
+	var CSRF = document.querySelector('#tchatForm [name=csrfmiddlewaretoken]').value;
+	var ALL_USERS = JSON.parse(document.getElementById('tchatUsersData').textContent);
+
+	var conversations = [];
+	var currentConv = null;   // объект беседы
+	var lastId = 0;
+	var msgsBox = document.getElementById('tchatMsgs');
+	var convsBox = document.getElementById('tchatConvs');
+
+	function esc(s) {
+		var d = document.createElement('div');
+		d.appendChild(document.createTextNode(s));
+		return d.innerHTML;
+	}
+
+	function formatFileSize(bytes) {
+		if (bytes < 1024) return bytes + ' Б';
+		if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' КБ';
+		return (bytes / (1024 * 1024)).toFixed(1) + ' МБ';
+	}
+
+	function playSnd(id) {
+		try { var a = document.getElementById(id); a.volume = 0.4; a.currentTime = 0; a.play(); } catch (e) {}
+	}
+
+	function post(url, params) {
+		var fd = new FormData();
+		Object.keys(params).forEach(function (k) {
+			if (Array.isArray(params[k])) params[k].forEach(function (v) { fd.append(k, v); });
+			else fd.append(k, params[k]);
+		});
+		return fetch(url, { method: 'POST', body: fd, credentials: 'same-origin', headers: { 'X-CSRFToken': CSRF } })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); });
+	}
+
+	function getJSON(url) {
+		return fetch(url, { credentials: 'same-origin' })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); });
+	}
+
+	/* ===== сайдбар ===== */
+	function renderConvs() {
+		var q = document.getElementById('tchatSearch').value.trim().toLowerCase();
+		convsBox.innerHTML = '';
+		var shown = conversations.filter(function (c) {
+			if (!q) return true;
+			var lastText = c.last_message ? c.last_message.text.toLowerCase() : '';
+			return c.name.toLowerCase().indexOf(q) !== -1 || lastText.indexOf(q) !== -1;
+		});
+		if (!shown.length) {
+			convsBox.innerHTML = '<div class="tchat-empty-side"><div style="font-size:30px;">💬</div>' +
+				(q ? 'Ничего не найдено' : 'Нет бесед') + '</div>';
+			return;
+		}
+		shown.forEach(function (c) {
+			var btn = document.createElement('button');
+			btn.type = 'button';
+			btn.className = 'tchat-conv' + (currentConv && c.id === currentConv.id ? ' active' : '');
+			var lastHtml = 'Нет сообщений';
+			var timeHtml = '';
+			if (c.last_message) {
+				var lm = c.last_message;
+				var prefix = lm.sender_id === MY_ID ? 'Вы: ' : (c.type === 'group' ? esc(lm.sender) + ': ' : '');
+				lastHtml = lm.is_deleted ? '<i>Сообщение удалено</i>' : prefix + esc(lm.text);
+				timeHtml = esc(lm.time);
+			}
+			btn.innerHTML =
+				'<div class="tchat-ava">' + esc(c.initials) + '</div>' +
+				'<div class="tchat-conv-body">' +
+					'<div class="tchat-conv-top"><span class="tchat-conv-name">' + esc(c.name) + '</span>' +
+						'<span class="tchat-conv-time">' + timeHtml + '</span></div>' +
+					'<div class="tchat-conv-bottom"><span class="tchat-conv-last">' + lastHtml + '</span>' +
+						(c.unread > 0 ? '<span class="tchat-unread">' + (c.unread > 99 ? '99+' : c.unread) + '</span>' : '') +
+					'</div>' +
+				'</div>';
+			btn.addEventListener('click', function () { openConv(c); });
+			convsBox.appendChild(btn);
+		});
+	}
+
+	function fetchConvs() {
+		return getJSON(URLS.convs).then(function (d) {
+			conversations = d.conversations;
+			if (currentConv) {
+				var cur = conversations.find(function (c) { return c.id === currentConv.id; });
+				if (cur) { cur.unread = 0; currentConv = cur; }
+			}
+			renderConvs();
+		}).catch(function () {});
+	}
+
+	/* ===== окно беседы ===== */
+	function subLabel(c) {
+		return c.type === 'group' ? 'групповая беседа' : 'личная переписка';
+	}
+
+	function openConv(c) {
+		currentConv = c;
+		lastId = 0;
+		c.unread = 0;
+		document.getElementById('tchatPlaceholder').style.display = 'none';
+		msgsBox.style.display = '';
+		document.getElementById('tchatForm').style.display = '';
+		var head = document.getElementById('tchatHead');
+		head.style.display = '';
+		document.getElementById('tchatHeadAva').textContent = c.initials;
+		document.getElementById('tchatHeadName').textContent = c.name;
+		document.getElementById('tchatHeadSub').textContent = subLabel(c);
+		msgsBox.innerHTML = '';
+		renderConvs();
+		loadMessages(true);
+		document.getElementById('tchatText').focus();
+	}
+
+	function renderMsg(m) {
+		var mine = m.sender_id === MY_ID;
+		var row = document.createElement('div');
+		row.className = 'trow' + (mine ? ' mine' : '');
+		row.dataset.msgId = m.id;
+
+		var html = '';
+		if (!mine) html += '<div class="row-ava">' + esc(m.initials) + '</div>';
+		html += '<div class="tcol">';
+		if (!mine && currentConv.type === 'group') html += '<span class="tsender">' + esc(m.sender) + '</span>';
+		html += '<div class="tbubble' + (m.is_deleted ? ' deleted' : '') + '">';
+		if (m.is_deleted) {
+			html += '🗑 Сообщение удалено';
+		} else {
+			if (m.attachment_url) {
+				if (m.is_image) {
+					html += '<img class="tatt-img" src="' + esc(m.attachment_url) + '" alt="" loading="lazy">';
+				} else {
+					html += '<a class="tatt-file" href="' + esc(m.attachment_url) + '" target="_blank" download="' + esc(m.attachment_name || '') + '">' +
+						'<span style="font-size:20px;">📄</span>' +
+						'<span><span class="fname">' + esc(m.attachment_name || 'Файл') + '</span><br>' +
+						'<span class="fsize">' + formatFileSize(m.attachment_size || 0) + '</span></span></a>';
+				}
+			}
+			html += esc(m.text);
+		}
+		html += '<div class="tmeta"><span>' + esc(m.time) + '</span>';
+		if (mine && !m.is_deleted) html += '<span class="tcheck">' + (m.read ? '✓✓' : '✓') + '</span>';
+		html += '</div></div></div>';
+		if (mine && !m.is_deleted) html += '<button type="button" class="tdel-btn" title="Удалить">🗑</button>';
+		row.innerHTML = html;
+
+		var img = row.querySelector('.tatt-img');
+		if (img) {
+			img.addEventListener('click', function () { window.open(m.attachment_url, '_blank'); });
+			img.addEventListener('load', scrollDown);
+		}
+
+		var delBtn = row.querySelector('.tdel-btn');
+		if (delBtn) {
+			delBtn.addEventListener('click', function () {
+				if (!confirm('Удалить сообщение?')) return;
+				post(URLS.del, { id: m.id }).then(function () {
+					var b = row.querySelector('.tbubble');
+					b.classList.add('deleted');
+					b.innerHTML = '🗑 Сообщение удалено<div class="tmeta"><span>' + esc(m.time) + '</span></div>';
+					delBtn.remove();
+				}).catch(function () {});
+			});
+		}
+		msgsBox.appendChild(row);
+	}
+
+	function scrollDown() { msgsBox.scrollTop = msgsBox.scrollHeight; }
+
+	// проставить ✓✓ всем моим сообщениям, прочитанным собеседником
+	function applyReadUpTo(readUpTo) {
+		if (!readUpTo) return;
+		msgsBox.querySelectorAll('.trow.mine').forEach(function (row) {
+			if (parseInt(row.dataset.msgId) <= readUpTo) {
+				var c = row.querySelector('.tcheck');
+				if (c) c.textContent = '✓✓';
+			}
+		});
+	}
+
+	// показать/убрать "печатает..." в шапке беседы
+	function applyTyping(typing) {
+		var sub = document.getElementById('tchatHeadSub');
+		if (typing && typing.length) {
+			sub.classList.add('typing');
+			sub.textContent = (currentConv.type === 'group' ? typing.join(', ') + ' ' : '') + 'печатает...';
+		} else {
+			sub.classList.remove('typing');
+			sub.textContent = currentConv ? subLabel(currentConv) : '';
+		}
+	}
+
+	function markRead() {
+		if (!currentConv || lastId <= 0) return;
+		post(URLS.read, { conv: currentConv.id, last_id: lastId }).catch(function () {});
+	}
+
+	function loadMessages(initial) {
+		if (!currentConv) return;
+		var convId = currentConv.id;
+		getJSON(URLS.messages + '?conv=' + convId + '&after=' + (initial ? 0 : lastId))
+			.then(function (d) {
+				if (!currentConv || currentConv.id !== convId) return;
+				if (initial) msgsBox.innerHTML = '';
+				applyTyping(d.typing);
+				if (d.messages.length) {
+					var hasIncoming = false;
+					d.messages.forEach(function (m) {
+						renderMsg(m);
+						if (m.id > lastId) lastId = m.id;
+						if (m.sender_id !== MY_ID) hasIncoming = true;
+					});
+					scrollDown();
+					markRead();
+					if (!initial && hasIncoming) playSnd('tchatSndIn');
+				}
+				applyReadUpTo(d.read_up_to);
+			})
+			.catch(function () {});
+	}
+
+	document.getElementById('tchatForm').addEventListener('submit', function (e) {
+		e.preventDefault();
+		if (!currentConv) return;
+		var input = document.getElementById('tchatText');
+		var text = input.value.trim();
+		if (!text) return;
+		post(URLS.send, { conv: currentConv.id, text: text })
+			.then(function (d) {
+				input.value = '';
+				renderMsg(d.message);
+				if (d.message.id > lastId) lastId = d.message.id;
+				scrollDown();
+				playSnd('tchatSndOut');
+				fetchConvs();
+			})
+			.catch(function () {});
+	});
+
+	document.getElementById('tchatSearch').addEventListener('input', renderConvs);
+
+	// прикрепление файла: выбрал — сразу отправился отдельным сообщением
+	var attBtn = document.getElementById('tchatAttBtn');
+	var fileInput = document.getElementById('tchatFile');
+	attBtn.addEventListener('click', function () { fileInput.click(); });
+	fileInput.addEventListener('change', function () {
+		if (!currentConv || !fileInput.files.length) return;
+		var f = fileInput.files[0];
+		if (f.size > 20 * 1024 * 1024) {
+			alert('Файл слишком большой. Максимум 20 МБ.');
+			fileInput.value = '';
+			return;
+		}
+		attBtn.disabled = true;
+		post(URLS.send, { conv: currentConv.id, file: f })
+			.then(function (d) {
+				renderMsg(d.message);
+				if (d.message.id > lastId) lastId = d.message.id;
+				scrollDown();
+				playSnd('tchatSndOut');
+				fetchConvs();
+			})
+			.catch(function () { alert('Не удалось отправить файл.'); })
+			.finally(function () {
+				attBtn.disabled = false;
+				fileInput.value = '';
+			});
+	});
+
+	// отправка статуса "печатаю" — не чаще раза в 2 секунды
+	var lastTypingSent = 0;
+	document.getElementById('tchatText').addEventListener('input', function () {
+		if (!currentConv) return;
+		var now = Date.now();
+		if (now - lastTypingSent < 2000) return;
+		lastTypingSent = now;
+		post(URLS.typing, { conv: currentConv.id }).catch(function () {});
+	});
+
+	/* ===== модалка новой беседы ===== */
+	var modal = document.getElementById('tmodalOverlay');
+	var modalType = 'direct';
+	var selectedIds = [];
+
+	function renderModalUsers() {
+		var q = document.getElementById('tmodalSearch').value.trim().toLowerCase();
+		var box = document.getElementById('tmodalUsers');
+		box.innerHTML = '';
+		var shown = ALL_USERS.filter(function (u) {
+			return !q || u.name.toLowerCase().indexOf(q) !== -1 || u.username.toLowerCase().indexOf(q) !== -1;
+		});
+		if (!shown.length) {
+			box.innerHTML = '<div style="padding:16px;text-align:center;color:#98a2ad;">Никого не найдено</div>';
+		}
+		shown.forEach(function (u) {
+			var sel = selectedIds.indexOf(u.id) !== -1;
+			var b = document.createElement('button');
+			b.type = 'button';
+			b.className = 'tmodal-user' + (sel ? ' selected' : '');
+			b.innerHTML = '<div class="tchat-ava">' + esc(u.initials) + '</div>' +
+				'<div><div class="uname">' + esc(u.name) + '</div><div class="ulogin">' + esc(u.username) + '</div></div>' +
+				(sel ? '<span class="ucheck">✓</span>' : '');
+			b.addEventListener('click', function () {
+				if (modalType === 'direct') selectedIds = [u.id];
+				else {
+					var i = selectedIds.indexOf(u.id);
+					if (i === -1) selectedIds.push(u.id); else selectedIds.splice(i, 1);
+				}
+				renderModalUsers();
+				updateModalState();
+			});
+			box.appendChild(b);
+		});
+	}
+
+	function updateModalState() {
+		var nameInput = document.getElementById('tmodalGroupName');
+		var cnt = document.getElementById('tmodalCount');
+		var canSubmit = selectedIds.length > 0 &&
+			(modalType === 'direct' || nameInput.value.trim().length > 0);
+		document.getElementById('tmodalCreate').disabled = !canSubmit;
+		if (modalType === 'group' && selectedIds.length > 0) {
+			cnt.style.display = '';
+			cnt.textContent = 'Выбрано участников: ' + selectedIds.length;
+		} else cnt.style.display = 'none';
+	}
+
+	function openModal() {
+		modalType = 'direct';
+		selectedIds = [];
+		document.getElementById('tmodalGroupName').value = '';
+		document.getElementById('tmodalGroupName').style.display = 'none';
+		document.getElementById('tmodalSearch').value = '';
+		modal.querySelectorAll('.tmodal-tab').forEach(function (t) {
+			t.classList.toggle('active', t.dataset.type === 'direct');
+		});
+		renderModalUsers();
+		updateModalState();
+		modal.classList.add('open');
+	}
+
+	function closeModal() { modal.classList.remove('open'); }
+
+	document.getElementById('tchatNewBtn').addEventListener('click', openModal);
+	document.getElementById('tchatNewBtn2').addEventListener('click', openModal);
+	document.getElementById('tmodalCancel').addEventListener('click', closeModal);
+
+	modal.querySelectorAll('.tmodal-tab').forEach(function (tab) {
+		tab.addEventListener('click', function () {
+			modalType = tab.dataset.type;
+			selectedIds = [];
+			modal.querySelectorAll('.tmodal-tab').forEach(function (t) {
+				t.classList.toggle('active', t === tab);
+			});
+			document.getElementById('tmodalGroupName').style.display = modalType === 'group' ? '' : 'none';
+			renderModalUsers();
+			updateModalState();
+		});
+	});
+
+	document.getElementById('tmodalSearch').addEventListener('input', renderModalUsers);
+	document.getElementById('tmodalGroupName').addEventListener('input', updateModalState);
+
+	document.getElementById('tmodalCreate').addEventListener('click', function () {
+		var params = { type: modalType, participant_ids: selectedIds };
+		if (modalType === 'group') params.name = document.getElementById('tmodalGroupName').value.trim();
+		post(URLS.create, params)
+			.then(function (d) {
+				closeModal();
+				return fetchConvs().then(function () {
+					var c = conversations.find(function (x) { return x.id === d.id; });
+					if (c) openConv(c);
+				});
+			})
+			.catch(function () {});
+	});
+
+	/* ===== справка ===== */
+	var helpOverlay = document.getElementById('thelpOverlay');
+	document.getElementById('tchatHelpBtn').addEventListener('click', function () {
+		helpOverlay.classList.add('open');
+	});
+	document.getElementById('thelpClose').addEventListener('click', function () {
+		helpOverlay.classList.remove('open');
+	});
+	helpOverlay.querySelectorAll('.tmodal-tab').forEach(function (tab) {
+		tab.addEventListener('click', function () {
+			helpOverlay.querySelectorAll('.tmodal-tab').forEach(function (t) {
+				t.classList.toggle('active', t === tab);
+			});
+			document.getElementById('thelpRu').style.display = tab.dataset.lang === 'ru' ? '' : 'none';
+			document.getElementById('thelpTm').style.display = tab.dataset.lang === 'tm' ? '' : 'none';
+		});
+	});
+
+	/* ===== запуск и опрос ===== */
+	fetchConvs();
+	setInterval(function () { if (!document.hidden) loadMessages(false); }, 3000);
+	setInterval(function () { if (!document.hidden) fetchConvs(); }, 10000);
+})();
+</script>
+{% endblock %}

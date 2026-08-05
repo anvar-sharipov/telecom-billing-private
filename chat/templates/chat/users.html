@@ -1,0 +1,177 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load static %}
+
+{% block title %}Список юзеров{% endblock %}
+
+{% block content %}
+<style>
+	.tusers { max-width: 1000px; margin: 14px auto; padding: 0 10px; font-size: 14px; }
+	.tusers-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+	.tusers-head h4 { margin: 0; font-weight: 700; }
+	.tusers-summary { color: #6a737c; font-size: 13px; }
+	.tusers-summary b { color: #22c55e; }
+
+	.tusers-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+	.tusers-filters input, .tusers-filters select { border: 1px solid #dde1e6; border-radius: 8px; padding: 6px 12px; outline: none; background: #fff; font-size: 13px; }
+	.tusers-filters input:focus, .tusers-filters select:focus { border-color: #3390ec; }
+	.tusers-filters input { min-width: 220px; }
+	.tstatus-btns { display: flex; border: 1px solid #dde1e6; border-radius: 8px; overflow: hidden; }
+	.tstatus-btns button { border: none; background: #fff; padding: 6px 14px; cursor: pointer; font-size: 13px; color: #4a5560; }
+	.tstatus-btns button:not(:last-child) { border-right: 1px solid #dde1e6; }
+	.tstatus-btns button.active { background: #3390ec; color: #fff; }
+
+	.tusers-table { width: 100%; background: #fff; border: 1px solid #e3e6ea; border-radius: 10px; border-collapse: separate; border-spacing: 0; overflow: hidden; }
+	.tusers-table th { text-align: left; padding: 10px 14px; background: #f5f7fa; color: #4a5560; font-size: 12px; border-bottom: 1px solid #e3e6ea; }
+	.tusers-table td { padding: 9px 14px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; }
+	.tusers-table tr:last-child td { border-bottom: none; }
+	.tusers-table tr:hover td { background: #f8fafc; }
+
+	.tu-user { display: flex; align-items: center; gap: 10px; }
+	.tu-ava { position: relative; width: 36px; height: 36px; border-radius: 50%; background: #7d8a99; color: #fff; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.tu-dot { position: absolute; bottom: -1px; right: -1px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; background: #94a3b8; }
+	.tu-dot.online { background: #22c55e; }
+	.tu-name { font-weight: 600; color: #222; }
+	.tu-login { font-size: 11px; color: #98a2ad; }
+	.tu-tag { display: inline-block; background: rgba(51,144,236,.1); color: #3390ec; border-radius: 999px; padding: 1px 9px; font-size: 11px; font-weight: 600; margin: 1px 2px 1px 0; }
+	.tu-tag.otdel { background: #f1f3f5; color: #4a5560; }
+	.tu-status-on { color: #22c55e; font-weight: 600; font-size: 13px; }
+	.tu-status-off { color: #98a2ad; font-size: 12px; }
+	.tusers-empty { text-align: center; color: #98a2ad; padding: 30px; }
+	.tu-chat-btn { border: none; border-radius: 999px; background: rgba(51,144,236,.12); color: #3390ec; padding: 4px 12px; font-size: 12px; cursor: pointer; }
+	.tu-chat-btn:hover { background: rgba(51,144,236,.25); }
+</style>
+
+<div class="tusers">
+	<div class="tusers-head">
+		<h4>Список юзеров</h4>
+		<div class="tusers-summary" id="tuSummary"></div>
+	</div>
+
+	<div class="tusers-filters">
+		<input type="text" id="tuSearch" placeholder="Поиск по имени / логину" autocomplete="off">
+		<select id="tuEtrap">
+			<option value="">Все этрапы</option>
+		</select>
+		<div class="tstatus-btns" id="tuStatusBtns">
+			<button type="button" data-status="" class="active">Все</button>
+			<button type="button" data-status="online">Онлайн</button>
+			<button type="button" data-status="offline">Офлайн</button>
+		</div>
+	</div>
+
+	<table class="tusers-table">
+		<thead>
+			<tr>
+				<th>Пользователь</th>
+				<th>Этрап</th>
+				<th>Отдел</th>
+				<th>Статус</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody id="tuBody"></tbody>
+	</table>
+</div>
+
+<script>
+(function () {
+	var URL_DATA = "{% url 'chat-users-data' %}";
+	var URL_CHAT = "{% url 'chat-page' %}";
+	var users = [];
+	var statusFilter = '';
+
+	function esc(s) {
+		var d = document.createElement('div');
+		d.appendChild(document.createTextNode(s));
+		return d.innerHTML;
+	}
+
+	function render() {
+		var q = document.getElementById('tuSearch').value.trim().toLowerCase();
+		var etrap = document.getElementById('tuEtrap').value;
+		var body = document.getElementById('tuBody');
+
+		var shown = users.filter(function (u) {
+			if (q && u.name.toLowerCase().indexOf(q) === -1 && u.username.toLowerCase().indexOf(q) === -1) return false;
+			if (etrap && u.etraps.indexOf(etrap) === -1) return false;
+			if (statusFilter === 'online' && !u.online) return false;
+			if (statusFilter === 'offline' && u.online) return false;
+			return true;
+		});
+
+		// онлайн сверху, дальше по имени
+		shown.sort(function (a, b) {
+			if (a.online !== b.online) return a.online ? -1 : 1;
+			return a.name.localeCompare(b.name);
+		});
+
+		var onlineTotal = users.filter(function (u) { return u.online; }).length;
+		document.getElementById('tuSummary').innerHTML =
+			'Онлайн: <b>' + onlineTotal + '</b> из ' + users.length +
+			(shown.length !== users.length ? ' · показано: ' + shown.length : '');
+
+		if (!shown.length) {
+			body.innerHTML = '<tr><td colspan="5" class="tusers-empty">Никого не найдено</td></tr>';
+			return;
+		}
+
+		body.innerHTML = shown.map(function (u) {
+			var etraps = u.etraps.length
+				? u.etraps.map(function (e) { return '<span class="tu-tag">' + esc(e) + '</span>'; }).join('')
+				: '<span class="tu-status-off">—</span>';
+			var otdels = u.otdels.length
+				? u.otdels.map(function (o) { return '<span class="tu-tag otdel">' + esc(o) + '</span>'; }).join('')
+				: '<span class="tu-status-off">—</span>';
+			var status = u.online
+				? '<span class="tu-status-on">● онлайн</span>'
+				: '<span class="tu-status-off">' + (u.last_seen ? 'был(а): ' + esc(u.last_seen) : 'не заходил(а)') + '</span>';
+			return '<tr>' +
+				'<td><div class="tu-user"><div class="tu-ava">' + esc(u.initials) +
+					'<span class="tu-dot' + (u.online ? ' online' : '') + '"></span></div>' +
+					'<div><div class="tu-name">' + esc(u.name) + '</div>' +
+					'<div class="tu-login">' + esc(u.username) + '</div></div></div></td>' +
+				'<td>' + etraps + '</td>' +
+				'<td>' + otdels + '</td>' +
+				'<td>' + status + '</td>' +
+				'<td><button type="button" class="tu-chat-btn" data-uid="' + u.id + '">💬 Написать</button></td>' +
+				'</tr>';
+		}).join('');
+
+		body.querySelectorAll('.tu-chat-btn').forEach(function (btn) {
+			btn.addEventListener('click', function () { window.location.href = URL_CHAT; });
+		});
+	}
+
+	function load() {
+		fetch(URL_DATA, { credentials: 'same-origin' })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); })
+			.then(function (d) {
+				users = d.users;
+				var sel = document.getElementById('tuEtrap');
+				var current = sel.value;
+				sel.innerHTML = '<option value="">Все этрапы</option>' + d.etraps.map(function (e) {
+					return '<option value="' + esc(e) + '">' + esc(e) + '</option>';
+				}).join('');
+				sel.value = current;
+				render();
+			})
+			.catch(function () {});
+	}
+
+	document.getElementById('tuSearch').addEventListener('input', render);
+	document.getElementById('tuEtrap').addEventListener('change', render);
+	document.querySelectorAll('#tuStatusBtns button').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			statusFilter = btn.dataset.status;
+			document.querySelectorAll('#tuStatusBtns button').forEach(function (b) {
+				b.classList.toggle('active', b === btn);
+			});
+			render();
+		});
+	});
+
+	load();
+	setInterval(function () { if (!document.hidden) load(); }, 30000);
+})();
+</script>
+{% endblock %}

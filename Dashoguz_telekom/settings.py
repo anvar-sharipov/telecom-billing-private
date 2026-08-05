@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     
     'telekom.apps.TelekomConfig',
+    'chat.apps.ChatConfig',
     'django.contrib.humanize',
 ]
 # c ним не работает Apache, хз почему

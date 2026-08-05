@@ -1,0 +1,392 @@
+{% load static %}
+<!-- мини-чат: плавающее окно на всех страницах (как MiniChat в my_erp, но на polling) -->
+<div id="miniChat">
+	<div class="mc-head" id="mcHead">
+		<div class="mc-head-left">
+			<span class="mc-ico">💬</span>
+			<div>
+				<div class="mc-title" id="mcTitle">Сообщения</div>
+				<div class="mc-sub" id="mcSub"></div>
+			</div>
+		</div>
+		<div class="mc-head-btns">
+			<button type="button" id="mcBack" title="Назад к списку" style="display:none;">←</button>
+			<a href="{% url 'chat-page' %}" id="mcExpand" title="Открыть полный чат">⛶</a>
+			<button type="button" id="mcMin" title="Свернуть">—</button>
+			<button type="button" id="mcClose" title="Закрыть">×</button>
+		</div>
+	</div>
+	<div class="mc-body" id="mcBody">
+		<div class="mc-list" id="mcList"></div>
+		<div class="mc-conv" id="mcConvPane" style="display:none;">
+			<div class="mc-msgs-wrap">
+				<div class="mc-bg"></div>
+				<div class="mc-msgs" id="mcMsgs"></div>
+			</div>
+			<form class="mc-form" id="mcForm" autocomplete="off">
+				{% csrf_token %}
+				<input type="text" id="mcText" maxlength="2000" placeholder="Сообщение...">
+				<button type="submit" title="Отправить">➤</button>
+			</form>
+		</div>
+	</div>
+</div>
+<audio id="mcSndOut"><source src="{% static 'telekom/audio/chat-out.mp3' %}" type="audio/mp3"></audio>
+
+<style>
+	#miniChat { display: none; position: fixed; width: 350px; z-index: 1075; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.35); border: 1px solid rgba(51,144,236,.25); font-size: 13px; }
+	.mc-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #3390ec; color: #fff; cursor: grab; user-select: none; }
+	.mc-head:active { cursor: grabbing; }
+	.mc-head-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+	.mc-ico { font-size: 16px; }
+	.mc-title { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
+	.mc-sub { font-size: 10px; color: rgba(255,255,255,.75); height: 12px; }
+	.mc-head-btns { display: flex; align-items: center; gap: 2px; }
+	.mc-head-btns button, .mc-head-btns a { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: rgba(255,255,255,.85); font-size: 14px; cursor: pointer; border-radius: 6px; text-decoration: none; line-height: 1; }
+	.mc-head-btns button:hover, .mc-head-btns a:hover { background: rgba(255,255,255,.2); color: #fff; }
+	.mc-body { height: 430px; display: flex; flex-direction: column; }
+	#miniChat.minimized .mc-body { display: none; }
+
+	.mc-list { flex: 1; overflow-y: auto; }
+	.mc-item { display: flex; gap: 9px; align-items: center; width: 100%; padding: 8px 10px; border: none; border-bottom: 1px solid #f1f3f5; background: transparent; cursor: pointer; text-align: left; }
+	.mc-item:hover { background: #f5f7fa; }
+	.mc-ava { width: 34px; height: 34px; border-radius: 50%; background: #7d8a99; color: #fff; font-weight: 700; font-size: 11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.mc-item-body { flex: 1; min-width: 0; }
+	.mc-item-name { font-weight: 600; color: #222; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.mc-item-last { font-size: 11px; color: #98a2ad; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.mc-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #3390ec; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.mc-list-empty { text-align: center; color: #98a2ad; padding: 24px 10px; }
+	.mc-list-empty a { color: #3390ec; }
+
+	.mc-conv { flex: 1; display: flex; flex-direction: column; min-height: 0; background: #f0f2f5; }
+	.mc-msgs-wrap { position: relative; flex: 1; overflow: hidden; }
+	.mc-bg { position: absolute; inset: 0; background: url("{% static 'telekom/jpg/chat-bg.webp' %}") center / cover no-repeat; opacity: .45; pointer-events: none; }
+	.mc-msgs { position: relative; height: 100%; overflow-y: auto; padding: 8px 6px; }
+	.mc-row { display: flex; align-items: flex-end; padding: 2px 4px; }
+	.mc-row.mine { justify-content: flex-end; }
+	.mc-bub { max-width: 78%; padding: 5px 10px; border-radius: 14px; border-bottom-left-radius: 4px; background: #fff; border: 1px solid #e9ecef; color: #222; white-space: pre-wrap; word-break: break-word; font-size: 13px; }
+	.mc-row.mine .mc-bub { background: #3390ec; border: none; color: #fff; border-radius: 14px; border-bottom-right-radius: 4px; }
+	.mc-bub.deleted { font-style: italic; color: #8a939c !important; background: #eceff2 !important; }
+	.mc-bub .mc-sender { display: block; font-size: 10px; color: #6c7bd9; margin-bottom: 1px; }
+	.mc-meta { display: flex; gap: 4px; justify-content: flex-end; font-size: 9px; color: #98a2ad; margin-top: 1px; }
+	.mc-row.mine .mc-meta { color: rgba(255,255,255,.75); }
+	.mc-img { display: block; max-width: 100%; max-height: 160px; border-radius: 8px; margin-bottom: 3px; cursor: pointer; }
+	.mc-file { display: flex; align-items: center; gap: 6px; border-radius: 8px; padding: 4px 8px; margin-bottom: 3px; text-decoration: none; background: #f0f2f5; color: #222; font-size: 11px; }
+	.mc-row.mine .mc-file { background: rgba(255,255,255,.18); color: #fff; }
+	.mc-form { display: flex; gap: 6px; padding: 7px 8px; background: #fff; border-top: 1px solid #e3e6ea; }
+	.mc-form input { flex: 1; border: 1px solid #e3e6ea; border-radius: 999px; background: #f0f2f5; padding: 6px 12px; outline: none; font-size: 13px; }
+	.mc-form input:focus { border-color: #3390ec; }
+	.mc-form button { width: 32px; height: 32px; border: none; border-radius: 50%; background: #3390ec; color: #fff; cursor: pointer; flex-shrink: 0; }
+</style>
+
+<script>
+try {
+(function () {
+	// на странице полного чата мини-чат не нужен
+	if (window.location.pathname.indexOf('/chat') === 0) return;
+
+	var MY_ID = {{ request.user.pk }};
+	var URLS = {
+		convs: "{% url 'chat-conversations' %}",
+		messages: "{% url 'chat-messages' %}",
+		send: "{% url 'chat-send' %}",
+		read: "{% url 'chat-read' %}",
+		typing: "{% url 'chat-typing' %}",
+		page: "{% url 'chat-page' %}"
+	};
+	var CSRF = document.querySelector('#mcForm [name=csrfmiddlewaretoken]').value;
+
+	var box = document.getElementById('miniChat');
+	var listBox = document.getElementById('mcList');
+	var msgsBox = document.getElementById('mcMsgs');
+	var conversations = [];
+	var currentConv = null;
+	var lastId = 0;
+
+	function esc(s) {
+		var d = document.createElement('div');
+		d.appendChild(document.createTextNode(s));
+		return d.innerHTML;
+	}
+
+	function fmtSize(b) {
+		if (b < 1024) return b + ' Б';
+		if (b < 1048576) return (b / 1024).toFixed(1) + ' КБ';
+		return (b / 1048576).toFixed(1) + ' МБ';
+	}
+
+	function playIn() {
+		try { var a = document.getElementById('chatNavSnd'); a.volume = 0.4; a.currentTime = 0; a.play(); } catch (e) {}
+	}
+	function playOut() {
+		try { var a = document.getElementById('mcSndOut'); a.volume = 0.4; a.currentTime = 0; a.play(); } catch (e) {}
+	}
+
+	function post(url, params) {
+		var fd = new FormData();
+		Object.keys(params).forEach(function (k) { fd.append(k, params[k]); });
+		return fetch(url, { method: 'POST', body: fd, credentials: 'same-origin', headers: { 'X-CSRFToken': CSRF } })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); });
+	}
+	function getJSON(url) {
+		return fetch(url, { credentials: 'same-origin' })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); });
+	}
+
+	/* ===== состояние (переживает переходы между страницами) ===== */
+	function saveState() {
+		sessionStorage.setItem('mcOpen', box.style.display === 'block' ? '1' : '0');
+		sessionStorage.setItem('mcMinimized', box.classList.contains('minimized') ? '1' : '0');
+		sessionStorage.setItem('mcConv', currentConv ? JSON.stringify(currentConv) : '');
+	}
+
+	/* ===== список бесед ===== */
+	function renderList() {
+		listBox.innerHTML = '';
+		if (!conversations.length) {
+			listBox.innerHTML = '<div class="mc-list-empty"><div style="font-size:26px;">💬</div>Нет бесед<br>' +
+				'<a href="' + URLS.page + '">Создать в полном чате</a></div>';
+			return;
+		}
+		conversations.forEach(function (c) {
+			var b = document.createElement('button');
+			b.type = 'button';
+			b.className = 'mc-item';
+			var last = 'Нет сообщений';
+			if (c.last_message) {
+				var lm = c.last_message;
+				last = lm.is_deleted ? 'Сообщение удалено'
+					: (lm.sender_id === MY_ID ? 'Вы: ' : (c.type === 'group' ? lm.sender + ': ' : '')) + lm.text;
+			}
+			b.innerHTML = '<div class="mc-ava">' + esc(c.initials) + '</div>' +
+				'<div class="mc-item-body"><div class="mc-item-name">' + esc(c.name) + '</div>' +
+				'<div class="mc-item-last">' + esc(last) + '</div></div>' +
+				(c.unread > 0 ? '<span class="mc-badge">' + (c.unread > 99 ? '99+' : c.unread) + '</span>' : '');
+			b.addEventListener('click', function () { openConv(c); });
+			listBox.appendChild(b);
+		});
+	}
+
+	function fetchConvs() {
+		return getJSON(URLS.convs).then(function (d) {
+			conversations = d.conversations;
+			if (currentConv) {
+				var cur = conversations.find(function (c) { return c.id === currentConv.id; });
+				if (cur) { cur.unread = 0; currentConv = cur; }
+			}
+			renderList();
+		}).catch(function () {});
+	}
+
+	/* ===== беседа ===== */
+	function openConv(c) {
+		currentConv = c;
+		lastId = 0;
+		c.unread = 0;
+		document.getElementById('mcTitle').textContent = c.name;
+		document.getElementById('mcSub').textContent = '';
+		document.getElementById('mcBack').style.display = '';
+		listBox.style.display = 'none';
+		document.getElementById('mcConvPane').style.display = 'flex';
+		msgsBox.innerHTML = '';
+		loadMessages(true);
+		saveState();
+		document.getElementById('mcText').focus();
+	}
+
+	function backToList() {
+		currentConv = null;
+		lastId = 0;
+		document.getElementById('mcTitle').textContent = 'Сообщения';
+		document.getElementById('mcSub').textContent = '';
+		document.getElementById('mcBack').style.display = 'none';
+		document.getElementById('mcConvPane').style.display = 'none';
+		listBox.style.display = '';
+		fetchConvs();
+		saveState();
+	}
+
+	function renderMsg(m) {
+		var mine = m.sender_id === MY_ID;
+		var row = document.createElement('div');
+		row.className = 'mc-row' + (mine ? ' mine' : '');
+		row.dataset.msgId = m.id;
+		var inner = '';
+		if (m.is_deleted) {
+			inner = '🗑 Сообщение удалено';
+		} else {
+			if (!mine && currentConv.type === 'group') inner += '<span class="mc-sender">' + esc(m.sender) + '</span>';
+			if (m.attachment_url) {
+				if (m.is_image) {
+					inner += '<img class="mc-img" src="' + esc(m.attachment_url) + '" alt="" loading="lazy">';
+				} else {
+					inner += '<a class="mc-file" href="' + esc(m.attachment_url) + '" target="_blank" download="' + esc(m.attachment_name || '') + '">📄 ' +
+						esc(m.attachment_name || 'Файл') + ' (' + fmtSize(m.attachment_size || 0) + ')</a>';
+				}
+			}
+			inner += esc(m.text);
+		}
+		inner += '<div class="mc-meta"><span>' + esc(m.time) + '</span>' +
+			(mine && !m.is_deleted ? '<span class="mc-check">' + (m.read ? '✓✓' : '✓') + '</span>' : '') + '</div>';
+		row.innerHTML = '<div class="mc-bub' + (m.is_deleted ? ' deleted' : '') + '">' + inner + '</div>';
+		var img = row.querySelector('.mc-img');
+		if (img) {
+			img.addEventListener('click', function () { window.open(m.attachment_url, '_blank'); });
+			img.addEventListener('load', scrollDown);
+		}
+		msgsBox.appendChild(row);
+	}
+
+	function scrollDown() { msgsBox.scrollTop = msgsBox.scrollHeight; }
+
+	function markRead() {
+		if (!currentConv || lastId <= 0) return;
+		post(URLS.read, { conv: currentConv.id, last_id: lastId }).catch(function () {});
+	}
+
+	function applyReadUpTo(readUpTo) {
+		if (!readUpTo) return;
+		msgsBox.querySelectorAll('.mc-row.mine').forEach(function (row) {
+			if (parseInt(row.dataset.msgId) <= readUpTo) {
+				var c = row.querySelector('.mc-check');
+				if (c) c.textContent = '✓✓';
+			}
+		});
+	}
+
+	function loadMessages(initial) {
+		if (!currentConv) return;
+		var convId = currentConv.id;
+		getJSON(URLS.messages + '?conv=' + convId + '&after=' + (initial ? 0 : lastId))
+			.then(function (d) {
+				if (!currentConv || currentConv.id !== convId) return;
+				if (initial) msgsBox.innerHTML = '';
+				var sub = document.getElementById('mcSub');
+				sub.textContent = (d.typing && d.typing.length)
+					? (currentConv.type === 'group' ? d.typing.join(', ') + ' ' : '') + 'печатает...' : '';
+				if (d.messages.length) {
+					var hasIncoming = false;
+					d.messages.forEach(function (m) {
+						renderMsg(m);
+						if (m.id > lastId) lastId = m.id;
+						if (m.sender_id !== MY_ID) hasIncoming = true;
+					});
+					scrollDown();
+					markRead();
+					if (!initial && hasIncoming) playIn();
+				}
+				applyReadUpTo(d.read_up_to);
+			})
+			.catch(function () {});
+	}
+
+	document.getElementById('mcForm').addEventListener('submit', function (e) {
+		e.preventDefault();
+		if (!currentConv) return;
+		var input = document.getElementById('mcText');
+		var text = input.value.trim();
+		if (!text) return;
+		post(URLS.send, { conv: currentConv.id, text: text })
+			.then(function (d) {
+				input.value = '';
+				renderMsg(d.message);
+				if (d.message.id > lastId) lastId = d.message.id;
+				scrollDown();
+				playOut();
+			})
+			.catch(function () {});
+	});
+
+	var lastTypingSent = 0;
+	document.getElementById('mcText').addEventListener('input', function () {
+		if (!currentConv) return;
+		var now = Date.now();
+		if (now - lastTypingSent < 2000) return;
+		lastTypingSent = now;
+		post(URLS.typing, { conv: currentConv.id }).catch(function () {});
+	});
+
+	/* ===== открытие/закрытие/сворачивание ===== */
+	function openBox() {
+		box.style.display = 'block';
+		fetchConvs();
+		saveState();
+	}
+	function closeBox() {
+		box.style.display = 'none';
+		saveState();
+	}
+
+	document.getElementById('mcClose').addEventListener('click', closeBox);
+	document.getElementById('mcBack').addEventListener('click', backToList);
+	document.getElementById('mcMin').addEventListener('click', function () {
+		box.classList.toggle('minimized');
+		saveState();
+	});
+
+	// клик по "💬 Чат" в навбаре открывает мини-чат вместо перехода
+	var navLink = document.getElementById('chatNavLink');
+	if (navLink) {
+		navLink.addEventListener('click', function (e) {
+			e.preventDefault();
+			if (box.style.display === 'block') closeBox();
+			else openBox();
+		});
+	}
+
+	/* ===== перетаскивание за шапку ===== */
+	function defaultPos() {
+		return { x: Math.max(10, window.innerWidth - 375), y: Math.max(50, window.innerHeight - 505) };
+	}
+	var pos = defaultPos();
+	try { var saved = JSON.parse(sessionStorage.getItem('mcPos') || 'null'); if (saved) pos = saved; } catch (e) {}
+	function applyPos() {
+		pos.x = Math.max(0, Math.min(window.innerWidth - 360, pos.x));
+		pos.y = Math.max(0, Math.min(window.innerHeight - 60, pos.y));
+		box.style.left = pos.x + 'px';
+		box.style.top = pos.y + 'px';
+	}
+	applyPos();
+
+	var dragging = false, offX = 0, offY = 0;
+	document.getElementById('mcHead').addEventListener('mousedown', function (e) {
+		if (e.target.closest('button') || e.target.closest('a')) return;
+		dragging = true;
+		offX = e.clientX - pos.x;
+		offY = e.clientY - pos.y;
+		e.preventDefault();
+	});
+	window.addEventListener('mousemove', function (e) {
+		if (!dragging) return;
+		pos.x = e.clientX - offX;
+		pos.y = e.clientY - offY;
+		applyPos();
+	});
+	window.addEventListener('mouseup', function () {
+		if (!dragging) return;
+		dragging = false;
+		sessionStorage.setItem('mcPos', JSON.stringify(pos));
+	});
+
+	/* ===== восстановление состояния и опрос ===== */
+	if (sessionStorage.getItem('mcOpen') === '1') {
+		box.style.display = 'block';
+		if (sessionStorage.getItem('mcMinimized') === '1') box.classList.add('minimized');
+		var savedConv = sessionStorage.getItem('mcConv');
+		if (savedConv) {
+			try { openConv(JSON.parse(savedConv)); } catch (e) {}
+		}
+		fetchConvs();
+	}
+
+	setInterval(function () {
+		if (document.hidden || box.style.display !== 'block' || box.classList.contains('minimized')) return;
+		if (currentConv) loadMessages(false);
+	}, 3000);
+	setInterval(function () {
+		if (document.hidden || box.style.display !== 'block' || box.classList.contains('minimized')) return;
+		fetchConvs();
+	}, 10000);
+})();
+} catch (e) {}
+</script>

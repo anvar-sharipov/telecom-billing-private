@@ -187,9 +187,10 @@
                   <li><a class="dropdown-item {% if change_nachislenie %} myActiveLinkLight {% endif %}" href="{% url 'change_nachislenie' %}">Изменение начислений</a></li>
                   <li><a class="dropdown-item {% if changeBalance %} myActiveLinkLight {% endif %}" href="{% url 'changeBalance' %}">Изменение баланса с комментариями</a></li>
                   <li><a class="dropdown-item {% if changeBalanceHistory %} myActiveLinkLight {% endif %}" href="{% url 'changeBalanceHistory' %}">История изменений Баланса с комментариями</a></li>
-                  
+                  <li><a class="dropdown-item" href="{% url 'chat-users-page' %}">Список юзеров</a></li>
+
                 </ul>
-              </li> 
+              </li>
 
               {% endif %}
             {% if 'Gayyp' in request.user.username or user.is_superuser %}
@@ -424,6 +425,69 @@
       <canvas id="snowCanvas"></canvas> -->
 
       {% if request.user.is_authenticated %}
+        <div class="navbarWelcome" style="position: relative;">
+          <a href="{% url 'chat-page' %}" id="chatNavLink" title="Открыть чат" style="text-decoration: none; color: white; font-weight: bold;">💬 Чат
+            <span id="chatNavBadge" class="badge bg-danger" style="display:none;"></span>
+          </a>
+          <div id="chatPromo">
+            <button type="button" id="chatPromoClose" title="Закрыть">&times;</button>
+            <div style="font-weight:700; margin-bottom:4px;">💬 Новая функция — Чат!</div>
+            <div>Переписывайтесь с коллегами и отправляйте файлы (фото, Excel, PDF).</div>
+            <div style="margin-top:5px; color:#6a737c;">Täze funksiýa — Çat! Kärdeşleriňiz bilen ýazyşyp, faýl iberip bilersiňiz.</div>
+            <a href="{% url 'chat-page' %}" class="chat-promo-btn">Открыть чат / Çaty açmak</a>
+          </div>
+        </div>
+        <style>
+          #chatPromo {
+            display: none; position: absolute; top: calc(100% + 12px); right: 0; width: 275px;
+            background: #fff; color: #222; border-radius: 10px; padding: 12px 14px 12px;
+            box-shadow: 0 10px 28px rgba(0,0,0,.3); font-size: 13px; font-weight: normal;
+            text-align: left; z-index: 1080; animation: chatPromoBounce 1.3s ease-in-out infinite;
+          }
+          #chatPromo::before {
+            content: ''; position: absolute; top: -9px; right: 20px;
+            border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 9px solid #fff;
+          }
+          @keyframes chatPromoBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+          }
+          #chatPromoClose {
+            position: absolute; top: 4px; right: 8px; border: none; background: transparent;
+            color: #98a2ad; font-size: 18px; line-height: 1; cursor: pointer;
+          }
+          #chatPromoClose:hover { color: #222; }
+          .chat-promo-btn {
+            display: inline-block; margin-top: 8px; background: #3390ec; color: #fff !important;
+            border-radius: 999px; padding: 4px 14px; font-size: 12px; text-decoration: none;
+          }
+          .chat-promo-btn:hover { background: #2f80d8; }
+        </style>
+        <script>
+        try {
+          (function () {
+            // подсказка про чат: раз в час, не на странице самого чата
+            if (window.location.pathname.indexOf('/chat') === 0) return;
+            var KEY = 'chatPromoShownAt';
+            var HOUR = 60 * 60 * 1000;
+            var promo = document.getElementById('chatPromo');
+            var hideTimer = null;
+            function maybeShow() {
+              var last = parseInt(localStorage.getItem(KEY) || '0');
+              if (Date.now() - last < HOUR) return;
+              localStorage.setItem(KEY, Date.now());
+              promo.style.display = 'block';
+              hideTimer = setTimeout(function () { promo.style.display = 'none'; }, 20000);
+            }
+            document.getElementById('chatPromoClose').addEventListener('click', function () {
+              promo.style.display = 'none';
+              if (hideTimer) clearTimeout(hideTimer);
+            });
+            maybeShow();
+            setInterval(maybeShow, 60000);
+          })();
+        } catch (e) {}
+        </script>
         <div class="navbarWelcome">Welcome {{ request.user.username }}</div>
         <div class="navbarWelcome"><a href="{% url 'user-logout' %}">Выход</a></div>
       {% else %}

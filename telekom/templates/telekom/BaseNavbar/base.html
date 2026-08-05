@@ -110,6 +110,42 @@ try {
 } catch {}
 </script>
 
+{% if request.user.is_authenticated %}
+<audio id="chatNavSnd">
+	<source src="{% static 'telekom/audio/chat-in.mp3' %}" type="audio/mp3">
+</audio>
+{% include 'chat/minichat.html' %}
+<script>
+try {
+	(function () {
+		function updateChatNavBadge() {
+			fetch("{% url 'chat-unread' %}", { credentials: 'same-origin' })
+				.then(function (r) { if (!r.ok) throw 0; return r.json(); })
+				.then(function (d) {
+					var b = document.getElementById('chatNavBadge');
+					if (b) {
+						if (d.total > 0) { b.textContent = d.total; b.style.display = ''; }
+						else { b.style.display = 'none'; }
+					}
+					// звук при росте непрочитанных — на любой странице
+					var prev = parseInt(sessionStorage.getItem('chatUnreadTotal') || '0');
+					if (d.total > prev) {
+						try {
+							var a = document.getElementById('chatNavSnd');
+							a.volume = 0.4; a.currentTime = 0; a.play();
+						} catch (e) {}
+					}
+					sessionStorage.setItem('chatUnreadTotal', d.total);
+				})
+				.catch(function () {});
+		}
+		updateChatNavBadge();
+		setInterval(updateChatNavBadge, 20000);
+	})();
+} catch {}
+</script>
+{% endif %}
+
 
 
 
