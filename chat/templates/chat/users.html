@@ -42,6 +42,10 @@
 </style>
 
 <div class="tusers">
+	<div style="display:flex; gap:8px; margin-bottom:14px;">
+		<a href="{% url 'chat-users-page' %}" style="padding:6px 16px; border-radius:999px; font-size:13px; text-decoration:none; background:#3390ec; color:#fff;">Список юзеров</a>
+		<a href="{% url 'chat-users-history-page' %}" style="padding:6px 16px; border-radius:999px; font-size:13px; text-decoration:none; background:#eef1f4; color:#4a5560;">История онлайн</a>
+	</div>
 	<div class="tusers-head">
 		<h4>Список юзеров</h4>
 		<div class="tusers-summary" id="tuSummary"></div>

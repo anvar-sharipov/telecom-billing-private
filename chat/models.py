@@ -2,6 +2,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 User = settings.AUTH_USER_MODEL
 
@@ -75,6 +76,21 @@ class UserActivity(models.Model):
 
     def __str__(self):
         return f'{self.user}: {self.last_seen}'
+
+
+class OnlineSession(models.Model):
+    # непрерывный отрезок онлайна: пульс (раз в ~20 сек) продлевает last_ping,
+    # пауза больше 3 минут — начинается новая сессия
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='online_sessions')
+    started_at = models.DateTimeField(auto_now_add=True)
+    last_ping = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        return f'{self.user}: {self.started_at} - {self.last_ping}'
 
 
 class TypingStatus(models.Model):

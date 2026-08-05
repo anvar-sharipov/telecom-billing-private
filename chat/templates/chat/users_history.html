@@ -1,0 +1,211 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% load static %}
+
+{% block title %}История онлайн{% endblock %}
+
+{% block content %}
+<style>
+	.thist { max-width: 1000px; margin: 14px auto; padding: 0 10px; font-size: 14px; }
+	.thist-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+	.thist-tabs a { padding: 6px 16px; border-radius: 999px; font-size: 13px; text-decoration: none; color: #4a5560; background: #eef1f4; }
+	.thist-tabs a.active { background: #3390ec; color: #fff; }
+	.thist-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+	.thist-head h4 { margin: 0; font-weight: 700; }
+
+	.thist-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+	.thist-filters select { border: 1px solid #dde1e6; border-radius: 8px; padding: 6px 12px; outline: none; background: #fff; font-size: 13px; }
+	.tperiod-btns { display: flex; border: 1px solid #dde1e6; border-radius: 8px; overflow: hidden; }
+	.tperiod-btns button { border: none; background: #fff; padding: 6px 14px; cursor: pointer; font-size: 13px; color: #4a5560; }
+	.tperiod-btns button:not(:last-child) { border-right: 1px solid #dde1e6; }
+	.tperiod-btns button.active { background: #3390ec; color: #fff; }
+
+	.thist-card { background: #fff; border: 1px solid #e3e6ea; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+	.thist-card h6 { margin: 0 0 10px; font-weight: 700; font-size: 13px; color: #222; }
+
+	/* горизонтальные бары: общее время по людям */
+	.hbar-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; cursor: pointer; border-radius: 6px; }
+	.hbar-row:hover { background: #f8fafc; }
+	.hbar-name { width: 210px; flex-shrink: 0; display: flex; align-items: center; gap: 8px; min-width: 0; }
+	.hbar-ava { width: 26px; height: 26px; border-radius: 50%; background: #7d8a99; color: #fff; font-weight: 700; font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+	.hbar-nm { font-size: 12px; font-weight: 600; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.hbar-track { flex: 1; height: 16px; background: #f1f3f5; border-radius: 999px; overflow: hidden; }
+	.hbar-fill { height: 100%; background: linear-gradient(90deg, #3390ec, #6ab2f2); border-radius: 999px; min-width: 2px; }
+	.hbar-fill.zero { background: transparent; }
+	.hbar-val { width: 110px; flex-shrink: 0; font-size: 11px; color: #4a5560; text-align: right; }
+	.hbar-cnt { width: 70px; flex-shrink: 0; font-size: 10px; color: #98a2ad; text-align: right; }
+
+	/* вертикальные бары: по дням для выбранного пользователя */
+	.vchart { display: flex; align-items: flex-end; gap: 4px; height: 170px; padding-top: 16px; overflow-x: auto; }
+	.vcol { flex: 1; min-width: 22px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+	.vbar { width: 100%; max-width: 34px; background: linear-gradient(180deg, #6ab2f2, #3390ec); border-radius: 5px 5px 0 0; }
+	.vbar.zero { background: #f1f3f5; height: 2px !important; }
+	.vval { font-size: 9px; color: #4a5560; white-space: nowrap; }
+	.vdate { font-size: 9px; color: #98a2ad; white-space: nowrap; }
+
+	.tsess-table { width: 100%; border-collapse: collapse; }
+	.tsess-table th { text-align: left; font-size: 11px; color: #4a5560; padding: 6px 8px; border-bottom: 1px solid #e3e6ea; }
+	.tsess-table td { font-size: 12px; padding: 6px 8px; border-bottom: 1px solid #f1f3f5; color: #374151; }
+	.thist-empty { text-align: center; color: #98a2ad; padding: 24px; }
+</style>
+
+<div class="thist">
+	<div class="thist-tabs">
+		<a href="{% url 'chat-users-page' %}">Список юзеров</a>
+		<a href="{% url 'chat-users-history-page' %}" class="active">История онлайн</a>
+	</div>
+
+	<div class="thist-head">
+		<h4>История онлайн</h4>
+	</div>
+
+	<div class="thist-filters">
+		<div class="tperiod-btns" id="thPeriod">
+			<button type="button" data-days="1">Сегодня</button>
+			<button type="button" data-days="7" class="active">7 дней</button>
+			<button type="button" data-days="30">30 дней</button>
+			<button type="button" data-days="365">Год</button>
+		</div>
+		<select id="thUser">
+			<option value="">Все пользователи</option>
+		</select>
+	</div>
+
+	<div class="thist-card">
+		<h6 id="thSummaryTitle">Время онлайн</h6>
+		<div id="thBars"></div>
+	</div>
+
+	<div class="thist-card" id="thDetailCard" style="display:none;">
+		<h6 id="thDetailTitle"></h6>
+		<div class="vchart" id="thVChart"></div>
+	</div>
+
+	<div class="thist-card" id="thSessCard" style="display:none;">
+		<h6>Сессии (последние 100)</h6>
+		<table class="tsess-table">
+			<thead><tr><th>Начало</th><th>Конец</th><th>Длительность</th></tr></thead>
+			<tbody id="thSessBody"></tbody>
+		</table>
+	</div>
+</div>
+
+<script>
+(function () {
+	var URL_DATA = "{% url 'chat-users-history-data' %}";
+	var days = 7;
+	var userId = '';
+	var usersLoaded = false;
+
+	function esc(s) {
+		var d = document.createElement('div');
+		d.appendChild(document.createTextNode(s));
+		return d.innerHTML;
+	}
+
+	function fmtDur(s) {
+		if (s < 60) return s > 0 ? '<1 мин' : '0';
+		var h = Math.floor(s / 3600);
+		var m = Math.round((s % 3600) / 60);
+		if (h > 0) return h + ' ч ' + m + ' мин';
+		return m + ' мин';
+	}
+
+	function renderBars(users) {
+		var box = document.getElementById('thBars');
+		var max = 0;
+		users.forEach(function (u) { if (u.seconds > max) max = u.seconds; });
+		if (!max) {
+			box.innerHTML = '<div class="thist-empty">За этот период данных пока нет</div>';
+			return;
+		}
+		box.innerHTML = users.map(function (u) {
+			var pct = max ? Math.round(u.seconds / max * 100) : 0;
+			return '<div class="hbar-row" data-uid="' + u.id + '" title="Показать по дням">' +
+				'<div class="hbar-name"><div class="hbar-ava">' + esc(u.initials) + '</div>' +
+					'<span class="hbar-nm">' + esc(u.name) + '</span></div>' +
+				'<div class="hbar-track"><div class="hbar-fill' + (u.seconds ? '' : ' zero') + '" style="width:' + pct + '%;"></div></div>' +
+				'<div class="hbar-val">' + fmtDur(u.seconds) + '</div>' +
+				'<div class="hbar-cnt">' + (u.sessions ? u.sessions + ' сес.' : '—') + '</div>' +
+				'</div>';
+		}).join('');
+		box.querySelectorAll('.hbar-row').forEach(function (row) {
+			row.addEventListener('click', function () {
+				document.getElementById('thUser').value = row.dataset.uid;
+				userId = row.dataset.uid;
+				load();
+			});
+		});
+	}
+
+	function renderDetail(detail) {
+		var card = document.getElementById('thDetailCard');
+		var sessCard = document.getElementById('thSessCard');
+		if (!detail) {
+			card.style.display = 'none';
+			sessCard.style.display = 'none';
+			return;
+		}
+		card.style.display = '';
+		document.getElementById('thDetailTitle').textContent = detail.name + (detail.monthly ? ' — по месяцам' : ' — по дням');
+		var max = 0;
+		detail.days.forEach(function (d) { if (d.seconds > max) max = d.seconds; });
+		document.getElementById('thVChart').innerHTML = detail.days.map(function (d) {
+			var h = max ? Math.max(3, Math.round(d.seconds / max * 130)) : 2;
+			return '<div class="vcol">' +
+				'<div class="vval">' + (d.seconds ? fmtDur(d.seconds) : '') + '</div>' +
+				'<div class="vbar' + (d.seconds ? '' : ' zero') + '" style="height:' + h + 'px;" title="' + esc(d.date) + ': ' + fmtDur(d.seconds) + '"></div>' +
+				'<div class="vdate">' + esc(d.date) + '</div>' +
+				'</div>';
+		}).join('');
+
+		sessCard.style.display = '';
+		var body = document.getElementById('thSessBody');
+		if (!detail.sessions.length) {
+			body.innerHTML = '<tr><td colspan="3" class="thist-empty">Сессий нет</td></tr>';
+		} else {
+			body.innerHTML = detail.sessions.map(function (s) {
+				return '<tr><td>' + esc(s.start) + '</td><td>' + esc(s.end) + '</td><td>' + fmtDur(s.seconds) + '</td></tr>';
+			}).join('');
+		}
+	}
+
+	function load() {
+		fetch(URL_DATA + '?days=' + days + (userId ? '&user=' + userId : ''), { credentials: 'same-origin' })
+			.then(function (r) { if (!r.ok) throw 0; return r.json(); })
+			.then(function (d) {
+				var periodLabel = days === 1 ? 'сегодня' : days === 365 ? 'за год' : 'за ' + days + ' дн.';
+				document.getElementById('thSummaryTitle').textContent = 'Время онлайн — ' + periodLabel;
+				renderBars(d.users);
+				renderDetail(d.detail);
+				if (!usersLoaded) {
+					usersLoaded = true;
+					var sel = document.getElementById('thUser');
+					var sorted = d.users.slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+					sel.innerHTML = '<option value="">Все пользователи</option>' + sorted.map(function (u) {
+						return '<option value="' + u.id + '">' + esc(u.name) + '</option>';
+					}).join('');
+					sel.value = userId;
+				}
+			})
+			.catch(function () {});
+	}
+
+	document.querySelectorAll('#thPeriod button').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			days = parseInt(btn.dataset.days);
+			document.querySelectorAll('#thPeriod button').forEach(function (b) {
+				b.classList.toggle('active', b === btn);
+			});
+			load();
+		});
+	});
+	document.getElementById('thUser').addEventListener('change', function () {
+		userId = this.value;
+		load();
+	});
+
+	load();
+	setInterval(function () { if (!document.hidden) load(); }, 60000);
+})();
+</script>
+{% endblock %}

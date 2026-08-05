@@ -188,6 +188,7 @@
                   <li><a class="dropdown-item {% if changeBalance %} myActiveLinkLight {% endif %}" href="{% url 'changeBalance' %}">Изменение баланса с комментариями</a></li>
                   <li><a class="dropdown-item {% if changeBalanceHistory %} myActiveLinkLight {% endif %}" href="{% url 'changeBalanceHistory' %}">История изменений Баланса с комментариями</a></li>
                   <li><a class="dropdown-item" href="{% url 'chat-users-page' %}">Список юзеров</a></li>
+                  <li><a class="dropdown-item" href="{% url 'chat-users-history-page' %}">История онлайн</a></li>
 
                 </ul>
               </li>
@@ -467,7 +468,7 @@
         try {
           (function () {
             // подсказка про чат: раз в час, не на странице самого чата
-            if (window.location.pathname.indexOf('/chat') === 0) return;
+            if (window.location.pathname === "{% url 'chat-page' %}") return;
             var KEY = 'chatPromoShownAt';
             var HOUR = 60 * 60 * 1000;
             var promo = document.getElementById('chatPromo');

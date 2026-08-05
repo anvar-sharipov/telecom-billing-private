@@ -14,4 +14,6 @@ urlpatterns = [
     path('unread/', views.chat_unread, name='chat-unread'),
     path('users/', views.users_page, name='chat-users-page'),
     path('users/data/', views.users_data, name='chat-users-data'),
+    path('users/history/', views.users_history_page, name='chat-users-history-page'),
+    path('users/history/data/', views.users_history_data, name='chat-users-history-data'),
 ]

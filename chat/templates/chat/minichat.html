@@ -82,8 +82,8 @@
 <script>
 try {
 (function () {
-	// на странице полного чата мини-чат не нужен
-	if (window.location.pathname.indexOf('/chat') === 0) return;
+	// на самой странице полного чата мини-чат не нужен (но не на "Список юзеров"/"История онлайн")
+	if (window.location.pathname === "{% url 'chat-page' %}") return;
 
 	var MY_ID = {{ request.user.pk }};
 	var URLS = {

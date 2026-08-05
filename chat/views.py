@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
 from .models import (ATTACHMENT_MAX_SIZE, Conversation, Message, MessageRead,
-                     TypingStatus, UserActivity)
+                     OnlineSession, TypingStatus, UserActivity)
 
 User = get_user_model()
 
@@ -249,11 +249,22 @@ def chat_typing(request):
     return JsonResponse({'ok': True})
 
 
+SESSION_GAP_SECONDS = 180
+
+
 @login_required(login_url=LOGIN_URL)
 @require_GET
 def chat_unread(request):
     # для бейджа в навбаре на всех страницах; заодно отмечаем активность (онлайн-статус)
     UserActivity.objects.update_or_create(user=request.user)
+    # и ведём историю онлайн-сессий
+    now = timezone.now()
+    last = OnlineSession.objects.filter(user=request.user).order_by('-id').first()
+    if last and (now - last.last_ping).total_seconds() <= SESSION_GAP_SECONDS:
+        last.last_ping = now
+        last.save(update_fields=['last_ping'])
+    else:
+        OnlineSession.objects.create(user=request.user)
     total = (Message.objects.filter(conversation__participants=request.user, is_deleted=False)
              .exclude(sender=request.user).exclude(reads__user=request.user).count())
     return JsonResponse({'total': total})
@@ -310,3 +321,111 @@ def users_data(request):
 
     all_etraps = sorted({e for row in data for e in row['etraps']})
     return JsonResponse({'users': data, 'etraps': all_etraps})
+
+
+@login_required(login_url=LOGIN_URL)
+def users_history_page(request):
+    return render(request, 'chat/users_history.html')
+
+
+MONTH_NAMES_RU = ['', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+                  'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+
+
+@login_required(login_url=LOGIN_URL)
+@require_GET
+def users_history_data(request):
+    try:
+        days = max(1, min(366, int(request.GET.get('days', 7))))
+    except (ValueError, TypeError):
+        days = 7
+    # для длинных периодов (например "Год") группируем по месяцам —
+    # 365 дневных столбиков на графике нечитаемы
+    monthly = days > 31
+    now = timezone.now()
+    start = (now - timedelta(days=days - 1)).replace(hour=0, minute=0, second=0, microsecond=0)
+
+    sel_user = None
+    try:
+        uid = int(request.GET.get('user') or 0)
+        if uid:
+            sel_user = User.objects.filter(pk=uid).first()
+    except (ValueError, TypeError):
+        pass
+
+    sessions = (OnlineSession.objects.filter(last_ping__gte=start)
+                .select_related('user').order_by('started_at'))
+
+    totals = {}  # user_id -> {seconds, count, last}
+    for s in sessions:
+        st = max(s.started_at, start)
+        en = min(s.last_ping, now)
+        dur = max(0.0, (en - st).total_seconds())
+        t = totals.setdefault(s.user_id, {'seconds': 0.0, 'count': 0, 'last': None})
+        t['seconds'] += dur
+        t['count'] += 1
+        if t['last'] is None or s.last_ping > t['last']:
+            t['last'] = s.last_ping
+
+    users_out = []
+    for u in User.objects.filter(is_active=True).order_by('username'):
+        t = totals.get(u.pk)
+        name = _full_name(u)
+        users_out.append({
+            'id': u.pk,
+            'name': name,
+            'username': u.username,
+            'initials': _initials(name),
+            'seconds': int(t['seconds']) if t else 0,
+            'sessions': t['count'] if t else 0,
+            'last_seen': t['last'].strftime('%d.%m.%Y %H:%M') if t and t['last'] else None,
+        })
+    users_out.sort(key=lambda x: -x['seconds'])
+
+    # детализация по одному пользователю: по дням (или месяцам) + список сессий
+    detail = None
+    if sel_user:
+        bucket_totals = {}
+        if monthly:
+            y, m = start.year, start.month
+            while (y, m) <= (now.year, now.month):
+                bucket_totals[(y, m)] = 0.0
+                m += 1
+                if m > 12:
+                    m = 1
+                    y += 1
+        else:
+            for i in range(days):
+                bucket_totals[(start + timedelta(days=i)).date()] = 0.0
+
+        sess_list = []
+        for s in sessions:
+            if s.user_id != sel_user.pk:
+                continue
+            st = max(s.started_at, start)
+            en = min(s.last_ping, now)
+            dur = max(0.0, (en - st).total_seconds())
+            key = (st.year, st.month) if monthly else st.date()
+            if key in bucket_totals:
+                bucket_totals[key] += dur
+            sess_list.append({
+                'start': st.strftime('%d.%m.%Y %H:%M'),
+                'end': en.strftime('%H:%M'),
+                'seconds': int(dur),
+            })
+
+        if monthly:
+            days_out = [{'date': MONTH_NAMES_RU[m] + ' ' + str(y), 'seconds': int(v)}
+                        for (y, m), v in bucket_totals.items()]
+        else:
+            days_out = [{'date': d.strftime('%d.%m'), 'seconds': int(v)}
+                        for d, v in bucket_totals.items()]
+
+        detail = {
+            'name': _full_name(sel_user),
+            'monthly': monthly,
+            'days': days_out,
+            'sessions': list(reversed(sess_list))[:100],
+        }
+
+    return JsonResponse({'users': users_out, 'detail': detail, 'days': days})
