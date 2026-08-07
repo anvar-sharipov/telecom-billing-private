@@ -210,6 +210,7 @@ from telekom.views2.admin_pages.milliBillingNachAdmin import milliBillingNachAdm
 from telekom.views2.admin_pages.intizarInternetNyrhnamaSort import intizarInternetNyrhnamaSort
 from telekom.views2.admin_pages.MBonceIntAddAdmin import MBonceIntAddAdmin
 from telekom.views2.admin_pages.MBonceIntNachAdmin import MBonceIntNachAdmin
+from telekom.views2.admin_pages.adminMessage import adminMessage
 
 
 
@@ -421,6 +422,7 @@ urlpatterns = [
     path('intizarInternetNyrhnamaSort', intizarInternetNyrhnamaSort, name='intizarInternetNyrhnamaSort'),
     path('MBonceIntAddAdmin', MBonceIntAddAdmin, name='MBonceIntAddAdmin'),
     path('MBonceIntNachAdmin', MBonceIntNachAdmin, name='MBonceIntNachAdmin'),
+    path('adminMessage', adminMessage, name='adminMessage'),
   
 
 

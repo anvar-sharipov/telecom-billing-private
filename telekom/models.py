@@ -2511,3 +2511,18 @@ class YhlasIyul2026InternetNach(models.Model):
 		verbose_name = 'Yhlas Iyul 2026 Интернет начисление'
 		verbose_name_plural = 'Yhlas Iyul 2026 Интернет начисление'
 
+
+class AdminBroadcastMessage(models.Model):
+	text = models.TextField(verbose_name='Текст сообщения', blank=True)
+	is_enabled = models.BooleanField(default=False, verbose_name='Показывать на всех страницах')
+
+	updated_at = models.DateTimeField(auto_now=True, verbose_name='Когда изменено')
+	updated_by = models.CharField(max_length=500, verbose_name='Кто изменил', blank=True)
+
+	def __str__(self):
+		return f"[{'ON' if self.is_enabled else 'off'}] {self.text[:50]}"
+
+	class Meta:
+		verbose_name = 'Сообщение админа (баннер на всех страницах)'
+		verbose_name_plural = 'Сообщение админа (баннер на всех страницах)'
+
