@@ -46,6 +46,8 @@
               <li><a class="dropdown-item {% if milliBillingPayAdmin %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingPayAdmin' %}">MilliBillingPay</a></li>
               <li><a class="dropdown-item {% if milliBillingNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'milliBillingNachAdmin' %}">MilliBillingNach</a></li>
               <li><a class="dropdown-item {% if intizarInternetNyrhnamaSort %} myActiveLinkLight {% endif %}" href="{% url 'intizarInternetNyrhnamaSort' %}">Intizar internet nyrhnama sort</a></li>
+              <li><a class="dropdown-item {% if MBonceIntAddAdmin %} myActiveLinkLight {% endif %}" href="{% url 'MBonceIntAddAdmin' %}">MB once int add</a></li>
+              <li><a class="dropdown-item {% if MBonceIntNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'MBonceIntNachAdmin' %}">MB once int nach</a></li>
             </ul>
           </li> 
           {% endif %}
@@ -70,7 +72,16 @@
                 </ul>
               </li>
             {% endif %}
-            
+            {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
+              <li class="nav-item dropdown {% if onceIntNach or onceIntNachCharge %} myActiveLink {% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MB nachisleniya</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item {% if onceIntNach %} myActiveLinkLight {% endif %}" href="{% url 'onceIntAdd' %}">once int add</a></li>
+                  <li><a class="dropdown-item {% if onceIntNachCharge %} myActiveLinkLight {% endif %}" href="{% url 'onceIntNach' %}">once int nach</a></li>
+                </ul>
+              </li>
+            {% endif %}
+
             <li class="nav-item dropdown {% if localCalls or showZakaz or nonLocalCalls or alemNachisleniyaSearch or internetNachisleniyaSearch or staffActionList or InternetPlatejiSearch %} myActiveLink {% endif %}">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Просмотры</a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">

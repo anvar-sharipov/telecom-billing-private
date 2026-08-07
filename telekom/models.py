@@ -2486,3 +2486,28 @@ class ChangeBalanceWithComment(models.Model):
 		verbose_name = 'Изменение баланса с комментарием'
 		verbose_name_plural = 'Изменение баланса с комментариями'
 
+
+class YhlasIyul2026InternetNach(models.Model):
+	fio = models.CharField(max_length=500, verbose_name='Пользователь (ФИО)', blank=True)
+	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
+	login = models.CharField(max_length=100, verbose_name='Учетное имя', blank=True)
+	arenda = models.FloatField(verbose_name='Аренда', default=0)
+	etrap = models.CharField(max_length=64, verbose_name='Этрап', blank=True)
+	number = models.CharField(max_length=32, verbose_name='Номер абонента', blank=True)
+	is_enterprises = models.CharField(max_length=10, verbose_name='Предприятия', blank=True)
+	is_nach = models.BooleanField(default=False, verbose_name='Начислено в NachMinus')
+
+	created_at = models.DateTimeField(verbose_name='Когда добавлено', auto_now_add=True, null=True, blank=True)
+	who_add = models.CharField(max_length=500, verbose_name='Кто добавил', blank=True)
+	file_name = models.CharField(max_length=500, verbose_name='Файл', blank=True)
+
+	who_nach = models.CharField(max_length=500, verbose_name='Кто начислил', blank=True)
+	nach_at = models.DateTimeField(verbose_name='Когда начислено', null=True, blank=True)
+
+	def __str__(self):
+		return f"{self.dogowor} {self.fio} {self.arenda}"
+
+	class Meta:
+		verbose_name = 'Yhlas Iyul 2026 Интернет начисление'
+		verbose_name_plural = 'Yhlas Iyul 2026 Интернет начисление'
+

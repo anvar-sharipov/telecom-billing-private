@@ -132,6 +132,8 @@ from telekom.views2.Kassa.addPlatejiForKassirs2 import addPlatejiForKassirs2
 from telekom.views2.Kassa.addPlatejiMilliBilling import addPlatejiMilliBilling, exportMilliBillingUnmatched
 from telekom.views2.Kassa.nachMilliBillingPay import nachMilliBillingPay
 from telekom.views2.Kassa.milliBillingCheckPays import milliBillingCheckPays
+from telekom.views2.MATB.MBnachisleniya.onceIntNach import onceIntNach
+from telekom.views2.MATB.MBnachisleniya.onceIntNachCharge import onceIntNachCharge
 from telekom.views2.Kassa.kassirs_billing_names import kassirs_billing_names
 #  # Kassa Rezerw
 # from telekom.views2.kassaRezerw.KassaIndex import kassaIndexRezerw
@@ -206,6 +208,8 @@ from telekom.views2.admin_pages.add_nachisleniya_from_excel import add_nachislen
 from telekom.views2.admin_pages.milliBillingPayAdmin import milliBillingPayAdmin
 from telekom.views2.admin_pages.milliBillingNachAdmin import milliBillingNachAdmin
 from telekom.views2.admin_pages.intizarInternetNyrhnamaSort import intizarInternetNyrhnamaSort
+from telekom.views2.admin_pages.MBonceIntAddAdmin import MBonceIntAddAdmin
+from telekom.views2.admin_pages.MBonceIntNachAdmin import MBonceIntNachAdmin
 
 
 
@@ -328,6 +332,8 @@ urlpatterns = [
     path('addPlatejiMilliBilling', addPlatejiMilliBilling, name='addPlatejiMilliBilling'),
     path('nachMilliBillingPay', nachMilliBillingPay, name='nachMilliBillingPay'),
     path('milliBillingCheckPays', milliBillingCheckPays, name='milliBillingCheckPays'),
+    path('onceIntAdd', onceIntNach, name='onceIntAdd'),
+    path('onceIntNach', onceIntNachCharge, name='onceIntNach'),
     path('exportMilliBillingUnmatched', exportMilliBillingUnmatched, name='exportMilliBillingUnmatched'),
     path('kassirs_billing_names', kassirs_billing_names, name='kassirs_billing_names'),
 
@@ -413,6 +419,8 @@ urlpatterns = [
     path('milliBillingPayAdmin', milliBillingPayAdmin, name='milliBillingPayAdmin'),
     path('milliBillingNachAdmin', milliBillingNachAdmin, name='milliBillingNachAdmin'),
     path('intizarInternetNyrhnamaSort', intizarInternetNyrhnamaSort, name='intizarInternetNyrhnamaSort'),
+    path('MBonceIntAddAdmin', MBonceIntAddAdmin, name='MBonceIntAddAdmin'),
+    path('MBonceIntNachAdmin', MBonceIntNachAdmin, name='MBonceIntNachAdmin'),
   
 
 

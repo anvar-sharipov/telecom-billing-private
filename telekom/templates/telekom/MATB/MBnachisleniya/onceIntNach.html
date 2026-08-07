@@ -1,0 +1,82 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}once int add{% endblock %}
+{% block content %}
+
+<div class="p-4 my_block_center my_width800" style="margin-top: 60px;">
+    <h4 class="text-light text-center">once int add — добавление YhlasIyul2026InternetNach</h4>
+    <p class="text-light">
+        Колонки в файле (в этом порядке): Пользователь, Договор, Учетное имя, Аренда, etrap.<br>
+        Договор ищется сперва в UserTable, потом в OldLoginDogowor. Этрап в файле должен совпадать с выбранным этрапом.<br>
+        Если хотя бы одна строка проблемная (договор не найден / этрап не совпадает / некорректная сумма) — ничего не сохраняется.
+    </p>
+</div>
+
+<div style="padding: 20px 40px 60px; margin-top: 20px; width: 900px; margin-left: auto; margin-right: auto; border-radius: 15px; background-color: #3399CC;">
+    <div class="d-flex justify-content-between">
+        <h5 style="padding: 5px;"><span id="add_or_check_text_once" style="text-decoration: underline;">Проверить</span> начисления Интернет (xlsx)</h5>
+        <div class="d-flex" style="column-gap: 10px;">
+            <span>Проверка файла</span>
+            <input onclick="ChangeSubmitValueOnce()" form="onceIntNachForm" name="onceIntNachTest" type="checkbox" checked class="form-check-input">
+        </div>
+    </div>
+
+    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;" id="onceIntNachForm">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <select class="form-select my_width200 border border-dark" name="etrap" required>
+                <option value="">Выберите этрап</option>
+                {% for value, label in etraps %}
+                    {% if value %}
+                        <option value="{{ value }}" {% if value == etrap %} selected {% endif %}>{{ label }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center" style="row-gap: 10px; flex-wrap: wrap;">
+            <div class="mb-3">
+                <input class="form-control" type="file" name="my_file" accept=".xlsx" required>
+            </div>
+
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" form="onceIntNachForm" id="onceIntNachFormSubmit">Проверить</button>
+
+            <button type="submit" name="onceIntNachExportProblems" value="1" form="onceIntNachForm" class="btn btn-outline-light">Скачать проблемные строки (Excel)</button>
+        </div>
+    </form>
+</div>
+
+{% if totalCount %}
+<div class="my_width500 my_block_center mt-4 p-2" style="background-color:{% if not is_test_mode and problem_count %}#ffc4c4{% else %}#b4ffc1{% endif %}; border-radius:8px;">
+    {% if is_test_mode %}
+        <div class="alert alert-warning py-2 mb-2 text-center">Это только проверка — в базу ничего не сохранено. Снимите галочку "Проверка файла" и нажмите "Добавить", чтобы сохранить.</div>
+    {% elif problem_count %}
+        <div class="alert alert-danger py-2 mb-2 text-center">В базу НИЧЕГО не сохранено: есть {{problem_count}} проблемных строк. Скачайте список проблемных строк, исправьте и загрузите файл заново.</div>
+    {% endif %}
+    <div class="d-flex"><div class="my_width200">Всего строк в файле:</div><div class="my_width150">{{totalCount}}</div></div>
+    <div class="d-flex"><div class="my_width200">Сопоставлено с абонентом:</div><div class="my_width150">{{matched_count}}</div></div>
+    <div class="d-flex"><div class="my_width200 text-danger">Проблемных строк:</div><div class="my_width150 text-danger">{{problem_count}}</div></div>
+    <hr>
+    <div class="d-flex"><div class="my_width200">Сумма (Аренда) к добавлению:</div><div class="my_width150">{{totalArenda}}</div></div>
+</div>
+{% endif %}
+
+<script>
+function ChangeSubmitValueOnce() {
+  if (event.target.checked == true) {
+    document.getElementById('onceIntNachFormSubmit').innerHTML = 'Проверить'
+    document.getElementById('add_or_check_text_once').innerHTML = 'Проверить'
+    document.getElementById('add_or_check_text_once').classList.remove('text-danger')
+    document.getElementById('onceIntNachFormSubmit').classList.remove('btn-danger')
+    document.getElementById('onceIntNachFormSubmit').classList.add('btn-primary')
+  } else {
+    document.getElementById('onceIntNachFormSubmit').innerHTML = 'Добавить'
+    document.getElementById('add_or_check_text_once').innerHTML = 'Добавить'
+    document.getElementById('add_or_check_text_once').classList.add('text-danger')
+    document.getElementById('onceIntNachFormSubmit').classList.add('btn-danger')
+    document.getElementById('onceIntNachFormSubmit').classList.remove('btn-primary')
+  }
+}
+</script>
+
+{% endblock content %}

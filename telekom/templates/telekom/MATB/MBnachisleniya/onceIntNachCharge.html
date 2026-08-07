@@ -1,0 +1,94 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}once int nach{% endblock %}
+{% block content %}
+
+<div class="p-4 my_block_center my_width800" style="margin-top: 60px;">
+    <h4 class="text-light text-center">once int nach — начисление YhlasIyul2026InternetNach в NachMinus.internet ({{ nach_year }}-{{ nach_month }})</h4>
+    <p class="text-light">
+        Список этрапов, для которых был сделан "once int add". Начислить можно только тот этрап, который ещё не
+        начислен, и только тот пользователь, который делал добавление (или superuser).<br>
+        Перед реальным начислением делается повторная проверка — каждый абонент (по номеру) должен всё ещё
+        находиться в UserTable. Если хотя бы одна строка проблемная — ничего не начисляется.
+    </p>
+</div>
+
+<div class="table-responsive" style="width: 1100px; margin: 0 auto;">
+    <table class="table table-dark table-bordered table-sm align-middle">
+        <thead>
+            <tr>
+                <th>Этрап</th>
+                <th>Кто добавил</th>
+                <th>Строк</th>
+                <th>Сумма (Аренда)</th>
+                <th>Начислено</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in etraps_data %}
+            <tr>
+                <td>{{ e.etrap }}</td>
+                <td>{{ e.who_add }}</td>
+                <td>{{ e.count }}</td>
+                <td>{{ e.total_arenda|floatformat:2 }}</td>
+                <td>
+                    {% if e.is_nach %}
+                        <span class="badge bg-success">Да</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Нет</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if e.is_nach %}
+                        <span class="text-muted">Уже начислено</span>
+                    {% elif request.user.is_superuser or request.user.username == e.who_add %}
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px; flex-wrap: wrap;" onsubmit="return onceIntNachChargeSubmit(event, this);">
+                            {% csrf_token %}
+                            <input type="hidden" name="etrap" value="{{ e.etrap }}">
+                            <input type="hidden" name="year" value="{{ nach_year }}">
+                            <input type="hidden" name="month" value="{{ nach_month }}">
+                            <button type="submit" name="onceIntNachChargeTest" value="1" class="btn btn-sm btn-primary">Проверить</button>
+                            <button type="submit" name="onceIntNachChargeReal" value="1" class="btn btn-sm btn-danger">Начислить</button>
+                            <button type="submit" name="onceIntNachChargeExportProblems" value="1" class="btn btn-sm btn-outline-light">Скачать проблемные</button>
+                        </form>
+                    {% else %}
+                        <span class="text-muted">Начислять может только {{ e.who_add|default:"неизвестно" }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">Ни один этрап ещё не добавлен ("once int add")</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if totalCount %}
+<div class="my_width500 my_block_center mt-4 p-2" style="background-color:{% if not is_test_mode and problem_count %}#ffc4c4{% else %}#b4ffc1{% endif %}; border-radius:8px;">
+    {% if is_test_mode %}
+        <div class="alert alert-warning py-2 mb-2 text-center">Это только проверка — ничего не начислено.</div>
+    {% elif problem_count %}
+        <div class="alert alert-danger py-2 mb-2 text-center">Начисление НЕ выполнено: {{problem_count}} проблемных строк. Скачайте список проблемных строк.</div>
+    {% endif %}
+    <div class="d-flex"><div class="my_width200">Этрап:</div><div class="my_width150">{{chargeEtrap}}</div></div>
+    <div class="d-flex"><div class="my_width200">Всего строк:</div><div class="my_width150">{{totalCount}}</div></div>
+    <div class="d-flex"><div class="my_width200 text-danger">Проблемных строк:</div><div class="my_width150 text-danger">{{problem_count}}</div></div>
+    <hr>
+    <div class="d-flex"><div class="my_width200">Сумма к начислению:</div><div class="my_width150">{{totalArenda}}</div></div>
+</div>
+{% endif %}
+
+<script>
+function onceIntNachChargeSubmit(event, form) {
+    const submitter = event.submitter;
+    if (submitter && submitter.name === 'onceIntNachChargeReal') {
+        const etrap = form.querySelector('input[name="etrap"]').value;
+        return confirm('Начислить NachMinus.internet для этрапа ' + etrap + '? После начисления автоматической отмены нет.');
+    }
+    return true;
+}
+</script>
+
+{% endblock content %}

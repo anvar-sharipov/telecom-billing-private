@@ -1,0 +1,104 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}MB once int add - откат{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>MB once int add - этрапы и откат
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#MBonceIntAddAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Этрап</th>
+                    <th>Кто добавил</th>
+                    <th>Когда добавлено</th>
+                    <th>Всего строк</th>
+                    <th>Сумма (Аренда)</th>
+                    <th>Начислено в NachMinus</th>
+                    <th>Скачать</th>
+                    <th>Откат</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in etraps_data %}
+                <tr>
+                    <td>{{ e.etrap }}</td>
+                    <td>{{ e.who_add }}</td>
+                    <td>{{ e.created_at }}</td>
+                    <td>{{ e.count }}</td>
+                    <td>{{ e.total_arenda|floatformat:2 }}</td>
+                    <td>
+                        {% if e.is_nach %}
+                            <span class="badge bg-success">Да</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Нет</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ e.etrap|urlencode }}">Скачать (Excel)</a>
+                    </td>
+                    <td>
+                        {% if e.is_nach %}
+                            <button class="btn btn-sm btn-secondary" disabled title="Уже начислено, откат запрещён">Откат запрещён</button>
+                        {% else %}
+                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ e.etrap }}? Будут удалены {{ e.count }} записей из YhlasIyul2026InternetNach.');">
+                                {% csrf_token %}
+                                <input type="hidden" name="rollback_etrap" value="{{ e.etrap }}">
+                                <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат</button>
+                                <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                                <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Записей пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="MBonceIntAddAdminInfoModal" tabindex="-1" aria-labelledby="MBonceIntAddAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="MBonceIntAddAdminInfoModalLabel">MB once int add (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>По-русски:</strong><br>
+                Страница показывает список этрапов, для которых через "once int add" были добавлены записи
+                YhlasIyul2026InternetNach (кто, когда, сколько строк, сумма), позволяет скачать все строки этрапа
+                в Excel и полностью откатить (удалить) добавление — вернуть к состоянию "как будто не добавляли".
+                Доступ только у admin1.</p>
+                <p><strong>Когда откат НЕ сработает:</strong> если этрап уже НАЧИСЛЕН в NachMinus (is_nach = True
+                хотя бы у одной строки), кнопка "Откат" будет заблокирована и заменена на "Откат запрещён" —
+                сначала нужно откатить начисление, и только после этого этрап можно будет откатить здесь.</p>
+                <p><strong>Пароль:</strong> при нажатии "Откат" появляется поле для пароля — без верного пароля
+                ничего не удалится (покажет ошибку). Это дополнительная защита от случайного нажатия.</p>
+                <p>После успешного отката этрап снова можно будет загрузить заново через страницу "once int add"
+                (там стоит проверка "этрап уже добавлен один раз").</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
