@@ -2,32 +2,57 @@
 {% block title %}Admin message{% endblock %}
 {% block content %}
 
-<div class="container mt-5 text-light" style="margin-top: 80px; max-width: 700px;">
-    <h4>Admin message</h4>
-    <p class="text-muted">Текст ниже показывается огромным баннером на ВСЕХ страницах, всем пользователям (включая
-        страницу входа), пока включена галочка "Включено". Если галочка выключена — баннер нигде не виден.</p>
+<div class="container text-light" style="margin-top: 80px; max-width: 700px;">
+    <div style="background-color:#1e1e2f; border-radius:14px; padding:28px 30px; box-shadow:0 4px 18px rgba(0,0,0,0.35);">
+        <h4 style="margin-bottom:6px;">Admin message</h4>
+        <p class="text-muted" style="font-size:0.92rem;">Текст ниже показывается баннером на ВСЕХ страницах, всем
+            пользователям (включая страницу входа), пока включена галочка "Включено". Если галочка выключена —
+            баннер нигде не виден.</p>
 
-    <form method="POST">
-        {% csrf_token %}
+        <form method="POST">
+            {% csrf_token %}
 
-        <div class="mb-3">
-            <label for="textArea" class="form-label">Текст сообщения</label>
-            <textarea class="form-control" id="textArea" name="text" rows="4" placeholder="Например: Внимание, в 12:00 я перезагружу сервер, пожалуйста держите приложения закрытыми">{{ obj.text }}</textarea>
-        </div>
+            <div class="mb-3">
+                <label for="textArea" class="form-label">Текст сообщения</label>
+                <textarea class="form-control" id="textArea" name="text" rows="4" style="resize:vertical;" placeholder="Например: Внимание, в 12:00 я перезагружу сервер, пожалуйста держите приложения закрытыми">{{ obj.text }}</textarea>
+            </div>
 
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="isEnabled" name="is_enabled" {% if obj.is_enabled %} checked {% endif %}>
-            <label class="form-check-label" for="isEnabled">
-                Включено (видно всем на всех страницах)
-            </label>
-        </div>
+            <div id="bannerPreview" style="display:none; background:linear-gradient(135deg, #e63946, #c1121f); color:#fff; font-size:1.35rem; font-weight:600; letter-spacing:0.3px; line-height:1.5; text-align:center; padding:16px 20px; word-break:break-word; box-shadow:0 3px 14px rgba(0,0,0,0.45); border-bottom:3px solid #7a0c14; border-radius:8px; margin-bottom:18px;"></div>
 
-        {% if obj.updated_by %}
-        <p class="text-muted">Последнее изменение: {{ obj.updated_by }}, {{ obj.updated_at }}</p>
-        {% endif %}
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="isEnabled" name="is_enabled" {% if obj.is_enabled %} checked {% endif %}>
+                <label class="form-check-label" for="isEnabled">
+                    Включено (видно всем на всех страницах)
+                </label>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-    </form>
+            {% if obj.updated_by %}
+            <p class="text-muted" style="font-size:0.85rem;">Последнее изменение: {{ obj.updated_by }}, {{ obj.updated_at }}</p>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
 </div>
+
+<script>
+(function () {
+    var textArea = document.getElementById('textArea');
+    var preview = document.getElementById('bannerPreview');
+
+    function updatePreview() {
+        var text = textArea.value.trim();
+        if (text) {
+            preview.style.display = 'block';
+            preview.innerHTML = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    textArea.addEventListener('input', updatePreview);
+    updatePreview();
+})();
+</script>
 
 {% endblock %}

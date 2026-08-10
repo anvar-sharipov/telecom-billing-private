@@ -2487,7 +2487,15 @@ class ChangeBalanceWithComment(models.Model):
 		verbose_name_plural = 'Изменение баланса с комментариями'
 
 
+SERVICE_TYPE_CHOICES = (
+	('internet', 'Internet'),
+	('alem', 'Alem'),
+	('belet', 'Belet'),
+)
+
+
 class YhlasIyul2026InternetNach(models.Model):
+	service_type = models.CharField(max_length=20, choices=SERVICE_TYPE_CHOICES, default='internet', verbose_name='Услуга')
 	fio = models.CharField(max_length=500, verbose_name='Пользователь (ФИО)', blank=True)
 	dogowor = models.CharField(max_length=100, verbose_name='Договор', blank=True)
 	login = models.CharField(max_length=100, verbose_name='Учетное имя', blank=True)

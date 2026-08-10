@@ -1,19 +1,19 @@
 {% extends 'telekom/BaseNavbar/base.html' %}
-{% block title %}once int add{% endblock %}
+{% block title %}once nach add{% endblock %}
 {% block content %}
 
 <div class="p-4 my_block_center my_width800" style="margin-top: 60px;">
-    <h4 class="text-light text-center">once int add — добавление YhlasIyul2026InternetNach</h4>
+    <h4 class="text-light text-center">once nach add — добавление YhlasIyul2026InternetNach</h4>
     <p class="text-light">
-        Колонки в файле (в этом порядке): Пользователь, Договор, Учетное имя, Аренда, etrap.<br>
-        Договор ищется сперва в UserTable, потом в OldLoginDogowor. Этрап в файле должен совпадать с выбранным этрапом.<br>
+        Колонки в файле (в этом порядке): Пользователь, Договор, Учетное имя, Аренда/Списание за услугу, etrap.<br>
+        Договор ищется в UserTable/OldLoginDogowor, логика поиска зависит от выбранной услуги. Этрап в файле должен совпадать с выбранным.<br>
         Если хотя бы одна строка проблемная (договор не найден / этрап не совпадает / некорректная сумма) — ничего не сохраняется.
     </p>
 </div>
 
 <div style="padding: 20px 40px 60px; margin-top: 20px; width: 900px; margin-left: auto; margin-right: auto; border-radius: 15px; background-color: #3399CC;">
     <div class="d-flex justify-content-between">
-        <h5 style="padding: 5px;"><span id="add_or_check_text_once" style="text-decoration: underline;">Проверить</span> начисления Интернет (xlsx)</h5>
+        <h5 style="padding: 5px;"><span id="add_or_check_text_once" style="text-decoration: underline;">Проверить</span> начисления (xlsx)</h5>
         <div class="d-flex" style="column-gap: 10px;">
             <span>Проверка файла</span>
             <input onclick="ChangeSubmitValueOnce()" form="onceIntNachForm" name="onceIntNachTest" type="checkbox" checked class="form-check-input">
@@ -23,15 +23,26 @@
     <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;" id="onceIntNachForm">
         {% csrf_token %}
 
-        <div class="mb-3">
-            <select class="form-select my_width200 border border-dark" name="etrap" required>
-                <option value="">Выберите этрап</option>
-                {% for value, label in etraps %}
-                    {% if value %}
-                        <option value="{{ value }}" {% if value == etrap %} selected {% endif %}>{{ label }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+        <div class="d-flex" style="gap: 10px; flex-wrap: wrap;">
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="service_type" required>
+                    <option value="">Выберите услугу</option>
+                    {% for value, label in service_types %}
+                        <option value="{{ value }}" {% if value == service_type %} selected {% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="etrap" required>
+                    <option value="">Выберите этрап</option>
+                    {% for value, label in etraps %}
+                        {% if value %}
+                            <option value="{{ value }}" {% if value == etrap %} selected {% endif %}>{{ label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center" style="row-gap: 10px; flex-wrap: wrap;">
@@ -57,7 +68,7 @@
     <div class="d-flex"><div class="my_width200">Сопоставлено с абонентом:</div><div class="my_width150">{{matched_count}}</div></div>
     <div class="d-flex"><div class="my_width200 text-danger">Проблемных строк:</div><div class="my_width150 text-danger">{{problem_count}}</div></div>
     <hr>
-    <div class="d-flex"><div class="my_width200">Сумма (Аренда) к добавлению:</div><div class="my_width150">{{totalArenda}}</div></div>
+    <div class="d-flex"><div class="my_width200">Сумма к добавлению:</div><div class="my_width150">{{totalArenda}}</div></div>
 </div>
 {% endif %}
 

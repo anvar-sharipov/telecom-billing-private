@@ -6,13 +6,14 @@
     <h4>MB once int nach - откат начисления
         <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#MBonceIntNachAdminInfoModal" title="Что это за страница?">?</button>
     </h4>
-    <p class="text-muted">Откатывает начисление этрапа, сделанное на странице "once int nach": возвращает балансы абонентов (b_internet) и NachMinus.internet назад. После отката этрап снова станет "не начислен", и его можно будет либо начислить заново, либо откатить полностью (удалить) на странице "MB once int add".</p>
+    <p class="text-muted">Откатывает начисление, сделанное на странице "once int nach": возвращает балансы абонентов и соответствующее поле NachMinus (internet/alem/belet) назад. После отката этрап+услуга снова станет "не начислен", и её можно будет либо начислить заново, либо откатить полностью (удалить) на странице "MB once int add".</p>
 
     <div class="table-responsive mt-3">
         <table class="table table-dark table-bordered table-sm align-middle">
             <thead>
                 <tr>
                     <th>Этрап</th>
+                    <th>Услуга</th>
                     <th>Кто начислил</th>
                     <th>Когда начислено</th>
                     <th>Строк</th>
@@ -24,14 +25,16 @@
                 {% for e in etraps_data %}
                 <tr>
                     <td>{{ e.etrap }}</td>
+                    <td>{{ e.service_type|capfirst }}</td>
                     <td>{{ e.who_nach }}</td>
                     <td>{{ e.nach_at }}</td>
                     <td>{{ e.count }}</td>
                     <td>{{ e.total_arenda|floatformat:2 }}</td>
                     <td>
-                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление этрапа {{ e.etrap }}? Балансы {{ e.count }} строк будут уменьшены обратно.');">
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление этрапа {{ e.etrap }} ({{ e.service_type }})? Балансы {{ e.count }} строк будут уменьшены обратно.');">
                             {% csrf_token %}
                             <input type="hidden" name="rollback_nach_etrap" value="{{ e.etrap }}">
+                            <input type="hidden" name="rollback_nach_service_type" value="{{ e.service_type }}">
                             <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат начисления</button>
                             <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
                             <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
@@ -40,7 +43,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center">Начисленных этрапов пока нет</td>
+                    <td colspan="7" class="text-center">Начисленных этрапов пока нет</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -73,8 +76,9 @@ function showRollbackPassword(btn) {
                 <ul>
                     <li>Для каждой строки YhlasIyul2026InternetNach этрапа находится абонент (UserTable по
                         number+etrap) и сумма (Аренда) суммируется по абоненту.</li>
-                    <li>`UserTable.b_internet` увеличивается обратно на эту сумму, `NachMinus.internet`
-                        (за 2026-07) уменьшается на эту же сумму — ровно на то, что было начислено, ничего больше.
+                    <li>Соответствующий баланс UserTable (b_internet для Internet/Belet, b_alem для Alem)
+                        увеличивается обратно на эту сумму, поле NachMinus (internet/alem/belet, за 2026-07)
+                        уменьшается на эту же сумму — ровно на то, что было начислено, ничего больше.
                         Сама запись NachMinus не удаляется (там могут быть другие начисления того же периода).</li>
                     <li>`YhlasIyul2026InternetNach.is_nach` возвращается в False (и `who_nach`/`nach_at`
                         очищаются) — после этого можно либо начислить этрап заново на странице "once int nach",

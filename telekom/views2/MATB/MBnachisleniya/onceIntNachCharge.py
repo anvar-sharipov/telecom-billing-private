@@ -21,9 +21,17 @@ NACH_MONTH = '07'
 
 ALLOWED_USERNAMES = ['Gayyp', 'yhlas_mtb']
 
+SERVICE_TYPE_LABELS = {'internet': 'Internet', 'alem': 'Alem', 'belet': 'Belet'}
+
+# В какое поле NachMinus начислять
+NACH_FIELD_BY_SERVICE = {'internet': 'internet', 'alem': 'alem', 'belet': 'belet'}
+
+# С какого баланса UserTable списывать. Belet своего баланса не имеет — списывается с b_internet.
+BALANCE_FIELD_BY_SERVICE = {'internet': 'b_internet', 'alem': 'b_alem', 'belet': 'b_internet'}
+
 
 def build_problem_rows_xlsx_response(rows):
-    headers = ('Пользователь', 'Договор', 'Учетное имя', 'Аренда', 'etrap', 'Номер абонента', 'Причина')
+    headers = ('Пользователь', 'Договор', 'Учетное имя', 'Сумма', 'etrap', 'Номер абонента', 'Причина')
     data = tablib.Dataset(headers=headers)
     for row in rows:
         data.append((row['fio'], row['dogowor'], row['login'], row['arenda'], row['etrap'], row['number'], row['reason']))
@@ -58,6 +66,15 @@ def resolve_users_and_problems(rows, etrap):
     return user_by_number, user_charge_total, problem_rows
 
 
+def get_etraps_data():
+    return YhlasIyul2026InternetNach.objects.values('etrap', 'service_type').annotate(
+        count=Count('id'),
+        total_arenda=Sum('arenda'),
+        is_nach=BoolOr('is_nach'),
+        who_add=Max('who_add'),
+    ).order_by('etrap', 'service_type')
+
+
 def onceIntNachCharge(request):
     context = {}
 
@@ -73,17 +90,11 @@ def onceIntNachCharge(request):
     context['matbIndex'] = True
     context['nach_year'] = NACH_YEAR
     context['nach_month'] = NACH_MONTH
-
-    etraps_data = YhlasIyul2026InternetNach.objects.values('etrap').annotate(
-        count=Count('id'),
-        total_arenda=Sum('arenda'),
-        is_nach=BoolOr('is_nach'),
-        who_add=Max('who_add'),
-    ).order_by('etrap')
-    context['etraps_data'] = etraps_data
+    context['etraps_data'] = get_etraps_data()
 
     if request.method == 'POST':
         etrap = request.POST.get('etrap') or ''
+        service_type = request.POST.get('service_type') or ''
         year = request.POST.get('year') or ''
         month = request.POST.get('month') or ''
 
@@ -91,17 +102,21 @@ def onceIntNachCharge(request):
             messages.error(request, 'Не выбран этрап')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
 
+        if service_type not in NACH_FIELD_BY_SERVICE:
+            messages.error(request, 'Не выбрана услуга')
+            return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
+
         if year != NACH_YEAR or month != NACH_MONTH:
             messages.error(request, f'Год/месяц начисления должны быть {NACH_YEAR}-{NACH_MONTH}')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
 
-        rows_qs = YhlasIyul2026InternetNach.objects.filter(etrap=etrap)
+        rows_qs = YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type)
         if not rows_qs.exists():
-            messages.error(request, f'Этрап "{etrap}" ещё не добавлен (нет записей в YhlasIyul2026InternetNach)')
+            messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" ещё не добавлен (нет записей в YhlasIyul2026InternetNach)')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
 
         if rows_qs.filter(is_nach=True).exists():
-            messages.error(request, f'Этрап "{etrap}" уже начислен ранее. Повторное начисление запрещено.')
+            messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" уже начислен ранее. Повторное начисление запрещено.')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
 
         who_add_values = sorted(set(rows_qs.exclude(who_add='').values_list('who_add', flat=True)))
@@ -120,6 +135,7 @@ def onceIntNachCharge(request):
 
         totalCount = len(rows)
         context['chargeEtrap'] = etrap
+        context['chargeServiceType'] = SERVICE_TYPE_LABELS[service_type]
         context['totalCount'] = totalCount
         context['problem_count'] = len(problem_rows)
         context['totalArenda'] = float('%.2f' % sum(user_charge_total.values()))
@@ -130,10 +146,12 @@ def onceIntNachCharge(request):
         elif problem_rows:
             messages.error(request, f'Начисление запрещено: {len(problem_rows)} проблемных строк из {totalCount}. Скачайте список проблемных строк.')
         else:
+            nach_field = NACH_FIELD_BY_SERVICE[service_type]
+            balance_field = BALANCE_FIELD_BY_SERVICE[service_type]
             try:
                 with transaction.atomic():
-                    if YhlasIyul2026InternetNach.objects.select_for_update().filter(etrap=etrap, is_nach=True).exists():
-                        messages.error(request, f'Этрап "{etrap}" уже начислен ранее (повторная проверка).')
+                    if YhlasIyul2026InternetNach.objects.select_for_update().filter(etrap=etrap, service_type=service_type, is_nach=True).exists():
+                        messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" уже начислен ранее (повторная проверка).')
                         return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)
 
                     existing_nach = {nm.user_id: nm for nm in NachMinus.objects.filter(user_id__in=user_charge_total.keys(), year=year, month=month)}
@@ -145,41 +163,35 @@ def onceIntNachCharge(request):
 
                     for user_pk, total_amount in user_charge_total.items():
                         user = users_by_pk[user_pk]
-                        user.b_internet -= total_amount
+                        setattr(user, balance_field, getattr(user, balance_field) - total_amount)
                         bulk_update_user.append(user)
 
                         if user_pk in existing_nach:
                             nm = existing_nach[user_pk]
-                            nm.internet += total_amount
+                            setattr(nm, nach_field, getattr(nm, nach_field) + total_amount)
                             bulk_update_nach.append(nm)
                         else:
-                            bulk_create_nach.append(NachMinus(user=user, year=year, month=month, internet=total_amount))
+                            bulk_create_nach.append(NachMinus(user=user, year=year, month=month, **{nach_field: total_amount}))
 
                     if bulk_create_nach:
                         NachMinus.objects.bulk_create(bulk_create_nach)
                     if bulk_update_nach:
-                        NachMinus.objects.bulk_update(bulk_update_nach, ['internet'])
+                        NachMinus.objects.bulk_update(bulk_update_nach, [nach_field])
                     if bulk_update_user:
-                        UserTable.objects.bulk_update(bulk_update_user, ['b_internet'])
+                        UserTable.objects.bulk_update(bulk_update_user, [balance_field])
 
-                    YhlasIyul2026InternetNach.objects.filter(etrap=etrap).update(is_nach=True, who_nach=request.user.username, nach_at=datetime.now())
+                    YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type).update(is_nach=True, who_nach=request.user.username, nach_at=datetime.now())
 
                     StaffAction.objects.create(
                         user=request.user,
-                        comment=f'Начисление YhlasIyul2026InternetNach в NachMinus.internet, этрап {etrap}, {year}-{month}, строк {totalCount}, начислил {request.user.username}',
+                        comment=f'Начисление YhlasIyul2026InternetNach в NachMinus.{nach_field}, этрап {etrap}, {year}-{month}, строк {totalCount}, начислил {request.user.username}',
                         action='Импорт с xlsx Интернет Начисления в БД',
                     )
-                messages.success(request, f'Успешно начислено {totalCount} строк ({len(user_charge_total)} абонентов) в NachMinus (этрап {etrap}, {year}-{month})')
+                messages.success(request, f'Успешно начислено {totalCount} строк ({len(user_charge_total)} абонентов) в NachMinus.{nach_field} (этрап {etrap}, {year}-{month})')
             except Exception as e:
                 messages.error(request, f'Ошибка при начислении, тип ошибки == {e}')
                 logger.error(f'Ошибка при начислении YhlasIyul2026InternetNach -> NachMinus, тип ошибки == {e}')
 
-        etraps_data = YhlasIyul2026InternetNach.objects.values('etrap').annotate(
-            count=Count('id'),
-            total_arenda=Sum('arenda'),
-            is_nach=BoolOr('is_nach'),
-            who_add=Max('who_add'),
-        ).order_by('etrap')
-        context['etraps_data'] = etraps_data
+        context['etraps_data'] = get_etraps_data()
 
     return render(request, 'telekom/MATB/MBnachisleniya/onceIntNachCharge.html', context)

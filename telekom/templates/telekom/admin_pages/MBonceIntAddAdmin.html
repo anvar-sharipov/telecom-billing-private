@@ -12,10 +12,11 @@
             <thead>
                 <tr>
                     <th>Этрап</th>
+                    <th>Услуга</th>
                     <th>Кто добавил</th>
                     <th>Когда добавлено</th>
                     <th>Всего строк</th>
-                    <th>Сумма (Аренда)</th>
+                    <th>Сумма</th>
                     <th>Начислено в NachMinus</th>
                     <th>Скачать</th>
                     <th>Откат</th>
@@ -25,6 +26,7 @@
                 {% for e in etraps_data %}
                 <tr>
                     <td>{{ e.etrap }}</td>
+                    <td>{{ e.service_type|capfirst }}</td>
                     <td>{{ e.who_add }}</td>
                     <td>{{ e.created_at }}</td>
                     <td>{{ e.count }}</td>
@@ -37,15 +39,16 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ e.etrap|urlencode }}">Скачать (Excel)</a>
+                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ e.etrap|urlencode }}&service_type={{ e.service_type|urlencode }}">Скачать (Excel)</a>
                     </td>
                     <td>
                         {% if e.is_nach %}
                             <button class="btn btn-sm btn-secondary" disabled title="Уже начислено, откат запрещён">Откат запрещён</button>
                         {% else %}
-                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ e.etrap }}? Будут удалены {{ e.count }} записей из YhlasIyul2026InternetNach.');">
+                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ e.etrap }} ({{ e.service_type }})? Будут удалены {{ e.count }} записей из YhlasIyul2026InternetNach.');">
                                 {% csrf_token %}
                                 <input type="hidden" name="rollback_etrap" value="{{ e.etrap }}">
+                                <input type="hidden" name="rollback_service_type" value="{{ e.service_type }}">
                                 <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат</button>
                                 <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
                                 <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
@@ -55,7 +58,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8" class="text-center">Записей пока нет</td>
+                    <td colspan="9" class="text-center">Записей пока нет</td>
                 </tr>
                 {% endfor %}
             </tbody>

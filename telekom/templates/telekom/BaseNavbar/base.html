@@ -35,7 +35,7 @@
 <body>
 
 	{% if admin_broadcast_message and admin_broadcast_message.is_enabled and admin_broadcast_message.text %}
-	<div style="background-color:#ff0000; color:#fff; font-size:2.2rem; font-weight:bold; text-align:center; padding:20px 15px; word-break:break-word; box-shadow:0 2px 10px rgba(0,0,0,0.5); position:relative; z-index:2000;">
+	<div style="background:linear-gradient(135deg, #e63946, #c1121f); color:#fff; font-size:1.35rem; font-weight:600; letter-spacing:0.3px; line-height:1.5; text-align:center; padding:16px 20px; word-break:break-word; box-shadow:0 3px 14px rgba(0,0,0,0.45); border-bottom:3px solid #7a0c14; position:relative; z-index:2000;">
 		{{ admin_broadcast_message.text|linebreaksbr }}
 	</div>
 	{% endif %}
