@@ -301,19 +301,19 @@ def nach_pays_from_billing(request):
                             user_pk_val[user.pk] = [p.price,0,0]
                         else:
                             user_pk_val[user.pk][0] += p.price
-                        obj = PayHistory(abonent=user, prochee=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap)
+                        obj = PayHistory(abonent=user, prochee=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap, pays_from_billing_file_name=file_)
                     if p.type_pay == 'Internet':
                         if user.pk not in user_pk_val:
                             user_pk_val[user.pk] = [0,p.price,0]
                         else:
                             user_pk_val[user.pk][1] += p.price
-                        obj = PayHistory(abonent=user, internet=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap)
+                        obj = PayHistory(abonent=user, internet=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap, pays_from_billing_file_name=file_)
                     if p.type_pay == 'Alem':
                         if user.pk not in user_pk_val:
                             user_pk_val[user.pk] = [0,0,p.price]
                         else:
                             user_pk_val[user.pk][2] += p.price
-                        obj = PayHistory(abonent=user, alem=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap)
+                        obj = PayHistory(abonent=user, alem=p.price, is_card=is_card, kassir=p.manager, kassa=p.manager, total=p.price, date=p.date, edara_ilat=p.is_enterprises, type='Default', kassir_etrap=p.kassir_etrap, pays_from_billing_file_name=file_)
                     
                     
          

@@ -49,6 +49,8 @@
               <li><a class="dropdown-item {% if MBonceIntAddAdmin %} myActiveLinkLight {% endif %}" href="{% url 'MBonceIntAddAdmin' %}">MB once int add</a></li>
               <li><a class="dropdown-item {% if MBonceIntNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'MBonceIntNachAdmin' %}">MB once int nach</a></li>
               <li><a class="dropdown-item {% if adminMessage %} myActiveLinkLight {% endif %}" href="{% url 'adminMessage' %}">admin message</a></li>
+              <li><a class="dropdown-item {% if VneshniePlatejiAddAdmin %} myActiveLinkLight {% endif %}" href="{% url 'VneshniePlatejiAddAdmin' %}">Внешние платежи add откат</a></li>
+              <li><a class="dropdown-item {% if VneshniePlatejiNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'VneshniePlatejiNachAdmin' %}">Внешние платежи nach откат</a></li>
             </ul>
           </li> 
           {% endif %}
@@ -74,11 +76,13 @@
               </li>
             {% endif %}
             {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
-              <li class="nav-item dropdown {% if onceIntNach or onceIntNachCharge %} myActiveLink {% endif %}">
+              <li class="nav-item dropdown {% if onceIntNach or onceIntNachCharge or vneshniePlatejiAdd or nach_pays_from_billing %} myActiveLink {% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">MB nachisleniya</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item {% if onceIntNach %} myActiveLinkLight {% endif %}" href="{% url 'onceNachAdd' %}">once nach add</a></li>
                   <li><a class="dropdown-item {% if onceIntNachCharge %} myActiveLinkLight {% endif %}" href="{% url 'onceIntNach' %}">once int nach</a></li>
+                  <li><a class="dropdown-item {% if vneshniePlatejiAdd %} myActiveLinkLight {% endif %}" href="{% url 'vneshniePlatejiAdd' %}">Внешние платежи add</a></li>
+                  <li><a class="dropdown-item {% if nach_pays_from_billing %} myActiveLinkLight {% endif %}" href="{% url 'nach_pays_from_billing' %}">Внешние платежи nach</a></li>
                 </ul>
               </li>
             {% endif %}

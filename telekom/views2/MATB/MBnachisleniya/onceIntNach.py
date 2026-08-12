@@ -348,6 +348,7 @@ def onceIntNach(request):
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
 
         file_etraps = sorted({(str(d[4]).strip() if d[4] is not None else '') for d in dataset} - {etrap})
+        print("file_etraps", file_etraps)
         if file_etraps:
             messages.error(request, f'Этрап в файле не совпадает с выбранным этрапом "{etrap}". Найдены другие значения в колонке etrap: {", ".join(file_etraps)}')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)

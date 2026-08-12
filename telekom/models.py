@@ -758,6 +758,9 @@ class PayHistory(models.Model):
 	# Если начислено из MilliBillingPay - хранит file_name, для точного отката начисления
 	milli_billing_file_name = models.CharField(max_length=500, verbose_name='Файл Milli Billing', blank=True, null=True)
 
+	# Если начислено из PlatejiWhichAddKassirsEveryDay (nach_pays_from_billing) - хранит file_name, для точного отката начисления
+	pays_from_billing_file_name = models.CharField(max_length=500, verbose_name='Файл Pays From Billing', blank=True, null=True)
+
 	def __str__(self):
 		return f"{self.abonent.number} {self.abonent.etrap} {self.abonent.name} {self.abonent.surname}"
 

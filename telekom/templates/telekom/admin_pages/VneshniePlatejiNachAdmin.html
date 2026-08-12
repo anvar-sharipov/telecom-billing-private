@@ -1,0 +1,88 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Внешние платежи nach - откат{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>Внешние платежи nach - откат начисления
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#VneshniePlatejiNachAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+    <p class="text-muted">Откатывает начисление файла, сделанное на странице "Внешние платежи nach": возвращает балансы абонентов (b_prochee/b_internet/b_alem) назад и удаляет созданные PayHistory. После отката файл снова станет "не начислен", и его можно будет либо начислить заново, либо откатить (удалить) на странице "Внешние платежи add откат".</p>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Файл</th>
+                    <th>Кто добавил</th>
+                    <th>Строк</th>
+                    <th>Сумма</th>
+                    <th>Откат начисления</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in files_data %}
+                <tr>
+                    <td>{{ f.file_name }}</td>
+                    <td>{{ f.who_add_file }}</td>
+                    <td>{{ f.count }}</td>
+                    <td>{{ f.total_price|floatformat:2 }}</td>
+                    <td>
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление файла {{ f.file_name }}? Балансы {{ f.count }} платежей будут уменьшены обратно.');">
+                            {% csrf_token %}
+                            <input type="hidden" name="rollback_nach_file_name" value="{{ f.file_name }}">
+                            <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат начисления</button>
+                            <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                            <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Начисленных файлов пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="VneshniePlatejiNachAdminInfoModal" tabindex="-1" aria-labelledby="VneshniePlatejiNachAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="VneshniePlatejiNachAdminInfoModalLabel">Внешние платежи nach (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>По-русски:</strong><br>
+                Страница для отката начисления, сделанного через общую страницу "Внешние платежи nach" (это та же
+                самая "nach_pays_from_billing", что и для старых lanbilling файлов). В списке — только файлы,
+                добавленные через "Внешние платежи add" (Capar/eGov/Toleg/Turkmenpost diller), которые уже
+                начислены. Доступ только у admin1.</p>
+                <p><strong>Как это работает:</strong> каждая начисленная строка PayHistory помечена полем
+                pays_from_billing_file_name — именно по нему находятся ТОЧНО те записи, что были начислены из
+                этого файла (без риска зацепить платежи из другого файла/дня с такой же суммой).</p>
+                <p><strong>Что происходит при откате:</strong> балансы UserTable (b_prochee/b_internet/b_alem)
+                уменьшаются обратно ровно на начисленные суммы, соответствующие строки PayHistory удаляются,
+                PlatejiWhichAddKassirsEveryDay.file_is_nach возвращается в False.</p>
+                <p><strong>Пароль:</strong> при нажатии "Откат начисления" появляется поле пароля — без верного
+                пароля ничего не изменится.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

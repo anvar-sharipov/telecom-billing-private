@@ -1,0 +1,92 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}Внешние платежи add{% endblock %}
+{% block content %}
+
+<div class="p-4 my_block_center my_width800" style="margin-top: 60px;">
+    <h4 class="text-light text-center">Внешние платежи add — Milli Billing "Online toleg jemi"</h4>
+    <p class="text-light">
+        Файл grouped-отчёта Milli Billing (Capar/eGov/Toleg/Turkmenpost diller — все внешние платежи в одном файле,
+        этрап выбирать не нужно). Даты платежей внутри файла должны попадать в выбранный год/месяц.<br>
+        Если хотя бы одна строка проблемная (договор не найден / дубль № платежа / неизвестный тип услуги) —
+        ничего не сохраняется.
+    </p>
+</div>
+
+<div style="padding: 20px 40px 60px; margin-top: 20px; width: 900px; margin-left: auto; margin-right: auto; border-radius: 15px; background-color: #3399CC;">
+    <div class="d-flex justify-content-between">
+        <h5 style="padding: 5px;"><span id="add_or_check_text_vp" style="text-decoration: underline;">Проверить</span> внешние платежи (xlsx)</h5>
+        <div class="d-flex" style="column-gap: 10px;">
+            <span>Проверка файла</span>
+            <input onclick="ChangeSubmitValueVP()" form="vneshniePlatejiForm" name="vneshniePlatejiTest" type="checkbox" checked class="form-check-input">
+        </div>
+    </div>
+
+    <form action="" method="POST" enctype="multipart/form-data" style="margin-top: 20px;" id="vneshniePlatejiForm">
+        {% csrf_token %}
+
+        <div class="d-flex" style="gap: 10px; flex-wrap: wrap;">
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="year" required>
+                    <option value="">Год</option>
+                    {% for y in years %}
+                        <option value="{{ y }}" {% if y == year %} selected {% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="month" required>
+                    <option value="">Месяц</option>
+                    {% for m in months %}
+                        <option value="{{ m }}" {% if m == month %} selected {% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center" style="row-gap: 10px; flex-wrap: wrap;">
+            <div class="mb-3">
+                <input class="form-control" type="file" name="my_file" accept=".xlsx" required>
+            </div>
+
+            <button class="btn btn-primary" onclick="this.form.submit(); this.disabled=true;" form="vneshniePlatejiForm" id="vneshniePlatejiFormSubmit">Проверить</button>
+
+            <button type="submit" name="vneshniePlatejiExportProblems" value="1" form="vneshniePlatejiForm" class="btn btn-outline-light">Скачать проблемные строки (Excel)</button>
+        </div>
+    </form>
+</div>
+
+{% if totalCount %}
+<div class="my_width500 my_block_center mt-4 p-2" style="background-color:{% if not is_test_mode and problem_count %}#ffc4c4{% else %}#b4ffc1{% endif %}; border-radius:8px;">
+    {% if is_test_mode %}
+        <div class="alert alert-warning py-2 mb-2 text-center">Это только проверка — в базу ничего не сохранено. Снимите галочку "Проверка файла" и нажмите "Добавить", чтобы сохранить.</div>
+    {% elif problem_count %}
+        <div class="alert alert-danger py-2 mb-2 text-center">В базу НИЧЕГО не сохранено: есть {{problem_count}} проблемных строк. Скачайте список проблемных строк, исправьте и загрузите файл заново.</div>
+    {% endif %}
+    <div class="d-flex"><div class="my_width200">Всего строк в файле:</div><div class="my_width150">{{totalCount}}</div></div>
+    <div class="d-flex"><div class="my_width200">Сопоставлено с абонентом:</div><div class="my_width150">{{matched_count}}</div></div>
+    <div class="d-flex"><div class="my_width200 text-danger">Проблемных строк:</div><div class="my_width150 text-danger">{{problem_count}}</div></div>
+    <hr>
+    <div class="d-flex"><div class="my_width200">Сумма к добавлению:</div><div class="my_width150">{{totalAmount}}</div></div>
+</div>
+{% endif %}
+
+<script>
+function ChangeSubmitValueVP() {
+  if (event.target.checked == true) {
+    document.getElementById('vneshniePlatejiFormSubmit').innerHTML = 'Проверить'
+    document.getElementById('add_or_check_text_vp').innerHTML = 'Проверить'
+    document.getElementById('add_or_check_text_vp').classList.remove('text-danger')
+    document.getElementById('vneshniePlatejiFormSubmit').classList.remove('btn-danger')
+    document.getElementById('vneshniePlatejiFormSubmit').classList.add('btn-primary')
+  } else {
+    document.getElementById('vneshniePlatejiFormSubmit').innerHTML = 'Добавить'
+    document.getElementById('add_or_check_text_vp').innerHTML = 'Добавить'
+    document.getElementById('add_or_check_text_vp').classList.add('text-danger')
+    document.getElementById('vneshniePlatejiFormSubmit').classList.add('btn-danger')
+    document.getElementById('vneshniePlatejiFormSubmit').classList.remove('btn-primary')
+  }
+}
+</script>
+
+{% endblock content %}
