@@ -97,6 +97,7 @@ from telekom.views2.MATB.reestr.N_txt import N_txt
 from telekom.views2.MATB.monthOtchot import monthOtchot
 from telekom.views2.MATB.monthOtchotNew import monthOtchotNew
 from telekom.views2.MATB.monthOtchotForAshyr import monthOtchotForAshyr
+from telekom.views2.MATB.monthOtchotForAshyrMB import monthOtchotForAshyrMB
 # Перекидка
 from telekom.views2.MATB.perekidka import perekidka
 # Arhiw
@@ -306,6 +307,7 @@ urlpatterns = [
     path('month-otchot', monthOtchot, name='month-otchot'),
     path('month-new-otchot', monthOtchotNew, name='month-new-otchot'),
     path('month-ashyr-otchot', monthOtchotForAshyr, name='month-ashyr-otchot'),
+    path('month-ashyr-otchot-mb', monthOtchotForAshyrMB, name='month-ashyr-otchot-mb'),
     # Перекидка
     path('perekidka', perekidka, name='perekidka'),
     # Arhiw

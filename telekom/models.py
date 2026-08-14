@@ -318,6 +318,7 @@ class NachWithComment(models.Model):
     internet = models.FloatField(verbose_name='Начислен на Интернет', default=0)
     kabel = models.FloatField(verbose_name='Начислен на Кабель', default=0)
     alem = models.FloatField(verbose_name='Начислен на Alem TV', default=0)
+    belet = models.FloatField(verbose_name='Начислен на Belet', default=0)
     prochee = models.FloatField(verbose_name='Начислен на prochee', default=0)
     telefon = models.FloatField(verbose_name='Начислен на telefon', default=0)
     slr = models.FloatField(verbose_name='Начислен на slr', default=0)

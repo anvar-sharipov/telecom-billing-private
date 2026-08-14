@@ -424,6 +424,57 @@ def prochie_otchoty(request):
         response['Content-Disposition'] = f"attachment; filename= {etrap} {year}-{monthСonvert(month_word)} Ilat internet nachisleniya.xlsx"
         return response
 
+    if request.method == 'POST' and 'edaraBeletNach' in request.POST:
+
+        nachMinus = NachMinus.objects.filter(year=year, month=monthСonvert(month_word), belet__gt=0, user__is_enterprises=True, user__etrap=etrap).order_by('user__number')
+
+        headers = ("NUMBER","LOGIN","NAME","MST","HB","SUMMA")
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        for n in nachMinus:
+            number=n.user.number
+            login=n.user.login
+            name=n.user.name + ' ' +n.user.surname
+            try:
+                account=int(n.user.account)
+            except:
+                account='None'
+            price = str(n.belet).replace('.',',')
+            try:
+                if n.user.hb.name == 'H':
+                    hb='H'
+                elif n.user.hb.name == 'B':
+                    hb='B'
+            except:
+                hb='None'
+
+            data.append([number,login,name,account,hb,price])
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap} {year}-{monthСonvert(month_word)} edara belet nachisleniya.xlsx"
+        return response
+
+    if request.method == 'POST' and 'ilatBeletNach' in request.POST:
+
+        nachMinus = NachMinus.objects.filter(year=year, month=monthСonvert(month_word), belet__gt=0, user__is_enterprises=False, user__etrap=etrap).order_by('user__number')
+
+        headers = ("NUMBER","LOGIN","NAME","SUMMA")
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        for n in nachMinus:
+            number=n.user.number
+            login=n.user.login
+            name=n.user.name + ' ' +n.user.surname
+            price = str(n.belet).replace('.',',')
+
+            data.append([number,login,name,price])
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap} {year}-{monthСonvert(month_word)} Ilat belet nachisleniya.xlsx"
+        return response
+
     if request.method == 'POST' and 'edaraSlrNach' in request.POST:
 
         # # old

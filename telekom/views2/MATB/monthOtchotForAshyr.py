@@ -178,9 +178,11 @@ def monthOtchotForAshyr(request):
             lst[10] = n.alem
 
         # --- КАССА (PayHistory без внешних) ---
+        # edara_ilat у части строк не заполнен (None) хотя абонент реально ФЛ - фильтруем по
+        # abonent__is_enterprises, а не по edara_ilat, иначе теряем часть кассовых платежей
         pays_kassa = PayHistory.objects.filter(
             date__range=[start_for_pay_history, end_for_pay_history],
-            edara_ilat='ФЛ',
+            abonent__is_enterprises=False,
             abonent__etrap=etrap
         ).exclude(kassir_etrap='Внешние платежи')
 
@@ -208,7 +210,7 @@ def monthOtchotForAshyr(request):
         # --- ВНЕШНИЕ ПЛАТЕЖИ (PayHistory с kassir_etrap='Внешние платежи') ---
         pays_wn = PayHistory.objects.filter(
             date__range=[start_for_pay_history, end_for_pay_history],
-            edara_ilat='ФЛ',
+            abonent__is_enterprises=False,
             abonent__etrap=etrap,
             kassir_etrap='Внешние платежи'
         )

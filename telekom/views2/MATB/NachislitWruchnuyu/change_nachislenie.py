@@ -119,9 +119,10 @@ def change_nachislenie(request):
             dop_uslugi = float(request.POST.get('dop_uslugi')) if request.POST.get('dop_uslugi') != None else None
             internet = float(request.POST.get('internet')) if request.POST.get('internet') != None else None
             alem = float(request.POST.get('alem')) if request.POST.get('alem') != None else None
+            belet = float(request.POST.get('belet')) if request.POST.get('belet') != None else None
             kabel = float(request.POST.get('kabel')) if request.POST.get('kabel') != None else None
             comment = request.POST.get('comment')
-            ic(telefon, slr, kod, zakaz, prochee, dop_uslugi, internet, alem, kabel, comment)
+            ic(telefon, slr, kod, zakaz, prochee, dop_uslugi, internet, alem, belet, kabel, comment)
             if len(comment) < 1:
                 messages.error(request, 'Оставьте комментарий')
                 return render(request, 'telekom/MATB/NachislitWruchnuyu/change_nachislenie.html', context)
@@ -152,7 +153,7 @@ def change_nachislenie(request):
                         nach_comment.kabel = kabel
                         have_a_save_kabel = True
 
-            if telefon != None or slr != None or kod != None or zakaz != None or prochee != None or dop_uslugi != None or internet != None or alem != None:
+            if telefon != None or slr != None or kod != None or zakaz != None or prochee != None or dop_uslugi != None or internet != None or alem != None or belet != None:
                 if user_table_nach:
                     if len(user_table_nach) > 1:
                         messages.error(request, 'Больше двух начислений в KabelNach')
@@ -167,6 +168,7 @@ def change_nachislenie(request):
                     n_dop_uslugi = obj_user_nach.dop_uslugi
                     n_internet = obj_user_nach.internet
                     n_alem = obj_user_nach.alem
+                    n_belet = obj_user_nach.belet
 
                     if n_telefon != telefon:
                         user_table.b_telefon = user_table.b_telefon + n_telefon - telefon
@@ -224,6 +226,14 @@ def change_nachislenie(request):
                         mes += f'Начисления на alem за {month_word} {year} года\nНачислено {alem}, а до этого было {n_alem}\n\n'
                         nach_comment.alem = alem
                         have_a_save_user = True
+
+                    if n_belet != belet:
+                        # belet не имеет своего баланса, списывается с b_internet (как и при начислении через once nach)
+                        user_table.b_internet = user_table.b_internet + n_belet - belet
+                        obj_user_nach.belet = belet
+                        mes += f'Начисления на belet за {month_word} {year} года\nНачислено {belet}, а до этого было {n_belet}\n\n'
+                        nach_comment.belet = belet
+                        have_a_save_user = True
                 else:
                     obj_user_nach = NachMinus(user=user_table, year=year, month=month_digit)
                     if telefon != 0:
@@ -274,7 +284,14 @@ def change_nachislenie(request):
                         mes += f'Начисления на alem за {month_word} {year} года\nНачислено {alem}, а до этого начислений небыло\n\n'
                         nach_comment.alem = alem
                         have_a_save_user = True
-            
+                    if belet != 0:
+                        # belet не имеет своего баланса, списывается с b_internet (как и при начислении через once nach)
+                        user_table.b_internet -= belet
+                        obj_user_nach.belet = belet
+                        mes += f'Начисления на belet за {month_word} {year} года\nНачислено {belet}, а до этого начислений небыло\n\n'
+                        nach_comment.belet = belet
+                        have_a_save_user = True
+
             if have_a_save_user or have_a_save_kabel:
 
                 mes += f'Комментарий: {comment}'

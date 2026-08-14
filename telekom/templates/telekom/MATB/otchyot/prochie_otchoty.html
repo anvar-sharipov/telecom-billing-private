@@ -395,6 +395,23 @@
             <button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#milliBillingTologlerInfoModal" onclick="event.stopPropagation();" title="Что даёт этот отчёт?">?</button>
         </li>
 
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="edaraBeletNach">
+                <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Начисления Belet для EDARA {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+        </li>
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="ilatBeletNach">
+                <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Начисления Belet для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+        </li>
+
     </ol>
 </div>
 

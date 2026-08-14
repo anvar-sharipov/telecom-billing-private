@@ -211,10 +211,11 @@
 
               {% endif %}
             {% if 'Gayyp' in request.user.username or user.is_superuser %}
-              <li class="nav-item dropdown {% if monthOtchotForAshyr or trafik or trafik_dop or reestrMain or prochie_otchoty or balances %} myActiveLink {% endif %}">
+              <li class="nav-item dropdown {% if monthOtchotForAshyr or monthOtchotForAshyrMB or trafik or trafik_dop or reestrMain or prochie_otchoty or balances %} myActiveLink {% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">отчеты</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item {% if monthOtchotForAshyr %} myActiveLinkLight {% endif %}" href="{% url 'month-ashyr-otchot' %}">сальдо</a></li>
+                  <li><a class="dropdown-item {% if monthOtchotForAshyrMB %} myActiveLinkLight {% endif %}" href="{% url 'month-ashyr-otchot-mb' %}">сальдо Milli Billing</a></li>
                   <li><a class="dropdown-item {% if trafik %} myActiveLinkLight {% endif %}" href="{% url 'trafik' %}">трафик</a></li>
                   <li><a class="dropdown-item {% if trafik_dop %} myActiveLinkLight {% endif %}" href="{% url 'trafik-dop' %}">трафик ДОП</a></li>
                   <li><a class="dropdown-item {% if reestrMain %} myActiveLinkLight {% endif %}" href="{% url 'reestr-main' %}">реестр</a></li>
