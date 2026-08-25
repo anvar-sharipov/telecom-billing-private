@@ -77,7 +77,7 @@
                     <!--Таблица начислений и баланса абонента-->
                     <div>{% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/tableSection.html' %}</div>
                     <!--Таблица историй последних оплат-->
-                    {% if lastPays1 %}
+                    {% if lastPays1 or kabel_pays1 %}
                     <div>
                         <div style="max-height: 640px; overflow-y: auto;">
                             {% include 'telekom/MATB/perekidka/perekidkaSections/abonent1/receipt.html' %}
@@ -92,7 +92,7 @@
             <div class="kassa-main-container" style="margin: 0 !important; padding: 0 !important;">
                     <!--Таблица начислений и баланса абонента-->
                     <div>{% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/tableSection.html' %}</div>
-                    {% if lastPays2 %}
+                    {% if lastPays2 or kabel_pays2 %}
                     <div>
                         <div style="max-height: 640px; overflow-y: auto;">
                             {% include 'telekom/MATB/perekidka/perekidkaSections/abonent2/receipt.html' %}

@@ -154,6 +154,37 @@
         {% endif %}
         {% endfor %}
 
+        {% for kp in kabel_pays2 %}
+        <tr class="col9">
+            <td>Кабель TV</td>
+            <td>{{kp.pay_date|date:'d M Y'}}</td>
+            <td>{{kp.pay|floatformat:2}}</td>
+            <td>{{kp.pay_kassir}}</td>
+        </tr>
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'lenashb' or request.user.username == 'yhlas_mtb' %}
+        <!-- Btn Modal  cancelKabelPayBtnModal-->
+        <td style="border: none; padding: 0;"><button style="margin-bottom: 10px;" type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelKabelPayBtnModal{{kp.pk}}">Удалить платеж</button></td>
+        <!-- Modal  cancelKabelPayBtnModal-->
+        <div class="modal fade" id="cancelKabelPayBtnModal{{kp.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-footer">
+                        <form action="" method="POST" id="">{% csrf_token %}
+                            <div>Комментарий</div>
+                            <textarea name="cancelKabelPayComment" cols="45" rows="10" placeholder="Объязательно Оставьте Комментарий"></textarea>
+                            <div class="d-flex justify-content-between">
+                                <div class="pt-2 fw-bold text-danger">Удалить безвозвратно платеж кабельного ТВ?</div>
+                                <input type="hidden" name="payPkCancelKabelPay" value="{{kp.pk}}">
+                                <div><button class="btn btn-danger" onclick="this.form.submit(); this.disabled=true;">Удалить</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
     </tbody>
 
 <script>

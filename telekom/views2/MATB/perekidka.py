@@ -95,6 +95,23 @@ def perekidka(request):
     else:
         abonent2 = False
 
+    # Платежи кабельного ТВ (актуальный источник - KabelTvNew, не привязан FK к UserTable)
+    context['kabel_pays1'] = []
+    if abonent1 and etrap1 == 'Dashoguz':
+        try:
+            user_kabel1 = KabelTvNew.objects.get(number=abonent1.number)
+            context['kabel_pays1'] = user_kabel1.kabeltvpayhistory_set.order_by('-pay_date')
+        except KabelTvNew.DoesNotExist:
+            pass
+
+    context['kabel_pays2'] = []
+    if abonent2 and etrap2 == 'Dashoguz':
+        try:
+            user_kabel2 = KabelTvNew.objects.get(number=abonent2.number)
+            context['kabel_pays2'] = user_kabel2.kabeltvpayhistory_set.order_by('-pay_date')
+        except KabelTvNew.DoesNotExist:
+            pass
+
     if abonent1:
         if abonent1.service:
             service_total_sum1 = 0
@@ -3056,6 +3073,36 @@ def perekidka(request):
             PayHistory.objects.get(pk=request.POST.get('payPkCancelPay')).delete()
             StaffAction.objects.create(action='Перекидка',comment=f"{request.POST.get('cancelPayComment')}\n\n {mes}", user=request.user)
             messages.success(request, 'Платеж удален')
+
+    # Если нажал на удалить платеж кабельного ТВ (KabelTvNew)
+    if request.method == 'POST' and 'cancelKabelPayComment' in request.POST:
+        if not (request.user.is_superuser or request.user.username in ['Gayyp', 'lenashb', 'yhlas_mtb']):
+            messages.error(request, 'Доступ запрещён')
+        elif request.POST.get('cancelKabelPayComment') == '':
+            messages.error(request, 'Оставьте комментарий')
+        else:
+            kabelPayCancelPay = KabelTvPayHistory.objects.get(pk=request.POST.get('payPkCancelKabelPay'))
+
+            if kabelPayCancelPay.milli_billing_file_name:
+                messages.error(request, f"Платёж пришёл из импорта Milli Billing (файл {kabelPayCancelPay.milli_billing_file_name}) — удалять его отсюда нельзя, откат делается через отмену начисления Milli Billing")
+            else:
+                user_kabel = kabelPayCancelPay.user
+                user_kabel.balance -= kabelPayCancelPay.pay
+                user_kabel.save()
+
+                mes = f"Удаление платежа кабельного ТВ, абонент {user_kabel.number}, {user_kabel.surname} {user_kabel.name}\nИнформация о платеже: сумма: {kabelPayCancelPay.pay}; дата оплаты: {kabelPayCancelPay.pay_date}; кассир: {kabelPayCancelPay.pay_kassir}; карт?: {kabelPayCancelPay.card};"
+
+                KabelComment.objects.create(
+                    user=user_kabel,
+                    worker=request.user.username,
+                    action='Изменения данных',
+                    comment=f"{request.POST.get('cancelKabelPayComment')}\n\n{mes}"
+                )
+
+                kabelPayCancelPay.delete()
+
+                StaffAction.objects.create(action='Кабель TV действия', comment=f"{request.POST.get('cancelKabelPayComment')}\n\n {mes}", user=request.user)
+                messages.success(request, 'Платеж удален')
 
 
     if request.method == 'POST' and 'perekidkaComment' in request.POST:
