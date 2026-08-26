@@ -8,6 +8,7 @@
             <th>Сумма</th>
             <th>Кассир</th>
             <th>К?</th>
+            <th>Файл</th>
             {% if KassaMTB %}
             <th></th>
             {% endif %}
@@ -29,6 +30,7 @@
                         <input type="checkbox" disabled class="form-check-input">
                         {% endif %}
                     </td>
+                    <td>{{p.milli_billing_file_name}}</td>
                 </tr>
             {% endfor %}
         {% endif %}
@@ -49,6 +51,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             {% if lastPay.slr != 0%}
@@ -64,6 +67,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             {% if lastPay.kod != 0%}
@@ -79,6 +83,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             {% if lastPay.zakaz != 0%}
@@ -94,6 +99,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             {% if lastPay.prochee != 0%}
@@ -109,6 +115,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             {% if lastPay.dop_uslugi != 0%}
@@ -124,6 +131,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             
@@ -140,6 +148,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             <!-- {% if lastPay.kabel != 0%}
@@ -170,6 +179,7 @@
                     <input type="checkbox" disabled class="form-check-input">
                     {% endif %}
                 </td>
+                <td>{{lastPay.milli_billing_file_name|default:lastPay.pays_from_billing_file_name}}</td>
             </tr>
             {% endif %}
             <!-- <td style="height: 2px; background-color: black;"></td>
