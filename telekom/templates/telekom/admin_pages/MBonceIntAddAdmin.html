@@ -13,6 +13,8 @@
                 <tr>
                     <th>Этрап</th>
                     <th>Услуга</th>
+                    <th>Год</th>
+                    <th>Месяц</th>
                     <th>Кто добавил</th>
                     <th>Когда добавлено</th>
                     <th>Всего строк</th>
@@ -27,6 +29,8 @@
                 <tr>
                     <td>{{ e.etrap }}</td>
                     <td>{{ e.service_type|capfirst }}</td>
+                    <td>{{ e.year }}</td>
+                    <td>{{ e.month }}</td>
                     <td>{{ e.who_add }}</td>
                     <td>{{ e.created_at }}</td>
                     <td>{{ e.count }}</td>
@@ -39,16 +43,18 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ e.etrap|urlencode }}&service_type={{ e.service_type|urlencode }}">Скачать (Excel)</a>
+                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ e.etrap|urlencode }}&service_type={{ e.service_type|urlencode }}&year={{ e.year|urlencode }}&month={{ e.month|urlencode }}">Скачать (Excel)</a>
                     </td>
                     <td>
                         {% if e.is_nach %}
                             <button class="btn btn-sm btn-secondary" disabled title="Уже начислено, откат запрещён">Откат запрещён</button>
                         {% else %}
-                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ e.etrap }} ({{ e.service_type }})? Будут удалены {{ e.count }} записей из YhlasIyul2026InternetNach.');">
+                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ e.etrap }} ({{ e.service_type }}, {{ e.year }}-{{ e.month }})? Будут удалены {{ e.count }} записей из YhlasIyul2026InternetNach.');">
                                 {% csrf_token %}
                                 <input type="hidden" name="rollback_etrap" value="{{ e.etrap }}">
                                 <input type="hidden" name="rollback_service_type" value="{{ e.service_type }}">
+                                <input type="hidden" name="rollback_year" value="{{ e.year }}">
+                                <input type="hidden" name="rollback_month" value="{{ e.month }}">
                                 <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат</button>
                                 <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
                                 <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
@@ -58,7 +64,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="9" class="text-center">Записей пока нет</td>
+                    <td colspan="11" class="text-center">Записей пока нет</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -94,8 +100,9 @@ function showRollbackPassword(btn) {
                 сначала нужно откатить начисление, и только после этого этрап можно будет откатить здесь.</p>
                 <p><strong>Пароль:</strong> при нажатии "Откат" появляется поле для пароля — без верного пароля
                 ничего не удалится (покажет ошибку). Это дополнительная защита от случайного нажатия.</p>
-                <p>После успешного отката этрап снова можно будет загрузить заново через страницу "once int add"
-                (там стоит проверка "этрап уже добавлен один раз").</p>
+                <p>После успешного отката тот же этрап+услуга+год+месяц снова можно будет загрузить заново через
+                страницу "once nach add" (добавление возможно раз в месяц на комбинацию этрап+услуга+год+месяц,
+                другие периоды этой же комбинации это не затрагивает).</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>

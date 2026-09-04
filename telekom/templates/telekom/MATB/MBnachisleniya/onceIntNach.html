@@ -7,7 +7,9 @@
     <p class="text-light">
         Колонки в файле (в этом порядке): Пользователь, Договор, Учетное имя, Аренда/Списание за услугу, etrap.<br>
         Договор ищется в UserTable/OldLoginDogowor, логика поиска зависит от выбранной услуги. Этрап в файле должен совпадать с выбранным.<br>
-        Если хотя бы одна строка проблемная (договор не найден / этрап не совпадает / некорректная сумма) — ничего не сохраняется.
+        Если хотя бы одна строка проблемная (договор не найден / этрап не совпадает / некорректная сумма) — ничего не сохраняется.<br>
+        Добавление ежемесячное: для одного этрапа+услуги можно добавлять по разу за каждый год/месяц.
+        Имя загружаемого файла должно содержать услугу, этрап, год и месяц (например "Alem Dashoguz 2026.08").
     </p>
 </div>
 
@@ -40,6 +42,24 @@
                         {% if value %}
                             <option value="{{ value }}" {% if value == etrap %} selected {% endif %}>{{ label }}</option>
                         {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="year" required>
+                    <option value="">Год</option>
+                    {% for value, label in years %}
+                        <option value="{{ value }}" {% if value == year %} selected {% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <select class="form-select my_width200 border border-dark" name="month" required>
+                    <option value="">Месяц</option>
+                    {% for value, label in months %}
+                        <option value="{{ value }}" {% if value == month %} selected {% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
             </div>

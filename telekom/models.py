@@ -2508,6 +2508,8 @@ class YhlasIyul2026InternetNach(models.Model):
 	number = models.CharField(max_length=32, verbose_name='Номер абонента', blank=True)
 	is_enterprises = models.CharField(max_length=10, verbose_name='Предприятия', blank=True)
 	is_nach = models.BooleanField(default=False, verbose_name='Начислено в NachMinus')
+	year = models.CharField(max_length=4, verbose_name='Год начисления', blank=True)
+	month = models.CharField(max_length=2, verbose_name='Месяц начисления', blank=True)
 
 	created_at = models.DateTimeField(verbose_name='Когда добавлено', auto_now_add=True, null=True, blank=True)
 	who_add = models.CharField(max_length=500, verbose_name='Кто добавил', blank=True)

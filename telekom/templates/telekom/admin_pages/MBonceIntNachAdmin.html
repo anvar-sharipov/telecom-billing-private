@@ -14,6 +14,8 @@
                 <tr>
                     <th>Этрап</th>
                     <th>Услуга</th>
+                    <th>Год</th>
+                    <th>Месяц</th>
                     <th>Кто начислил</th>
                     <th>Когда начислено</th>
                     <th>Строк</th>
@@ -26,15 +28,19 @@
                 <tr>
                     <td>{{ e.etrap }}</td>
                     <td>{{ e.service_type|capfirst }}</td>
+                    <td>{{ e.year }}</td>
+                    <td>{{ e.month }}</td>
                     <td>{{ e.who_nach }}</td>
                     <td>{{ e.nach_at }}</td>
                     <td>{{ e.count }}</td>
                     <td>{{ e.total_arenda|floatformat:2 }}</td>
                     <td>
-                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление этрапа {{ e.etrap }} ({{ e.service_type }})? Балансы {{ e.count }} строк будут уменьшены обратно.');">
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить начисление этрапа {{ e.etrap }} ({{ e.service_type }}, {{ e.year }}-{{ e.month }})? Балансы {{ e.count }} строк будут уменьшены обратно.');">
                             {% csrf_token %}
                             <input type="hidden" name="rollback_nach_etrap" value="{{ e.etrap }}">
                             <input type="hidden" name="rollback_nach_service_type" value="{{ e.service_type }}">
+                            <input type="hidden" name="rollback_nach_year" value="{{ e.year }}">
+                            <input type="hidden" name="rollback_nach_month" value="{{ e.month }}">
                             <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат начисления</button>
                             <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
                             <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
@@ -43,7 +49,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center">Начисленных этрапов пока нет</td>
+                    <td colspan="9" class="text-center">Начисленных этрапов пока нет</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -77,14 +83,16 @@ function showRollbackPassword(btn) {
                     <li>Для каждой строки YhlasIyul2026InternetNach этрапа находится абонент (UserTable по
                         number+etrap) и сумма (Аренда) суммируется по абоненту.</li>
                     <li>Соответствующий баланс UserTable (b_internet для Internet/Belet, b_alem для Alem)
-                        увеличивается обратно на эту сумму, поле NachMinus (internet/alem/belet, за 2026-07)
-                        уменьшается на эту же сумму — ровно на то, что было начислено, ничего больше.
-                        Сама запись NachMinus не удаляется (там могут быть другие начисления того же периода).</li>
+                        увеличивается обратно на эту сумму, поле NachMinus (internet/alem/belet, за тот же
+                        год/месяц, что и у откатываемого начисления) уменьшается на эту же сумму — ровно на то,
+                        что было начислено, ничего больше. Сама запись NachMinus не удаляется (там могут быть
+                        другие начисления того же периода).</li>
                     <li>`YhlasIyul2026InternetNach.is_nach` возвращается в False (и `who_nach`/`nach_at`
                         очищаются) — после этого можно либо начислить этрап заново на странице "once int nach",
                         либо полностью откатить (удалить) add на странице "MB once int add".</li>
-                    <li>Если для какого-то абонента не находится UserTable или NachMinus за 2026-07 — откат
-                        полностью прерывается (ничего не меняется), чтобы не оставить частично откаченные данные.</li>
+                    <li>Если для какого-то абонента не находится UserTable или NachMinus за нужный год/месяц —
+                        откат полностью прерывается (ничего не меняется), чтобы не оставить частично откаченные
+                        данные.</li>
                 </ul>
                 <p><strong>Пароль:</strong> при нажатии "Откат начисления" появляется поле пароля — без верного
                 пароля ничего не изменится.</p>

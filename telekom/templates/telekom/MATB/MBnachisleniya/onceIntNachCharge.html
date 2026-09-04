@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="p-4 my_block_center my_width800" style="margin-top: 60px;">
-    <h4 class="text-light text-center">once int nach — начисление YhlasIyul2026InternetNach в NachMinus ({{ nach_year }}-{{ nach_month }})</h4>
+    <h4 class="text-light text-center">once int nach — начисление YhlasIyul2026InternetNach в NachMinus</h4>
     <p class="text-light">
         Список этрапов+услуг, для которых был сделан "once nach add". Internet → NachMinus.internet / b_internet,
         Alem → NachMinus.alem / b_alem, Belet → NachMinus.belet / b_internet (у Belet своего баланса нет).<br>
@@ -19,6 +19,8 @@
             <tr>
                 <th>Этрап</th>
                 <th>Услуга</th>
+                <th>Год</th>
+                <th>Месяц</th>
                 <th>Кто добавил</th>
                 <th>Строк</th>
                 <th>Сумма</th>
@@ -31,6 +33,8 @@
             <tr>
                 <td>{{ e.etrap }}</td>
                 <td>{{ e.service_type|capfirst }}</td>
+                <td>{{ e.year }}</td>
+                <td>{{ e.month }}</td>
                 <td>{{ e.who_add }}</td>
                 <td>{{ e.count }}</td>
                 <td>{{ e.total_arenda|floatformat:2 }}</td>
@@ -49,8 +53,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="etrap" value="{{ e.etrap }}">
                             <input type="hidden" name="service_type" value="{{ e.service_type }}">
-                            <input type="hidden" name="year" value="{{ nach_year }}">
-                            <input type="hidden" name="month" value="{{ nach_month }}">
+                            <input type="hidden" name="year" value="{{ e.year }}">
+                            <input type="hidden" name="month" value="{{ e.month }}">
                             <button type="submit" name="onceIntNachChargeTest" value="1" class="btn btn-sm btn-primary">Проверить</button>
                             <button type="submit" name="onceIntNachChargeReal" value="1" class="btn btn-sm btn-danger">Начислить</button>
                             <button type="submit" name="onceIntNachChargeExportProblems" value="1" class="btn btn-sm btn-outline-light">Скачать проблемные</button>
@@ -62,7 +66,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="text-center">Ничего ещё не добавлено ("once nach add")</td>
+                <td colspan="9" class="text-center">Ничего ещё не добавлено ("once nach add")</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -78,6 +82,7 @@
     {% endif %}
     <div class="d-flex"><div class="my_width200">Этрап:</div><div class="my_width150">{{chargeEtrap}}</div></div>
     <div class="d-flex"><div class="my_width200">Услуга:</div><div class="my_width150">{{chargeServiceType}}</div></div>
+    <div class="d-flex"><div class="my_width200">Период:</div><div class="my_width150">{{chargeYear}}-{{chargeMonth}}</div></div>
     <div class="d-flex"><div class="my_width200">Всего строк:</div><div class="my_width150">{{totalCount}}</div></div>
     <div class="d-flex"><div class="my_width200 text-danger">Проблемных строк:</div><div class="my_width150 text-danger">{{problem_count}}</div></div>
     <hr>

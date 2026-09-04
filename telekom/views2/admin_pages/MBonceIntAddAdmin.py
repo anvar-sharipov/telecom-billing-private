@@ -28,14 +28,16 @@ def MBonceIntAddAdmin(request):
     if request.method == 'GET' and request.GET.get('download_etrap'):
         etrap = request.GET.get('download_etrap')
         service_type = request.GET.get('service_type', '')
-        rows = YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type).order_by('id')
+        year = request.GET.get('year', '')
+        month = request.GET.get('month', '')
+        rows = YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, year=year, month=month).order_by('id')
 
         headers = ('Услуга', 'Пользователь', 'Договор', 'Учетное имя', 'Сумма', 'etrap', 'Номер абонента', 'Предприятия', 'Начислено', 'Кто добавил', 'Когда добавлено', 'Файл')
         data = tablib.Dataset(headers=headers)
         for r in rows:
             data.append((r.service_type, r.fio, r.dogowor, r.login, r.arenda, r.etrap, r.number, r.is_enterprises, r.is_nach, r.who_add, r.created_at.strftime('%d.%m.%Y %H:%M') if r.created_at else '', r.file_name))
 
-        filename = f"YhlasIyul2026InternetNach_{etrap}_{service_type}_{datetime.now().strftime('%Y-%m-%d_%H%M')}.xlsx"
+        filename = f"YhlasIyul2026InternetNach_{etrap}_{service_type}_{year}-{month}_{datetime.now().strftime('%Y-%m-%d_%H%M')}.xlsx"
         encoded_filename = urllib.parse.quote(filename.encode('utf-8'))
 
         response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
@@ -45,25 +47,27 @@ def MBonceIntAddAdmin(request):
     if request.method == 'POST' and 'rollback_etrap' in request.POST:
         etrap = request.POST.get('rollback_etrap')
         service_type = request.POST.get('rollback_service_type', '')
+        year = request.POST.get('rollback_year', '')
+        month = request.POST.get('rollback_month', '')
         entered_password = request.POST.get('rollback_password', '')
 
         if entered_password != ROLLBACK_PASSWORD:
-            messages.error(request, f'Неверный пароль отката. Этрап "{etrap}" ({service_type}) не тронут.')
-        elif YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, is_nach=True).exists():
-            messages.error(request, f'Откат запрещён: этрап "{etrap}" ({service_type}) уже начислен в NachMinus. Сначала нужно откатить начисление.')
+            messages.error(request, f'Неверный пароль отката. Этрап "{etrap}" ({service_type}, {year}-{month}) не тронут.')
+        elif YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, year=year, month=month, is_nach=True).exists():
+            messages.error(request, f'Откат запрещён: этрап "{etrap}" ({service_type}, {year}-{month}) уже начислен в NachMinus. Сначала нужно откатить начисление.')
         else:
-            deleted_count = YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type).count()
-            YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type).delete()
-            StaffAction.objects.create(user=request.user, comment=f'Откат YhlasIyul2026InternetNach, этрап {etrap}, услуга {service_type}, удалено записей {deleted_count}, дата отката {datetime.now()}, откатил {request.user.username}', action='Импорт с xlsx Интернет Начисления в БД')
-            messages.success(request, f'Этрап "{etrap}" ({service_type}) откачен, удалено записей: {deleted_count}')
+            deleted_count = YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, year=year, month=month).count()
+            YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, year=year, month=month).delete()
+            StaffAction.objects.create(user=request.user, comment=f'Откат YhlasIyul2026InternetNach, этрап {etrap}, услуга {service_type}, период {year}-{month}, удалено записей {deleted_count}, дата отката {datetime.now()}, откатил {request.user.username}', action='Импорт с xlsx Интернет Начисления в БД')
+            messages.success(request, f'Этрап "{etrap}" ({service_type}, {year}-{month}) откачен, удалено записей: {deleted_count}')
 
-    etraps_data = YhlasIyul2026InternetNach.objects.values('etrap', 'service_type').annotate(
+    etraps_data = YhlasIyul2026InternetNach.objects.values('etrap', 'service_type', 'year', 'month').annotate(
         count=Count('id'),
         total_arenda=Sum('arenda'),
         is_nach=BoolOr('is_nach'),
         who_add=Max('who_add'),
         created_at=Max('created_at'),
-    ).order_by('etrap', 'service_type')
+    ).order_by('-year', '-month', 'etrap', 'service_type')
 
     context['etraps_data'] = etraps_data
 

@@ -27,6 +27,10 @@ SERVICE_TYPE_LABELS = {
     'belet': 'Belet',
 }
 
+MONTH_CHOICES = [(f'{m:02d}', f'{m:02d}') for m in range(1, 13)]
+_current_year = datetime.now().year
+YEAR_CHOICES = [(str(y), str(y)) for y in range(_current_year - 1, _current_year + 3)]
+
 # Код этрапа в contractCode/dogowor старого образца (lanbilling), используется для Alem IPTV-XXX кодов
 ETRAP_CODES = {
     'Dashoguz': '322',
@@ -301,11 +305,17 @@ def onceIntNach(request):
     context['matbIndex'] = True
     context['etraps'] = etraps
     context['service_types'] = SERVICE_TYPE_CHOICES
+    context['months'] = MONTH_CHOICES
+    context['years'] = YEAR_CHOICES
 
     etrap = request.POST.get('etrap') or ''
     service_type = request.POST.get('service_type') or ''
+    year = request.POST.get('year') or ''
+    month = request.POST.get('month') or ''
     context['etrap'] = etrap
     context['service_type'] = service_type
+    context['year'] = year
+    context['month'] = month
 
     if request.method == 'POST':
         if not etrap:
@@ -316,8 +326,12 @@ def onceIntNach(request):
             messages.error(request, 'Выберите услугу (Internet/Alem/Belet)')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
 
-        if YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type).exists():
-            messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" уже был добавлен ранее в YhlasIyul2026InternetNach. Повторное добавление запрещено.')
+        if not year or not month:
+            messages.error(request, 'Выберите год и месяц начисления')
+            return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
+
+        if YhlasIyul2026InternetNach.objects.filter(etrap=etrap, service_type=service_type, year=year, month=month).exists():
+            messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" за {year}-{month} уже был добавлен ранее в YhlasIyul2026InternetNach. Повторное добавление запрещено.')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
 
         try:
@@ -328,6 +342,19 @@ def onceIntNach(request):
 
         if not str(uploaded_file).lower().endswith('.xlsx'):
             messages.error(request, 'Файл должен быть формата xlsx')
+            return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
+
+        filename_lower = str(uploaded_file).lower()
+        service_label = SERVICE_TYPE_LABELS[service_type]
+        name_checks = {
+            f'услуга ({service_label})': service_label.lower(),
+            f'этрап ({etrap})': etrap.lower(),
+            f'год ({year})': year.lower(),
+            f'месяц ({month})': month.lower(),
+        }
+        missing = [label for label, value in name_checks.items() if value not in filename_lower]
+        if missing:
+            messages.error(request, f'Имя файла "{uploaded_file}" должно содержать: {", ".join(name_checks.keys())}. Не найдено: {", ".join(missing)}')
             return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
 
         try:
@@ -377,18 +404,20 @@ def onceIntNach(request):
             for r in rows_to_create:
                 r.who_add = request.user.username
                 r.file_name = str(uploaded_file)
+                r.year = year
+                r.month = month
             try:
                 with transaction.atomic():
-                    if YhlasIyul2026InternetNach.objects.select_for_update().filter(etrap=etrap, service_type=service_type).exists():
-                        messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" уже был добавлен ранее в YhlasIyul2026InternetNach. Повторное добавление запрещено.')
+                    if YhlasIyul2026InternetNach.objects.select_for_update().filter(etrap=etrap, service_type=service_type, year=year, month=month).exists():
+                        messages.error(request, f'Этрап "{etrap}" для услуги "{SERVICE_TYPE_LABELS[service_type]}" за {year}-{month} уже был добавлен ранее в YhlasIyul2026InternetNach. Повторное добавление запрещено.')
                         return render(request, 'telekom/MATB/MBnachisleniya/onceIntNach.html', context)
                     YhlasIyul2026InternetNach.objects.bulk_create(rows_to_create)
                     StaffAction.objects.create(
                         user=request.user,
-                        comment=f'Добавление в YhlasIyul2026InternetNach, услуга {service_type}, этрап {etrap}, файл {str(uploaded_file)}, строк {len(rows_to_create)}, добавил {request.user.username}',
+                        comment=f'Добавление в YhlasIyul2026InternetNach, услуга {service_type}, этрап {etrap}, период {year}-{month}, файл {str(uploaded_file)}, строк {len(rows_to_create)}, добавил {request.user.username}',
                         action='Импорт с xlsx Интернет Начисления в БД',
                     )
-                messages.success(request, f'Успешно добавлено {len(rows_to_create)} записей в YhlasIyul2026InternetNach')
+                messages.success(request, f'Успешно добавлено {len(rows_to_create)} записей в YhlasIyul2026InternetNach ({year}-{month})')
             except Exception as e:
                 messages.error(request, f'Ошибка при сохранении, тип ошибки == {e}')
                 logger.error(f'Ошибка при сохранении YhlasIyul2026InternetNach, тип ошибки == {e}')
