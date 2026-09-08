@@ -2526,6 +2526,42 @@ class YhlasIyul2026InternetNach(models.Model):
 		verbose_name_plural = 'Yhlas Iyul 2026 Интернет начисление'
 
 
+# Массовое добавление договоров (напр. Belet) в UserTable.dogowor_belet / OldLoginDogowor.dogowor_belet из Excel
+DOGOWOR_ADD_SERVICE_TYPES = (
+	('belet', 'Belet'),
+)
+
+# Поле, куда записывается new_dogowor при apply. Расширять при добавлении новых типов (alem/telefoniya)
+DOGOWOR_FIELD_BY_SERVICE = {'belet': 'dogowor_belet'}
+
+
+class OnceDogoworAdd(models.Model):
+	service_type = models.CharField(max_length=20, choices=DOGOWOR_ADD_SERVICE_TYPES, default='belet', verbose_name='Услуга')
+	etrap = models.CharField(max_length=64, verbose_name='Этрап', blank=True)
+	fio = models.CharField(max_length=500, verbose_name='Пользователь (ФИО)', blank=True)
+	new_dogowor = models.CharField(max_length=100, verbose_name='Новый договор (напр. Belet)', blank=True)
+	search_dogowor = models.CharField(max_length=100, verbose_name='Договор для поиска (напр. Internet)', blank=True)
+	login = models.CharField(max_length=100, verbose_name='Учетное имя', blank=True)
+	number = models.CharField(max_length=32, verbose_name='Номер абонента', blank=True)
+	found_in = models.CharField(max_length=16, choices=(('usertable', 'UserTable'), ('old', 'OldLoginDogowor')), blank=True, verbose_name='Найден в')
+	previous_value = models.CharField(max_length=100, verbose_name='Предыдущее значение поля (для отката)', blank=True)
+	is_applied = models.BooleanField(default=False, verbose_name='Применено в UserTable/Old?')
+
+	created_at = models.DateTimeField(verbose_name='Когда добавлено', auto_now_add=True, null=True, blank=True)
+	who_add = models.CharField(max_length=500, verbose_name='Кто добавил', blank=True)
+	file_name = models.CharField(max_length=500, verbose_name='Файл', blank=True)
+
+	who_apply = models.CharField(max_length=500, verbose_name='Кто применил', blank=True)
+	applied_at = models.DateTimeField(verbose_name='Когда применено', null=True, blank=True)
+
+	def __str__(self):
+		return f"{self.service_type} {self.new_dogowor} {self.fio}"
+
+	class Meta:
+		verbose_name = 'Once Dogowor Add'
+		verbose_name_plural = 'Once Dogowor Add'
+
+
 class AdminBroadcastMessage(models.Model):
 	text = models.TextField(verbose_name='Текст сообщения', blank=True)
 	is_enabled = models.BooleanField(default=False, verbose_name='Показывать на всех страницах')

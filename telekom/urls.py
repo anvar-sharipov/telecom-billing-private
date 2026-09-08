@@ -135,6 +135,8 @@ from telekom.views2.Kassa.nachMilliBillingPay import nachMilliBillingPay
 from telekom.views2.Kassa.milliBillingCheckPays import milliBillingCheckPays
 from telekom.views2.MATB.MBnachisleniya.onceIntNach import onceIntNach
 from telekom.views2.MATB.MBnachisleniya.onceIntNachCharge import onceIntNachCharge
+from telekom.views2.MATB.MBnachisleniya.onceDogoworAdd import onceDogoworAdd
+from telekom.views2.MATB.MBnachisleniya.onceDogoworNach import onceDogoworNach
 from telekom.views2.MATB.MBnachisleniya.vneshniePlatejiAdd import vneshniePlatejiAdd
 from telekom.views2.Kassa.kassirs_billing_names import kassirs_billing_names
 #  # Kassa Rezerw
@@ -212,6 +214,8 @@ from telekom.views2.admin_pages.milliBillingNachAdmin import milliBillingNachAdm
 from telekom.views2.admin_pages.intizarInternetNyrhnamaSort import intizarInternetNyrhnamaSort
 from telekom.views2.admin_pages.MBonceIntAddAdmin import MBonceIntAddAdmin
 from telekom.views2.admin_pages.MBonceIntNachAdmin import MBonceIntNachAdmin
+from telekom.views2.admin_pages.MBonceDogoworAddAdmin import MBonceDogoworAddAdmin
+from telekom.views2.admin_pages.MBonceDogoworNachAdmin import MBonceDogoworNachAdmin
 from telekom.views2.admin_pages.adminMessage import adminMessage
 from telekom.views2.admin_pages.VneshniePlatejiAddAdmin import VneshniePlatejiAddAdmin
 from telekom.views2.admin_pages.VneshniePlatejiNachAdmin import VneshniePlatejiNachAdmin
@@ -340,6 +344,8 @@ urlpatterns = [
     path('milliBillingCheckPays', milliBillingCheckPays, name='milliBillingCheckPays'),
     path('onceNachAdd', onceIntNach, name='onceNachAdd'),
     path('onceIntNach', onceIntNachCharge, name='onceIntNach'),
+    path('onceDogoworAdd', onceDogoworAdd, name='onceDogoworAdd'),
+    path('onceDogoworNach', onceDogoworNach, name='onceDogoworNach'),
     path('vneshniePlatejiAdd', vneshniePlatejiAdd, name='vneshniePlatejiAdd'),
     path('exportMilliBillingUnmatched', exportMilliBillingUnmatched, name='exportMilliBillingUnmatched'),
     path('kassirs_billing_names', kassirs_billing_names, name='kassirs_billing_names'),
@@ -428,6 +434,8 @@ urlpatterns = [
     path('intizarInternetNyrhnamaSort', intizarInternetNyrhnamaSort, name='intizarInternetNyrhnamaSort'),
     path('MBonceIntAddAdmin', MBonceIntAddAdmin, name='MBonceIntAddAdmin'),
     path('MBonceIntNachAdmin', MBonceIntNachAdmin, name='MBonceIntNachAdmin'),
+    path('MBonceDogoworAddAdmin', MBonceDogoworAddAdmin, name='MBonceDogoworAddAdmin'),
+    path('MBonceDogoworNachAdmin', MBonceDogoworNachAdmin, name='MBonceDogoworNachAdmin'),
     path('adminMessage', adminMessage, name='adminMessage'),
     path('VneshniePlatejiAddAdmin', VneshniePlatejiAddAdmin, name='VneshniePlatejiAddAdmin'),
     path('VneshniePlatejiNachAdmin', VneshniePlatejiNachAdmin, name='VneshniePlatejiNachAdmin'),

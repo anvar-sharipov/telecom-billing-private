@@ -1,0 +1,94 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}MB once dogowor nach - откат применения{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>MB once dogowor nach - откат применения
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#MBonceDogoworNachAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+    <p class="text-muted">Откатывает применение, сделанное на странице "once dogowor nach": возвращает поле договора (например dogowor_belet) в UserTable/OldLoginDogowor к прежнему значению. После отката этрап+тип договора снова станет "не применён", и его можно будет либо применить заново, либо откатить полностью (удалить) на странице "MB once dogowor add".</p>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Этрап</th>
+                    <th>Тип договора</th>
+                    <th>Кто применил</th>
+                    <th>Когда применено</th>
+                    <th>Строк</th>
+                    <th>Откат применения</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for g in groups_data %}
+                <tr>
+                    <td>{{ g.etrap }}</td>
+                    <td>{{ g.service_type|capfirst }}</td>
+                    <td>{{ g.who_apply }}</td>
+                    <td>{{ g.applied_at }}</td>
+                    <td>{{ g.count }}</td>
+                    <td>
+                        <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить применение этрапа {{ g.etrap }} ({{ g.service_type }})? Поле договора у {{ g.count }} строк будет возвращено к прежнему значению.');">
+                            {% csrf_token %}
+                            <input type="hidden" name="rollback_nach_etrap" value="{{ g.etrap }}">
+                            <input type="hidden" name="rollback_nach_service_type" value="{{ g.service_type }}">
+                            <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат применения</button>
+                            <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                            <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Применённых этрапов пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="MBonceDogoworNachAdminInfoModal" tabindex="-1" aria-labelledby="MBonceDogoworNachAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="MBonceDogoworNachAdminInfoModalLabel">MB once dogowor nach (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>По-русски:</strong><br>
+                Страница для отката применения, сделанного через "once dogowor nach". В списке — только уже
+                применённые (is_applied=True) этрапы+типы договора. Доступ только у admin1.</p>
+                <p><strong>Что происходит при откате:</strong></p>
+                <ul>
+                    <li>Для каждой применённой строки OnceDogoworAdd находится абонент (UserTable или
+                        OldLoginDogowor, по number+etrap+found_in, сохранённым при add).</li>
+                    <li>Если текущее значение поля договора не совпадает с тем, что было записано при применении
+                        (кто-то поменял вручную) — откат полностью прерывается, ничего не меняется.</li>
+                    <li>Иначе поле договора возвращается к значению, сохранённому в OnceDogoworAdd.previous_value
+                        (обычно пустая строка), `is_applied` возвращается в False (`who_apply`/`applied_at`
+                        очищаются) — после этого можно либо применить этрап заново на странице "once dogowor
+                        nach", либо полностью откатить (удалить) add на странице "MB once dogowor add".</li>
+                </ul>
+                <p><strong>Пароль:</strong> при нажатии "Откат применения" появляется поле пароля — без верного
+                пароля ничего не изменится.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

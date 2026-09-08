@@ -1,0 +1,104 @@
+{% extends 'telekom/BaseNavbar/base.html' %}
+{% block title %}MB once dogowor add - откат{% endblock %}
+{% block content %}
+
+<div class="container mt-5 text-light" style="margin-top: 80px;">
+    <h4>MB once dogowor add - этрапы и откат
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle" style="width: 24px; height: 24px; padding: 0; line-height: 1;" data-bs-toggle="modal" data-bs-target="#MBonceDogoworAddAdminInfoModal" title="Что это за страница?">?</button>
+    </h4>
+
+    <div class="table-responsive mt-3">
+        <table class="table table-dark table-bordered table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Этрап</th>
+                    <th>Тип договора</th>
+                    <th>Кто добавил</th>
+                    <th>Когда добавлено</th>
+                    <th>Всего строк</th>
+                    <th>Применено</th>
+                    <th>Скачать</th>
+                    <th>Откат</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for g in groups_data %}
+                <tr>
+                    <td>{{ g.etrap }}</td>
+                    <td>{{ g.service_type|capfirst }}</td>
+                    <td>{{ g.who_add }}</td>
+                    <td>{{ g.created_at }}</td>
+                    <td>{{ g.count }}</td>
+                    <td>
+                        {% if g.is_applied %}
+                            <span class="badge bg-success">{{ g.applied_count }} / {{ g.count }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">0 / {{ g.count }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-light" href="?download_etrap={{ g.etrap|urlencode }}&service_type={{ g.service_type|urlencode }}">Скачать (Excel)</a>
+                    </td>
+                    <td>
+                        {% if g.is_applied %}
+                            <button class="btn btn-sm btn-secondary" disabled title="Часть строк уже применена, откат запрещён">Откат запрещён</button>
+                        {% else %}
+                            <form method="POST" class="d-flex align-items-center" style="gap: 5px;" onsubmit="return confirm('Откатить этрап {{ g.etrap }} ({{ g.service_type }})? Будут удалены {{ g.count }} записей из OnceDogoworAdd.');">
+                                {% csrf_token %}
+                                <input type="hidden" name="rollback_etrap" value="{{ g.etrap }}">
+                                <input type="hidden" name="rollback_service_type" value="{{ g.service_type }}">
+                                <button type="button" class="btn btn-sm btn-danger rollback-toggle-btn" onclick="showRollbackPassword(this)">Откат</button>
+                                <input type="password" name="rollback_password" class="form-control form-control-sm rollback-password-input" style="display:none; width:140px;" placeholder="Пароль">
+                                <button type="submit" class="btn btn-sm btn-outline-light rollback-submit-btn" style="display:none;">OK</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">Записей пока нет</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showRollbackPassword(btn) {
+    var form = btn.closest('form');
+    btn.style.display = 'none';
+    form.querySelector('.rollback-password-input').style.display = 'inline-block';
+    form.querySelector('.rollback-submit-btn').style.display = 'inline-block';
+    form.querySelector('.rollback-password-input').focus();
+}
+</script>
+
+<div class="modal fade" id="MBonceDogoworAddAdminInfoModal" tabindex="-1" aria-labelledby="MBonceDogoworAddAdminInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg text-dark">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="MBonceDogoworAddAdminInfoModalLabel">MB once dogowor add (Админ) — что это и как работать</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>По-русски:</strong><br>
+                Страница показывает список этрапов+типов договора, для которых через "once dogowor add" были
+                добавлены записи OnceDogoworAdd (кто, когда, сколько строк, сколько уже применено), позволяет
+                скачать все строки этрапа в Excel и полностью откатить (удалить) добавление — вернуть к состоянию
+                "как будто не добавляли". Доступ только у admin1.</p>
+                <p><strong>Когда откат НЕ сработает:</strong> если хотя бы одна строка этрапа уже ПРИМЕНЕНА
+                (записана в UserTable/OldLoginDogowor), кнопка "Откат" будет заблокирована и заменена на "Откат
+                запрещён" — сначала нужно откатить применение на странице "MB once dogowor nach", и только после
+                этого этрап можно будет откатить здесь.</p>
+                <p><strong>Пароль:</strong> при нажатии "Откат" появляется поле для пароля — без верного пароля
+                ничего не удалится (покажет ошибку). Это дополнительная защита от случайного нажатия.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
