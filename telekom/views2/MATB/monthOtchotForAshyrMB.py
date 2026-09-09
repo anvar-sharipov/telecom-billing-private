@@ -14,7 +14,7 @@ from django.http import HttpResponse
 WN_KASSIRS = ['E-government', 'Tolleg APP TMCELL', 'Saray Tolegy', 'Dostluk Bank', 'Turkmen Pochta', 'HalkBank Terminal Payments']
 
 # Точные имена manager/kassir для внешних платежей Milli Billing (см. vneshniePlatejiAdd.py)
-MB_KASSA_MANAGERS = ['Capar', 'eGov', 'Toleg', 'Turkmenpost diller']
+MB_KASSA_MANAGERS = ['Capar', 'eGov', 'Saray', 'Toleg', 'Turkmenpost diller']
 
 
 def monthOtchotForAshyrMB(request):
@@ -64,7 +64,7 @@ def monthOtchotForAshyrMB(request):
         for u in kabelNewUsersNach:
             kabelNew_number_nach[u.user.number] = u.nach
 
-        # Индексы списка (63 элемента, 0..62) — как в monthOtchotForAshyr.py (0..45), плюс Milli Billing (46..62):
+        # Индексы списка (67 элементов, 0..66) — как в monthOtchotForAshyr.py (0..45), плюс Milli Billing (46..66):
         # [0] DT  [1] KT
         # [2] telefon nach  [3] slr nach  [4] kod nach  [5] zakaz nach  [6] prochee nach (0)
         # [7] dop_uslugi nach  [8] internet nach  [9] kabel nach (KabelNach)  [10] alem nach
@@ -83,22 +83,23 @@ def monthOtchotForAshyrMB(request):
         # --- Milli Billing eGov --- [51..54]
         # --- Milli Billing Toleg --- [55..58]
         # --- Milli Billing Turkmenpost diller --- [59..62]
+        # --- Milli Billing Saray --- [63] internet [64] alem [65] abonplata [66] itogo
 
         for i in range(20000, 80000):
             if i in kabelNew_number_nach and etrap == 'Dashoguz':
-                row = [0] * 63
+                row = [0] * 67
                 row[9] = kabelNew_number_nach[i]
                 sagitSaldoDict[i] = row
             else:
-                sagitSaldoDict[i] = [0] * 63
+                sagitSaldoDict[i] = [0] * 67
 
         for i in range(90000, 105000):
             if i in kabelNew_number_nach and etrap == 'Dashoguz':
-                row = [0] * 63
+                row = [0] * 67
                 row[9] = kabelNew_number_nach[i]
                 sagitSaldoDict[i] = row
             else:
-                sagitSaldoDict[i] = [0] * 63
+                sagitSaldoDict[i] = [0] * 67
 
         # Начисления (включая Belet — раньше нигде не читалось)
         for n in nachMinus:
@@ -169,6 +170,10 @@ def monthOtchotForAshyrMB(request):
                 lst[59] += p.internet
                 lst[60] += p.alem
                 lst[61] += p.prochee
+            elif p.kassir == 'Saray':
+                lst[63] += p.internet
+                lst[64] += p.alem
+                lst[65] += p.prochee
             # --- Старые (lanbilling) внешние каналы ---
             elif 'E-government' in p.kassir:
                 lst[17] += p.internet
@@ -215,9 +220,10 @@ def monthOtchotForAshyrMB(request):
             lst[54] = lst[51] + lst[52] + lst[53]                                               # mb_egov_itogo
             lst[58] = lst[55] + lst[56] + lst[57]                                               # mb_toleg_itogo
             lst[62] = lst[59] + lst[60] + lst[61]                                               # tmpost_itogo
+            lst[66] = lst[63] + lst[64] + lst[65]                                               # saray_mb_itogo
             lst[45] = (
                 lst[16] + lst[20] + lst[24] + lst[28] + lst[32] + lst[36] + lst[40] + lst[44]   # старые
-                + lst[50] + lst[54] + lst[58] + lst[62]                                          # Milli Billing
+                + lst[50] + lst[54] + lst[58] + lst[62] + lst[66]                                # Milli Billing
             )  # wsego_oplacheno
 
         headers = (
@@ -234,6 +240,8 @@ def monthOtchotForAshyrMB(request):
             "MB_Toleg_Internet", "MB_Toleg_Alem", "MB_Toleg_Abonplata", "MB_Toleg_Itogo",
             # Milli Billing — Turkmenpost diller
             "Turkmenpost_Diller_Internet", "Turkmenpost_Diller_Alem", "Turkmenpost_Diller_Abonplata", "Turkmenpost_Diller_Itogo",
+            # Milli Billing — Saray
+            "MB_Saray_Internet", "MB_Saray_Alem", "MB_Saray_Abonplata", "MB_Saray_Itogo",
             # Dostluk Bank (legacy)
             "Dostluk_Internet", "Dostluk_Alem", "Dostluk_Abonplata", "Dostluk_Itogo",
             # E-government (legacy)
@@ -270,6 +278,8 @@ def monthOtchotForAshyrMB(request):
                 v[55], v[56], v[57], v[58],
                 # Turkmenpost diller
                 v[59], v[60], v[61], v[62],
+                # Saray (Milli Billing)
+                v[63], v[64], v[65], v[66],
                 # Dostluk
                 v[29], v[30], v[31], v[32],
                 # E-government (legacy)

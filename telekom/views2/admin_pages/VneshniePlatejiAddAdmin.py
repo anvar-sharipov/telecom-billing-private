@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 ROLLBACK_PASSWORD = '543569145637383'
-KASSA_MANAGERS = ['Capar', 'eGov', 'Toleg', 'Turkmenpost diller']
+KASSA_MANAGERS = ['Capar', 'eGov', 'Saray', 'Toleg', 'Turkmenpost diller']
 
 
 def VneshniePlatejiAddAdmin(request):

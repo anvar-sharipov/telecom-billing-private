@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 # Milli Billing "Online" источники внешних платежей — доверенный список.
 # Всё что приходит из этого файла — 100% внешние платежи (kassir_etrap='Внешние платежи').
-KASSA_MANAGERS = ['Capar', 'eGov', 'Toleg', 'Turkmenpost diller']
+KASSA_MANAGERS = ['Capar', 'eGov', 'Saray', 'Toleg', 'Turkmenpost diller']
 
 TARIFF_TO_TYPE = {'Internet': 'Internet', 'Älem TV': 'Alem', 'Telefon': 'Abonplata'}
 
