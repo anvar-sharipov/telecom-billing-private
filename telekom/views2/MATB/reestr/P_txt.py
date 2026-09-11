@@ -160,7 +160,7 @@ def P_txt (request, year, month, etrap):
                 name_z = user.name
                 account_z = user.account
                 # Шапка #
-                lines.append(f'\n           "Turkmenaragatnasyk" agentligi. "Dasoguztelekom" WEAK\n')
+                lines.append(f'\n           "Turkmenaragatnasyk" ministrligi. "Dasoguztelekom" WEAK\n')
 
             
                 lines.append(f'Dasoguz saheri, Turkmenbasybank, H/H 23201934131327400056000  tel.52327,50026\n')
@@ -214,7 +214,7 @@ def P_txt (request, year, month, etrap):
         
     
         # Шапка #
-        lines.append(f'\n           "Turkmenaragatnasyk" agentligi. "Dasoguztelekom" WEAK\n')
+        lines.append(f'\n           "Turkmenaragatnasyk" ministrligi. "Dasoguztelekom" WEAK\n')
 
         if etrap == 'Dashoguz':
             lines.append(f'Dasoguz saheri, Turkmenbasybank, H/H 23201934131327400056000  tel.52327,50026\n')
@@ -448,7 +448,7 @@ def P_txt (request, year, month, etrap):
 #                 name_z = user.name
 #                 account_z = user.account
 #                 # Шапка #
-#                 lines.append(f'\n           "Turkmenaragatnasyk" agentligi. "Dasoguztelekom" WEAK\n')
+#                 lines.append(f'\n           "Turkmenaragatnasyk" ministrligi. "Dasoguztelekom" WEAK\n')
 
             
 #                 lines.append(f'Dasoguz saheri, Turkmenbasybank, H/H 23201934131327400056000  tel.52327,50026\n')
@@ -502,7 +502,7 @@ def P_txt (request, year, month, etrap):
         
     
 #         # Шапка #
-#         lines.append(f'\n           "Turkmenaragatnasyk" agentligi. "Dasoguztelekom" WEAK\n')
+#         lines.append(f'\n           "Turkmenaragatnasyk" ministrligi. "Dasoguztelekom" WEAK\n')
 
 #         if etrap == 'Dashoguz':
 #             lines.append(f'Dasoguz saheri, Turkmenbasybank, H/H 23201934131327400056000  tel.52327,50026\n')

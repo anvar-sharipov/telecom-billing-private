@@ -101,7 +101,9 @@ def prochie_otchoty(request):
 
     # Это оригинал Работает норм (EXCEL)
         # pays = PlatejiWhichAddKassirsEveryDay.objects.filter(date__range=[start, f"2024-03-31"], kassir_etrap=etrap, is_enterprises='ФЛ')
-        pays = PayHistory.objects.filter(date__range=[start, end2], edara_ilat='ФЛ', kassir_etrap=etrap)
+        # edara_ilat у платежей из milli billing не заполняется (см. nachMilliBillingPay.py) -
+        # фильтруем по abonent__is_enterprises, как уже сделано в monthOtchotForAshyrMB.py
+        pays = PayHistory.objects.filter(date__range=[start, end2], abonent__is_enterprises=False, kassir_etrap=etrap)
         pays_from_kabel_TV = KabelTvPayHistory.objects.filter(pay_date__range=[start2, end2])
         print('len_pays', len(pays))
 
@@ -1719,7 +1721,9 @@ def prochie_otchoty(request):
 
         # Этот код тоже работает но чуть чуть другая сумма но имена и фамили абонентов четкие взятые с биллинга
         # pays = PlatejiWhichAddKassirsEveryDay.objects.filter(date__range=[start, end2], type_pay='Internet', kassir_etrap=etrap, is_enterprises='ФЛ')
-        pays = PayHistory.objects.filter(date__range=[start, end2], edara_ilat='ФЛ', kassir_etrap=etrap)
+        # edara_ilat у платежей из milli billing не заполняется (см. nachMilliBillingPay.py) -
+        # фильтруем по abonent__is_enterprises, как уже сделано в monthOtchotForAshyrMB.py
+        pays = PayHistory.objects.filter(date__range=[start, end2], abonent__is_enterprises=False, kassir_etrap=etrap)
 
         # response = HttpResponse(content_type="text/plain")
         # txtName = f'{etrap} {year}-{monthСonvert(month_word)} oplata Internet kassa'
@@ -2207,7 +2211,9 @@ def prochie_otchoty(request):
                 continue
             number_alem[i] = [0, '']
 
-        pays = PayHistory.objects.filter(date__range=[start, end2], kassir_etrap__in=[etrap], edara_ilat='ФЛ').exclude(abonent__etrap=etrap)
+        # edara_ilat у платежей из milli billing не заполняется (см. nachMilliBillingPay.py) -
+        # фильтруем по abonent__is_enterprises, как уже сделано в monthOtchotForAshyrMB.py
+        pays = PayHistory.objects.filter(date__range=[start, end2], kassir_etrap__in=[etrap], abonent__is_enterprises=False).exclude(abonent__etrap=etrap)
         
         headers = ("etrap", "number","total")
         
