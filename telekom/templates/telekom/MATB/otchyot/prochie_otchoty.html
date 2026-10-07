@@ -411,6 +411,22 @@
             </form>
             {% else %}Скачать{% endif %} Начисления Belet для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
         </li>
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="edaraAlemNach">
+                <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Начисления Alem для EDARA {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+        </li>
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="ilatAlemNach">
+                <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Начисления Alem для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
+        </li>
 
     </ol>
 </div>
