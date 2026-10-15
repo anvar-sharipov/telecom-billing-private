@@ -50,7 +50,7 @@
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
                     <input type="hidden" name="calls_for_k">
-                    <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                    <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Скачать разговоры для К {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
             </li>
@@ -84,7 +84,7 @@
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
                     <input type="hidden" name="edaraSlrNach">
-                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                    <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Начисления Slr для EDARA {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
             </li>
@@ -92,7 +92,7 @@
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
                     <input type="hidden" name="IlatSlrNach">
-                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                    <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Начисления Slr для Населения {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
             </li>
@@ -127,7 +127,7 @@
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
                     <input type="hidden" name="SotowyOtchyot">
-                    <input class="btn btn-success btn-sm" value="Скачать" type="submit">
+                    <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} Отчет по Алтын Асыр звонкам {% if year and month and etrap %}за {{month}} {{year}}{% endif %}
             </li>
@@ -216,7 +216,7 @@
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
                     <input type="hidden" name="kod_8_lik_10_lyk_gepleshikleri">
-                    <input class="btn btn-danger btn-sm" value="error" type="submit">
+                    <input class="btn btn-dark btn-sm" value="error" type="submit">
                 </form>
                 {% else %}Скачать{% endif %} {% comment %} код 8, код 10 разговоры {% endcomment %} {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
             </li>
@@ -357,7 +357,7 @@
             <form method="POST" style="display:inline;">
                 {% csrf_token %}
                 <input type="hidden" name="export_users_with_slr_or_kod">
-                <input class="btn btn-secondary btn-sm" value="Скачать" type="submit">
+                <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
             </form>
             {% else %}Скачать{% endif %} export_users_with_slr_or_kod (Номера где фамилия и имя пусты но AMTS разговоры есть)
             {% if etrap %} etrap {{etrap}} {% endif %}
@@ -427,6 +427,39 @@
             </form>
             {% else %}Скачать{% endif %} Начисления Alem для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
         </li>
+
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="gepleshikler_sanlar_boyuncha">
+                <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} разговоры по номерам (свод: intercity / international) {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="slr_gepleshikleri">
+                <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} slr разговоры (LocalCall), все строки {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="slr_gepleshikler_sanlar_boyuncha">
+                <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} slr по номерам (свод: минуты, сумма по тарифу, сверка с начислением) {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+        {% endif %}
 
     </ol>
 </div>

@@ -2123,6 +2123,239 @@ def prochie_otchoty(request):
         return response 
 
 
+    if request.method == 'POST' and 'gepleshikler_sanlar_boyuncha' in request.POST:
+
+        calls = NonLocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], SUB_A_etrap=etrap)
+
+        headers = ("SUB_A_etrap", "SUB_A_number", "intercity_count", "intercity_total", "international_count", "international_total", "all_count", "all_total", "intercity_locations", "international_locations")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        svod = {}
+
+        for c in calls:
+            if c.SUB_A not in svod:
+                svod[c.SUB_A] = {
+                    'etrap': c.SUB_A_etrap,
+                    'intercity_count': 0,
+                    'intercity_total': 0,
+                    'international_count': 0,
+                    'international_total': 0,
+                    'intercity_locations': {},
+                    'international_locations': {},
+                }
+
+            row = svod[c.SUB_A]
+
+            if c.type == 'international':
+                row['international_count'] += 1
+                row['international_total'] += c.total_price
+                row['international_locations'][c.SUB_B_locations] = row['international_locations'].get(c.SUB_B_locations, 0) + 1
+            else:
+                row['intercity_count'] += 1
+                row['intercity_total'] += c.total_price
+                row['intercity_locations'][c.SUB_B_locations] = row['intercity_locations'].get(c.SUB_B_locations, 0) + 1
+
+        def locations_str(locations):
+            return ', '.join(f"{loc}({cnt})" for loc, cnt in sorted(locations.items(), key=lambda x: (-x[1], x[0])))
+
+        def number_sort_key(number):
+            if str(number).isdigit():
+                return (0, int(number), '')
+            return (1, 0, str(number))
+
+        for number in sorted(svod, key=number_sort_key):
+            row = svod[number]
+            data.append((
+                row['etrap'],
+                number,
+                row['intercity_count'],
+                round(row['intercity_total'], 2),
+                row['international_count'],
+                round(row['international_total'], 2),
+                row['intercity_count'] + row['international_count'],
+                round(row['intercity_total'] + row['international_total'], 2),
+                locations_str(row['intercity_locations']),
+                locations_str(row['international_locations']),
+            ))
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap}_gepleshikler_sanlar_boyuncha_{year}-{month_digit}_.xlsx"
+
+        return response
+
+
+    if request.method == 'POST' and 'slr_gepleshikleri' in request.POST:
+
+        calls = LocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], etrap=etrap)
+
+        headers = ("etrap", "SUB_A_number", "SUB_B_number", "DATE", "START", "FIN", "DUR", "MT", "file_name", "edara?")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        for c in calls:
+
+            data.append((c.etrap, c.SUB_A, c.SUB_B, c.DATE, c.START, c.FIN, c.DUR, c.MT, c.file_name, c.edara))
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap}_slr_gepleshikler_{year}-{month_digit}_.xlsx"
+
+        return response
+
+
+    if request.method == 'POST' and 'slr_gepleshikler_sanlar_boyuncha' in request.POST:
+
+        # Тариф СЛР: каждый день первые 5 минут бесплатно, дни где минут <= 5 не тарифицируются вообще,
+        # по остальным дням платные минуты = (минуты за день - 5), цена 0.0006 ман за минуту.
+        # Та же логика, что в начислении СЛР (telekom/views2/MATB/DBF/DBFNachisleniyaBtn/slrNachisleniyaBtn.py)
+        SLR_PRICE_PER_MINUTE = 0.0006
+        SLR_FREE_MINUTES_PER_DAY = 5
+
+        calls = LocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], etrap=etrap)
+
+        headers = ("etrap", "SUB_A_number", "abonent", "account", "YUR_FIZ", "HB", "calls_count",
+                   "days_calls", "days_tarif", "total_minutes", "slr_minutes", "slr_summa",
+                   "nach_slr", "raznica", "edara?")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        svod = {}
+
+        for c in calls:
+            if c.SUB_A not in svod:
+                svod[c.SUB_A] = {
+                    'etrap': c.etrap,
+                    'calls_count': 0,
+                    'total_minutes': 0,
+                    'day_minutes': {},
+                    'edara': {},
+                }
+
+            row = svod[c.SUB_A]
+
+            try:
+                mt = int(c.MT)
+            except (TypeError, ValueError):
+                mt = 0
+
+            day = str(c.DATE)[-2:]
+
+            row['calls_count'] += 1
+            row['total_minutes'] += mt
+            row['day_minutes'][day] = row['day_minutes'].get(day, 0) + mt
+
+            if c.edara:
+                row['edara'][c.edara] = row['edara'].get(c.edara, 0) + 1
+
+        # абоненты этрапа для ФИО/счёта
+        number_user = {}
+        for u in UserTable.objects.filter(etrap=etrap).select_related('hb'):
+            number_user[u.number] = u
+
+        # что реально начислено по СЛР за этот месяц
+        number_nach_slr = {}
+        for n in NachMinus.objects.filter(year=year, month=month_digit, user__etrap=etrap).select_related('user'):
+            number_nach_slr[n.user.number] = number_nach_slr.get(n.user.number, 0) + n.slr
+
+        def edara_str(edara):
+            return ', '.join(f"{e}({cnt})" for e, cnt in sorted(edara.items(), key=lambda x: (-x[1], x[0])))
+
+        def slr_number_sort_key(number):
+            if str(number).isdigit():
+                return (0, int(number), '')
+            return (1, 0, str(number))
+
+        itogo_calls = 0
+        itogo_total_minutes = 0
+        itogo_slr_minutes = 0
+        itogo_slr_summa = 0
+        itogo_nach_slr = 0
+
+        for number in sorted(svod, key=slr_number_sort_key):
+            row = svod[number]
+
+            days_tarif = 0
+            slr_minutes = 0
+            for day, minut in row['day_minutes'].items():
+                if minut > SLR_FREE_MINUTES_PER_DAY:
+                    days_tarif += 1
+                    slr_minutes += minut - SLR_FREE_MINUTES_PER_DAY
+
+            slr_summa = slr_minutes * SLR_PRICE_PER_MINUTE
+            nach_slr = number_nach_slr.get(number, 0)
+
+            user = number_user.get(number)
+            if user:
+                abonent = f"{user.surname} {user.name}".strip()
+                account = user.account
+                yur_fiz = 'Эдара' if user.is_enterprises else 'Ilat'
+                hb = user.hb.name if user.hb else ''
+            else:
+                abonent = 'НЕТ В БАЗЕ'
+                account = ''
+                yur_fiz = ''
+                hb = ''
+
+            itogo_calls += row['calls_count']
+            itogo_total_minutes += row['total_minutes']
+            itogo_slr_minutes += slr_minutes
+            itogo_slr_summa += slr_summa
+            itogo_nach_slr += nach_slr
+
+            data.append((
+                row['etrap'],
+                number,
+                abonent,
+                account,
+                yur_fiz,
+                hb,
+                row['calls_count'],
+                len(row['day_minutes']),
+                days_tarif,
+                row['total_minutes'],
+                slr_minutes,
+                round(slr_summa, 4),
+                round(nach_slr, 4),
+                round(nach_slr - slr_summa, 4),
+                edara_str(row['edara']),
+            ))
+
+        # начислено, а звонков за месяц нет - такие строки тоже надо видеть
+        for number in sorted(number_nach_slr, key=slr_number_sort_key):
+            if number in svod or not number_nach_slr[number]:
+                continue
+
+            nach_slr = number_nach_slr[number]
+            user = number_user.get(number)
+
+            itogo_nach_slr += nach_slr
+
+            data.append((
+                etrap,
+                number,
+                f"{user.surname} {user.name}".strip() if user else 'НЕТ В БАЗЕ',
+                user.account if user else '',
+                ('Эдара' if user.is_enterprises else 'Ilat') if user else '',
+                (user.hb.name if user.hb else '') if user else '',
+                0, 0, 0, 0, 0, 0,
+                round(nach_slr, 4),
+                round(nach_slr, 4),
+                'НЕТ ЗВОНКОВ',
+            ))
+
+        data.append(('', '', 'ИТОГО', '', '', '', itogo_calls, '', '', itogo_total_minutes,
+                     itogo_slr_minutes, round(itogo_slr_summa, 4), round(itogo_nach_slr, 4),
+                     round(itogo_nach_slr - itogo_slr_summa, 4), ''))
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap}_slr_gepleshikler_sanlar_boyuncha_{year}-{month_digit}_.xlsx"
+
+        return response
+
+
 
 
     if request.method == 'POST' and 'all_tolegler' in request.POST:
