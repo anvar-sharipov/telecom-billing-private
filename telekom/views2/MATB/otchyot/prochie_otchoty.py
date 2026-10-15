@@ -2131,6 +2131,14 @@ def prochie_otchoty(request):
 
         data = []
         data = tablib.Dataset(*data, headers=headers)
+        data.title = 'svod'
+
+        # второй лист: на каждый номер отдельная строка по intercity и отдельная по international
+        headers_2 = ("SUB_A_etrap", "SUB_A_number", "TYPE", "calls_count", "total", "locations")
+
+        data_2 = []
+        data_2 = tablib.Dataset(*data_2, headers=headers_2)
+        data_2.title = 'intercity_international'
 
         svod = {}
 
@@ -2180,7 +2188,31 @@ def prochie_otchoty(request):
                 locations_str(row['international_locations']),
             ))
 
-        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+            if row['intercity_count']:
+                data_2.append((
+                    row['etrap'],
+                    number,
+                    'intercity',
+                    row['intercity_count'],
+                    round(row['intercity_total'], 2),
+                    locations_str(row['intercity_locations']),
+                ))
+
+            if row['international_count']:
+                data_2.append((
+                    row['etrap'],
+                    number,
+                    'international',
+                    row['international_count'],
+                    round(row['international_total'], 2),
+                    locations_str(row['international_locations']),
+                ))
+
+        book = tablib.Databook()
+        book.add_sheet(data)
+        book.add_sheet(data_2)
+
+        response = HttpResponse(book.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
         response['Content-Disposition'] = f"attachment; filename= {etrap}_gepleshikler_sanlar_boyuncha_{year}-{month_digit}_.xlsx"
 
         return response
