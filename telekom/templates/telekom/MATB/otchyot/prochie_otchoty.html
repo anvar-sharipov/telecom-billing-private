@@ -461,6 +461,17 @@
         </li>
         {% endif %}
 
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        <li class="list-group-item" onclick="makeActive(this)">
+            {% if year and month and etrap %}
+            <form method="POST" style="display: inline;">{% csrf_token %}
+                <input type="hidden" name="swot_milli_bill">
+                <input class="btn btn-dark btn-sm" value="Скачать" type="submit">
+            </form>
+            {% else %}Скачать{% endif %} Swot (как MilliBill: Nyrhnama, Goşmaça Hyzmat, Turkmenistan, Halkara, Çäkden daşary, Jemi) {% if month %} за {{month}} {% endif %} {% if etrap %} etrap {{etrap}} {% endif %}
+        </li>
+        {% endif %}
+
     </ol>
 </div>
 

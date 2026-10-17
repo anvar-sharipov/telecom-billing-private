@@ -2388,6 +2388,105 @@ def prochie_otchoty(request):
         return response
 
 
+    if request.method == 'POST' and 'swot_milli_bill' in request.POST:
+
+        # Свод начислений по абонентам в формате выгрузки milli billing (Swot MilliBill):
+        #   Nyrhnama       - начисления абонплаты (NachMinus.telefon)
+        #   Goşmaça Hyzmat - доп. услуги (NachMinus.dop_uslugi)
+        #   Turkmenistan   - код, междугородние разговоры в манатах (NonLocalCall type=intercity)
+        #   Halkara        - код, международные разговоры в манатах (NonLocalCall type=international)
+        #   Çäkden daşary  - СЛР, сверхлимитные местные разговоры (LocalCall по тарифу)
+        #   Jemi           - сумма колонок, считает сам excel формулой
+        # Тариф СЛР: каждый день первые 5 минут бесплатно, остальные минуты по 0.0006 ман.
+        # Порога нет - любой разговор, хоть 1 секунда, уже считается как 1 минута (это уже учтено в LocalCall.MT).
+        SLR_PRICE_PER_MINUTE = 0.0006
+        SLR_FREE_MINUTES_PER_DAY = 5
+
+        headers = ("Caller", "Müşderiniň doly ady", "Nyrhnama", "Goşmaça Hyzmat", "Turkmenistan", "Halkara", "Çäkden daşary", "Jemi")
+
+        data = []
+        data = tablib.Dataset(*data, headers=headers)
+
+        # абонплата и доп. услуги - из начислений за выбранный месяц
+        number_nach = {}
+        for n in NachMinus.objects.filter(year=year, month=month_digit, user__etrap=etrap).select_related('user'):
+            row = number_nach.setdefault(n.user.number, {'telefon': 0, 'dop_uslugi': 0})
+            row['telefon'] += n.telefon
+            row['dop_uslugi'] += n.dop_uslugi
+
+        # код: междугородние и международные отдельно
+        number_kod = {}
+        for c in NonLocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], SUB_A_etrap=etrap):
+            row = number_kod.setdefault(c.SUB_A, {'intercity': 0, 'international': 0})
+            if c.type == 'international':
+                row['international'] += c.total_price
+            else:
+                row['intercity'] += c.total_price
+
+        # слр: сначала собираем минуты по дням, потом снимаем 5 бесплатных минут с каждого дня
+        number_day_minutes = {}
+        for c in LocalCall.objects.filter(DATE__range=[start[:10], end2[:10]], etrap=etrap):
+            try:
+                mt = int(c.MT)
+            except (TypeError, ValueError):
+                mt = 0
+
+            day_minutes = number_day_minutes.setdefault(c.SUB_A, {})
+            day = str(c.DATE)[-2:]
+            day_minutes[day] = day_minutes.get(day, 0) + mt
+
+        number_slr = {}
+        for number, day_minutes in number_day_minutes.items():
+            slr_minutes = 0
+            for day, minut in day_minutes.items():
+                if minut > SLR_FREE_MINUTES_PER_DAY:
+                    slr_minutes += minut - SLR_FREE_MINUTES_PER_DAY
+            number_slr[number] = slr_minutes * SLR_PRICE_PER_MINUTE
+
+        number_user = {}
+        for u in UserTable.objects.filter(etrap=etrap):
+            number_user[u.number] = u
+
+        # в отчёт попадают все не снятые абоненты с заполненным именем,
+        # плюс все номера у которых за этот месяц есть начисления или разговоры
+        numbers = set()
+        for number, u in number_user.items():
+            if not u.snyat_bool and (u.surname or u.name):
+                numbers.add(number)
+        numbers |= set(number_nach)
+        numbers |= set(number_kod)
+        numbers |= set(number_slr)
+
+        def number_sort_key(number):
+            if str(number).isdigit():
+                return (0, int(number), '')
+            return (1, 0, str(number))
+
+        excel_row = 1
+        for number in sorted(numbers, key=number_sort_key):
+            nach = number_nach.get(number, {'telefon': 0, 'dop_uslugi': 0})
+            kod = number_kod.get(number, {'intercity': 0, 'international': 0})
+            user = number_user.get(number)
+
+            excel_row += 1
+
+            data.append((
+                int(number) if str(number).isdigit() else number,
+                f"{user.surname} {user.name}".strip() if user else 'НЕТ В БАЗЕ',
+                round(nach['telefon'], 4),
+                round(nach['dop_uslugi'], 4),
+                round(kod['intercity'], 4),
+                round(kod['international'], 4),
+                round(number_slr.get(number, 0), 4),
+                f"=SUM(C{excel_row}:G{excel_row})",
+            ))
+
+        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        response['Content-Disposition'] = f"attachment; filename= {etrap}_Swot_{year}-{month_digit}.xlsx"
+
+        return response
+
+
 
 
     if request.method == 'POST' and 'all_tolegler' in request.POST:
