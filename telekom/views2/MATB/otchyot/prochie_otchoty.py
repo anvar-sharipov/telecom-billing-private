@@ -2402,10 +2402,16 @@ def prochie_otchoty(request):
         SLR_PRICE_PER_MINUTE = 0.0006
         SLR_FREE_MINUTES_PER_DAY = 5
 
-        headers = ("Caller", "Müşderiniň doly ady", "Nyrhnama", "Goşmaça Hyzmat", "Turkmenistan", "Halkara", "Çäkden daşary", "Jemi")
+        headers = ("Caller", "Müşderiniň doly ady", "Nyrhnama", "Goşmaça Hyzmat", "Turkmenistan", "Halkara", "Çäkden daşary", "Jemi", "H_B_I")
 
         data = []
         data = tablib.Dataset(*data, headers=headers)
+        data.title = 'Swot'
+
+        # второй лист: все номера подряд с 20000 по 99999, даже пустые
+        data_2 = []
+        data_2 = tablib.Dataset(*data_2, headers=headers)
+        data_2.title = 'Ahli_belgiler'
 
         # абонплата и доп. услуги - из начислений за выбранный месяц
         number_nach = {}
@@ -2462,26 +2468,58 @@ def prochie_otchoty(request):
                 return (0, int(number), '')
             return (1, 0, str(number))
 
-        excel_row = 1
-        for number in sorted(numbers, key=number_sort_key):
+        def h_b_i(user, has_calls):
+            # эдара - H (хозрасчёт) или B (бюджет), население - I,
+            # а если имени, фамилии и адреса нет, но разговоры есть - Empty
+            if not user:
+                return 'Empty' if has_calls else ''
+            if not (user.surname or user.name or user.street or user.home or user.flat):
+                return 'Empty' if has_calls else ''
+            if user.is_enterprises:
+                return user.hb.name if user.hb else ''
+            return 'I'
+
+        def swot_row(number, excel_row):
             nach = number_nach.get(number, {'telefon': 0, 'dop_uslugi': 0})
             kod = number_kod.get(number, {'intercity': 0, 'international': 0})
             user = number_user.get(number)
+            has_calls = number in number_kod or number in number_slr
 
-            excel_row += 1
+            if user:
+                abonent = f"{user.surname} {user.name}".strip()
+            elif has_calls:
+                abonent = 'НЕТ В БАЗЕ'
+            else:
+                abonent = ''
 
-            data.append((
+            return (
                 int(number) if str(number).isdigit() else number,
-                f"{user.surname} {user.name}".strip() if user else 'НЕТ В БАЗЕ',
+                abonent,
                 round(nach['telefon'], 4),
                 round(nach['dop_uslugi'], 4),
                 round(kod['intercity'], 4),
                 round(kod['international'], 4),
                 round(number_slr.get(number, 0), 4),
                 f"=SUM(C{excel_row}:G{excel_row})",
-            ))
+                h_b_i(user, has_calls),
+            )
 
-        response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
+        excel_row = 1
+        for number in sorted(numbers, key=number_sort_key):
+            excel_row += 1
+            data.append(swot_row(number, excel_row))
+
+        # второй лист - подряд все номера с 20000 по 99999, пустые остаются пустыми с нулями
+        excel_row = 1
+        for num in range(20000, 100000):
+            excel_row += 1
+            data_2.append(swot_row(str(num), excel_row))
+
+        book = tablib.Databook()
+        book.add_sheet(data)
+        book.add_sheet(data_2)
+
+        response = HttpResponse(book.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
         response['Content-Disposition'] = f"attachment; filename= {etrap}_Swot_{year}-{month_digit}.xlsx"
 
         return response
