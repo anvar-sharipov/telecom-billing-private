@@ -3432,7 +3432,7 @@ def prochie_otchoty(request):
         users = UserTable.objects.filter(etrap=etrap)\
             .select_related("hb")\
             .prefetch_related("service")
-        headers = ("Number","Ady","Koche","Jay","Kwartira",'Abonplata',"HB", "balance_telefoniya", "balance_internet", "balance_alem", "Lgota", "Usluga", "kod", "slr")
+        headers = ("Number","Ady","Koche","Jay","Kwartira",'Abonplata',"HB", "balance_telefoniya", "balance_internet", "balance_alem", "Lgota", "Usluga", "kod", "slr", "Login int", "Dogowor int")
         
         data = []
         data = tablib.Dataset(*data, headers=headers)
@@ -3505,7 +3505,7 @@ def prochie_otchoty(request):
                 kod = ""
                 slr = ""
     
-            data.append((u.number, ady, street, home, flat, abonplata, hb, telefoniya, u.b_internet, u.b_alem, lgota, usluga, kod, slr ))
+            data.append((u.number, ady, street, home, flat, abonplata, hb, telefoniya, u.b_internet, u.b_alem, lgota, usluga, kod, slr, u.login, u.dogowor ))
                 
             
         response = HttpResponse(data.xlsx, content_type='application/vnd.ms-excel;charset=utf-8')
