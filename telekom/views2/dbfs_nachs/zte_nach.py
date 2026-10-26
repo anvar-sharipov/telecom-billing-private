@@ -708,7 +708,7 @@ def getNumberLocations(number):
 
 def zte_nach(request):
     context = {}
-    if request.user.username == 'Gayyp':
+    if request.user.username in ['Gayyp', 'yhlas_mtb']:
           pass
     else: 
         if not request.user.is_superuser and request.user.username != 'admin1':

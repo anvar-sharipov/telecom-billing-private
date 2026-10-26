@@ -64,7 +64,7 @@ def change_nachislenie(request):
     if etrap in etraps and number and year and month_digit:
 
         allow = False
-        if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username != "Gayyp":
+        if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username not in ['Gayyp', 'yhlas_mtb']:
             if etrap == request_user_etrap:
                 allow = True
         else:

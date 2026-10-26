@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def kabelTvNachisleniya(request):
 
-    if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username != 'Gayyp':
+    if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username not in ['Gayyp', 'yhlas_mtb']:
         messages.error(request, f'Доступ только для администратора')
         return redirect('user-login')
 

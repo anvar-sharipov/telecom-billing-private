@@ -25,7 +25,7 @@
       <div class="d-flex my_column_gap10">
         <input id="matb_search_number" type="text" placeholder="Номер" class="form-control my_width100 border border-dark" name="search_number" {% if num %} value={{num}} {% endif %} autocomplete="off" style="height: 25px;">
         <select class="form-select my_width200 border border-dark" aria-label="Default select example" name="etrap" style="height: 25px; padding: 0;">
-          {% if request.user.is_superuser or dataBaseInternet == True or request.user.username == "Gayyp" %}
+          {% if request.user.is_superuser or dataBaseInternet == True or request.user.username == "Gayyp" or request.user.username == "yhlas_mtb" %}
             {% for etr in etraps %}
                 {% if etrap in etraps or etrap == 'all' %}
                     <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>

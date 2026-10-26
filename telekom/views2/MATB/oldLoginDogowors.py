@@ -62,7 +62,7 @@ def oldLoginDogowors(request):
     is_enterprises_search = request.GET.get("is_enterprises_search", "")
 
     if number_search or etrap_search or login_search or dogowor_search or dogowor_alem_search or dogowor_telefoniya_search or dogowor_belet_search or is_enterprises_search:
-        if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp':
+        if request.user.is_superuser and request.user.username == 'admin1' or request.user.username in ['Gayyp', 'yhlas_mtb']:
             results = OldLoginDogowor.objects.all().order_by('-created_at')
         else:
             results = OldLoginDogowor.objects.filter(etrap=request_user_etrap).order_by('-created_at')

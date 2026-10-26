@@ -60,7 +60,7 @@
             <li class="nav-item">
               <a class="nav-link {% if dataBase %} myActiveLink {% endif %}" href="{% url 'matb-index' %}">База</a>
             </li>
-            {% if  request.user.is_superuser or request.user.username == 'Gayyp' %}
+            {% if  request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
               <li class="nav-item">
                 <a class="nav-link {% if importXlsx %} myActiveLink {% endif %}" href="{% url 'import-xlsx' %}">Импорт xlsx</a>
               </li>
@@ -110,7 +110,7 @@
                 {% endif %}
               </ul>
             </li>
-            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+            {% if 'Gayyp' in request.user.username or request.user.username == 'yhlas_mtb' or user.is_superuser %}
               <li class="nav-item dropdown {% if kodSlrFileNachisleniya or newAbonplataNachisleniya or zakazNachisleniya or nachisleniyaInternetPlateji or internetNachisleniyaBtn or alemNachisleniya or kabelTvNachisleniya or dop_uslugiNachisleniya or abonplataNachisleniya or dbf_a_nach or zte_nach or alem_add or alem_nach %} myActiveLink {% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Начисления</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -156,7 +156,7 @@
             <li class="nav-item">
               <a class="nav-link {% if KassaMTB %} myActiveLink {% endif %}" href="{% url 'kassa-index' %}">Касса</a>
             </li>
-            {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+            {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'lenashb' %}
             <li class="nav-item">
               <a class="nav-link {% if perekidka %} myActiveLink {% endif %}" href="{% url 'perekidka' %}">Удалить платеж</a>
             </li>
@@ -164,7 +164,7 @@
             <li class="nav-item">
               <a class="nav-link {% if showArhiw %} myActiveLink {% endif %}" href="{% url 'abonent-arhiw' %}">Архив</a>
             </li>
-            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+            {% if 'Gayyp' in request.user.username or request.user.username == 'yhlas_mtb' or user.is_superuser %}
               <!-- <li class="nav-item">
                 <a class="nav-link {% if totalSnyatie %} myActiveLink {% endif %}" href="{% url 'total-snyatie' %}">Снятие номеров</a>
               </li>
@@ -183,7 +183,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
                 <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
                   <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
-                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'admin1' %}
                   <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
                   {% endif %}
                 </ul>
@@ -214,7 +214,7 @@
               </li>
 
               {% endif %}
-            {% if 'Gayyp' in request.user.username or user.is_superuser %}
+            {% if 'Gayyp' in request.user.username or request.user.username == 'yhlas_mtb' or user.is_superuser %}
               <li class="nav-item dropdown {% if monthOtchotForAshyr or monthOtchotForAshyrMB or trafik or trafik_dop or reestrMain or prochie_otchoty or balances %} myActiveLink {% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">отчеты</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -266,7 +266,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
               <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
                 <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
-                {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                {% if request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'admin1' %}
                 <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
                 {% endif %}
               </ul>
@@ -316,7 +316,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
                 <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
                   <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
-                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'admin1' %}
                   <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
                   {% endif %}
                 </ul>
@@ -351,7 +351,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
                 <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
                   <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
-                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'admin1' %}
                   <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
                   {% endif %}
                 </ul>
@@ -393,7 +393,7 @@
                 <a class="nav-link dropdown-toggle" href="#" id="KabelNewDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Кабель TV New</a>
                 <ul class="dropdown-menu" aria-labelledby="KabelNewDropDown">
                   <li><a class="dropdown-item {% if KabelNew %} myActiveLinkLight {% endif %}" href="{% url 'kabelUserList' %}">База</a></li>
-                  {% if request.user.username == 'Gayyp' or request.user.username == 'admin1' %}
+                  {% if request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'admin1' %}
                   <li><a class="dropdown-item {% if KabelNach %} myActiveLinkLight {% endif %}" href="{% url 'kabelNach' %}">Начисления</a></li>
                   {% endif %}
                 </ul>

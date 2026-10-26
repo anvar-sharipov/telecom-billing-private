@@ -19,7 +19,7 @@
             {% include 'telekom/MATB/KabelNew/right/separateRight/payModal.html' %}
             
             <!-- trigger modal change user -->
-            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect" {% if is_allow_to_change_base or request.user.username == 'Gayyp' %} data-bs-toggle="modal" data-bs-target="#changeModalKabel{{u.pk}}" {% endif %}>
+            <span style="padding: 4px; margin: 5px; border-radius:5px;" class="payImg hover-effect" {% if is_allow_to_change_base or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %} data-bs-toggle="modal" data-bs-target="#changeModalKabel{{u.pk}}" {% endif %}>
                 <img src="{% static 'telekom/jpg/change5.png' %}" width="25">
             </span>
             <!-- modal change user -->

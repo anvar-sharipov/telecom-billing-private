@@ -72,7 +72,7 @@ def check_pays(request):
 
     if etrap in etraps:
         allow = False
-        if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username != 'Gayyp':
+        if not request.user.is_superuser and request.user.username != 'admin1' and request.user.username not in ['Gayyp', 'yhlas_mtb']:
             if etrap == request_user_etrap:
                 allow = True
         else:

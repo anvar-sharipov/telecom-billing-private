@@ -52,7 +52,7 @@ def prochie_otchoty(request):
     month_digit = monthСonvert(month_word)
 
     if etrap:
-        if  (not request.user.is_superuser and etrap != EtrapAndGroup[0]) and (request.user.username != 'Gayyp' and etrap != EtrapAndGroup[0]):
+        if  (not request.user.is_superuser and etrap != EtrapAndGroup[0]) and (request.user.username not in ['Gayyp', 'yhlas_mtb'] and etrap != EtrapAndGroup[0]):
             messages.error(request, f"Выберите свой этрап")
             return redirect('prochie-otchoty')
     context['etrap'] = etrap

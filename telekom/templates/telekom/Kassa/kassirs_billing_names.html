@@ -49,7 +49,7 @@
                     <td>
                         <!-- Button trigger modal -->
                         <div class="text-center">
-                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#change_etrap{{n.pk}}" {% if request.user.is_superuser == False and request.user.username != 'Gayyp' %} disabled {% endif %}>
+                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#change_etrap{{n.pk}}" {% if request.user.is_superuser == False and request.user.username != 'Gayyp' and request.user.username != 'yhlas_mtb' %} disabled {% endif %}>
                             Изменть Этрап
                         </button>
                         </div>

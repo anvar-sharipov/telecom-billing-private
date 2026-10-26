@@ -23,7 +23,7 @@ from dateutil.relativedelta import relativedelta
 
 def kabelNach(request):
     context = {}
-    if request.user.username not in ['admin1', 'Gayyp']:
+    if request.user.username not in ['admin1', 'Gayyp', 'yhlas_mtb']:
         messages.error(request, 'Доступ только для администратора')
         return redirect('user-login')
     context['months'] = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']

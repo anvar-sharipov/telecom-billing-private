@@ -9,7 +9,7 @@
         <div class="mb-3">
             <label for="etrap" class="form-label">Этрап</label>
             <select class="form-select" id="etrap" name="etrap" required>
-                {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+                {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
                     {% for e in etraps %}
                         <option value="{{ e }}" {% if etrap == e %}selected{% endif %}>{{ e }}</option>
                     {% endfor %}

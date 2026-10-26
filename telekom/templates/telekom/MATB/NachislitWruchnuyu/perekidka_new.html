@@ -17,7 +17,7 @@
                 <div class="col-md-6">
                     <label for="etrap1" class="form-label">Этрап</label>
                     <select class="form-select" id="etrap1" name="etrap1">
-                        {% if request.user.is_superuser %}
+                        {% if request.user.is_superuser or full_access %}
                             {% for etrap in etraps %}
                                 <option value="{{ etrap }}" {% if selected_etrap1 == etrap %}selected{% endif %}>{{ etrap }}</option>
                             {% endfor %}
@@ -42,7 +42,7 @@
                 <div class="col-md-6">
                     <label for="etrap2" class="form-label">Этрап</label>
                     <select class="form-select" id="etrap2" name="etrap2">
-                        {% if request.user.is_superuser %}
+                        {% if request.user.is_superuser or full_access %}
                             {% for etrap in etraps %}
                                 <option value="{{ etrap }}" {% if selected_etrap2 == etrap %}selected{% endif %}>{{ etrap }}</option>
                             {% endfor %}

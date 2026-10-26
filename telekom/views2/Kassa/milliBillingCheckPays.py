@@ -160,7 +160,7 @@ def milliBillingCheckPays(request):
     context['date_to'] = date_to
 
     if etrap in ETRAPS:
-        allow = request.user.is_superuser or request.user.username in ['admin1', 'Gayyp'] or etrap == request_user_etrap
+        allow = request.user.is_superuser or request.user.username in ['admin1', 'Gayyp', 'yhlas_mtb'] or etrap == request_user_etrap
         if not allow:
             messages.error(request, "Выберите этрап с своего этрапа")
             return render(request, 'telekom/Kassa/milliBillingCheckPays.html', context)

@@ -7,7 +7,7 @@
 <div class="my_width800 my_block_center pt-4">
     <form method="GET">
         <select name="etrap" class="form-select">
-            {% if not request.user.is_superuser and request.user.username != 'Gayyp' %}
+            {% if not request.user.is_superuser and request.user.username != 'Gayyp' and request.user.username != 'yhlas_mtb' %}
                 <option value="{{etrap_user}}" selected >{{etrap_user}}</option>
             {% else %}
                 {% for etr in etraps %}
@@ -45,7 +45,7 @@
 <div class="my_width800 my_block_center pt-4 mt-4">
     <ol class="list-group list-group-numbered" id="myList">
 
-        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
             <li class="list-group-item" onclick="makeActive(this)">
                 {% if year and month and etrap %}
                 <form method="POST" style="display: inline;">{% csrf_token %}
@@ -428,7 +428,7 @@
             {% else %}Скачать{% endif %} Начисления Alem для Ilta {% if year and month and etrap %}за {{month}} {{year}} {{etrap}}{% endif %}
         </li>
 
-        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
         <li class="list-group-item" onclick="makeActive(this)">
             {% if year and month and etrap %}
             <form method="POST" style="display: inline;">{% csrf_token %}
@@ -439,7 +439,7 @@
         </li>
         {% endif %}
 
-        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
         <li class="list-group-item" onclick="makeActive(this)">
             {% if year and month and etrap %}
             <form method="POST" style="display: inline;">{% csrf_token %}
@@ -450,7 +450,7 @@
         </li>
         {% endif %}
 
-        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
         <li class="list-group-item" onclick="makeActive(this)">
             {% if year and month and etrap %}
             <form method="POST" style="display: inline;">{% csrf_token %}
@@ -461,7 +461,7 @@
         </li>
         {% endif %}
 
-        {% if request.user.is_superuser or request.user.username == 'Gayyp' %}
+        {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
         <li class="list-group-item" onclick="makeActive(this)">
             {% if year and month and etrap %}
             <form method="POST" style="display: inline;">{% csrf_token %}

@@ -10,6 +10,9 @@ from django.db import transaction
 import logging
 logger = logging.getLogger(__name__)
 
+# polnyy dostup ko wsem etrapam (hardkod, kak i w drugih mestah proekta)
+FULL_ACCESS_USERNAMES = ['admin1', 'Gayyp', 'yhlas_mtb']
+
 
 
 
@@ -26,7 +29,9 @@ def perekidka_new(request):
         if request_user_type == 'MTB':# or request.user.username == 'admin1':
             break
 
-    if request_user_type != 'MTB' and (not request.user.is_superuser and request.user.username != 'admin1'):
+    full_access = request.user.is_superuser or request.user.username in FULL_ACCESS_USERNAMES
+
+    if request_user_type != 'MTB' and not full_access:
         messages.error(request, 'Не достаточно прав')
         return redirect('HomePage')
 
@@ -46,7 +51,8 @@ def perekidka_new(request):
 
     
     context['perekidka_new'] = True
-    if request_user_type == 'MTB':
+    context['full_access'] = full_access
+    if request_user_type == 'MTB' or full_access:
         context['matbIndex'] = True 
         context['request_user_etrap'] = request_user_etrap 
 
@@ -69,7 +75,7 @@ def perekidka_new(request):
     
 
     allow = False
-    if not request.user.is_superuser and request.user.username != 'admin1':
+    if not full_access:
         if not etrap1 and not etrap2:
             allow = True
         if not etrap1 and etrap2 in etraps and etrap2 == request_user_etrap:

@@ -17,7 +17,7 @@
                {% else %}
                <option selected value="">Этрап</option>
                {% endif %}
-               {% if request.user.is_superuser or request.user.username == "Gayyp" %}
+               {% if request.user.is_superuser or request.user.username == "Gayyp" or request.user.username == "yhlas_mtb" %}
                 {% for etr in etraps %}
                     {% if etrap %}
                     <option {% if etr == etrap %} selected {% endif %} value="{{etr}}">{{etr}}</option>

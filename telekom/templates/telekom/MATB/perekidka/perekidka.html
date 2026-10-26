@@ -14,7 +14,7 @@
             <div class="d-flex my_column_gap10 mt-2">
 
                 <select class="form-select bg-gold my_width200" aria-label="Default select example" name="etrap1">
-                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'lenashb' %}
                         {% for etr in etraps %}
                             {% if etrap1 in etraps %}
                                 <option {% if etr == etrap1 %} selected {% endif %} value="{{etr}}">{{etr}}</option>
@@ -48,7 +48,7 @@
                 </div>
 
                 <select class="form-select bg-gold my_width200 height_fit_content" aria-label="Default select example" name="etrap2">
-                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'lenashb' %}
+                    {% if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' or request.user.username == 'lenashb' %}
                         {% for etr in etraps %}
                             {% if etrap2 in etraps %}
                                 <option {% if etr == etrap2 %} selected {% endif %} value="{{etr}}">{{etr}}</option>

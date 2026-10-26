@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def zakazNachisleniya(request):
 
-    if not ((request.user.is_superuser and request.user.username == 'admin1') or request.user.username == 'Gayyp'):
+    if not ((request.user.is_superuser and request.user.username == 'admin1') or request.user.username in ['Gayyp', 'yhlas_mtb']):
         messages.error(request, f'У вас нет доступа')
         return redirect('user-login')
     

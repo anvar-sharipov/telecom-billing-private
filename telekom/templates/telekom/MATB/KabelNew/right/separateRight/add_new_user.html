@@ -2,7 +2,7 @@
 <!-- Начало Добавить нового пользователя -->
     <!-- trigger modal add new user -->
     <!-- <button class="btn btn-light m-2" data-bs-toggle="modal" data-bs-target="#add_new_user" {% if not request.user.is_superuser  and request.user.username != 'subadmin1' %} disabled {% endif %}><img src="{% static 'telekom/jpg/add3.webp' %}" width="30"></button> -->
-    <button class="btn btn-light m-2 btn-hover" data-bs-toggle="modal" data-bs-target="#add_new_user" {% if not request.user.is_superuser and request.user.username != 'Gayyp' %} disabled {% endif %}>
+    <button class="btn btn-light m-2 btn-hover" data-bs-toggle="modal" data-bs-target="#add_new_user" {% if not request.user.is_superuser and request.user.username != 'Gayyp' and request.user.username != 'yhlas_mtb' %} disabled {% endif %}>
         <img src="{% static 'telekom/jpg/add3.webp' %}" width="30">
       </button>
     <!-- Modal add new user -->

@@ -8,7 +8,7 @@ from telekom.views2.myFunc.myFunc import get_etrap_and_types
 def kassirs_billing_names(request):
     context = {}
     if request.user.is_authenticated:
-        if request.user.is_superuser or request.user.username == 'Gayyp':
+        if request.user.is_superuser or request.user.username in ['Gayyp', 'yhlas_mtb']:
             log = 'Dashoguz'
             context['kassaIndex'] = True
             context['kassirs_billing_names'] = True

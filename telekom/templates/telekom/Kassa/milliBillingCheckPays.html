@@ -14,7 +14,7 @@
             <div class="col">
                 <label for="etrap" class="form-label">Этрап</label>
                 <select class="form-select" id="etrap" name="etrap">
-                    {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' %}
+                    {% if request.user.is_superuser and request.user.username == 'admin1' or request.user.username == 'Gayyp' or request.user.username == 'yhlas_mtb' %}
                     {% for etrap in etraps %}
                         <option value="{{ etrap }}" {% if etrap == request.GET.etrap %}selected{% endif %}>{{ etrap }}</option>
                     {% endfor %}

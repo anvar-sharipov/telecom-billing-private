@@ -18,7 +18,7 @@ from telekom.models import NonLocalCall, UserTable, Zakaz
 def nonLocalCalls(request):
     context={}
     if request.user.is_authenticated:
-        if request.user.is_superuser or request.user.username == 'Gayyp' or request.user.username == 'Halekowa_Gulshat' or request.user.username == 'lenashb':
+        if request.user.is_superuser or request.user.username in ['Gayyp', 'yhlas_mtb'] or request.user.username == 'Halekowa_Gulshat' or request.user.username == 'lenashb':
             log = 'Dashoguz'
             context['matbIndex'] = True
             context['nonLocalCalls'] = True

@@ -50,7 +50,7 @@ def add_month_pays_from_billing_to_my_programm(request):
     # print('test_total_price_abon2', test_total_price_abon2)
 
     if request.user.is_authenticated:
-        if request.user.is_superuser or request.user.username == 'Gayyp':
+        if request.user.is_superuser or request.user.username in ['Gayyp', 'yhlas_mtb']:
             log = 'Dashoguz'
             context['matbIndex'] = True
             context['add_month_pays_from_billing_to_my_programm'] = True
