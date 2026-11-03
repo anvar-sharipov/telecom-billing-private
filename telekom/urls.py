@@ -138,6 +138,7 @@ from telekom.views2.MATB.MBnachisleniya.onceIntNachCharge import onceIntNachChar
 from telekom.views2.MATB.MBnachisleniya.onceDogoworAdd import onceDogoworAdd
 from telekom.views2.MATB.MBnachisleniya.onceDogoworNach import onceDogoworNach
 from telekom.views2.MATB.MBnachisleniya.vneshniePlatejiAdd import vneshniePlatejiAdd
+from telekom.views2.MATB.MBnachisleniya.nachMilliBillingPay2 import nachMilliBillingPay2
 from telekom.views2.Kassa.kassirs_billing_names import kassirs_billing_names
 #  # Kassa Rezerw
 # from telekom.views2.kassaRezerw.KassaIndex import kassaIndexRezerw
@@ -218,6 +219,7 @@ from telekom.views2.admin_pages.MBonceDogoworAddAdmin import MBonceDogoworAddAdm
 from telekom.views2.admin_pages.MBonceDogoworNachAdmin import MBonceDogoworNachAdmin
 from telekom.views2.admin_pages.adminMessage import adminMessage
 from telekom.views2.admin_pages.VneshniePlatejiAddAdmin import VneshniePlatejiAddAdmin
+from telekom.views2.admin_pages.VneshniePlatejiAddAdmin2 import VneshniePlatejiAddAdmin2
 from telekom.views2.admin_pages.VneshniePlatejiNachAdmin import VneshniePlatejiNachAdmin
 
 
@@ -347,6 +349,7 @@ urlpatterns = [
     path('onceDogoworAdd', onceDogoworAdd, name='onceDogoworAdd'),
     path('onceDogoworNach', onceDogoworNach, name='onceDogoworNach'),
     path('vneshniePlatejiAdd', vneshniePlatejiAdd, name='vneshniePlatejiAdd'),
+    path('nachMilliBillingPay2', nachMilliBillingPay2, name='nachMilliBillingPay2'),
     path('exportMilliBillingUnmatched', exportMilliBillingUnmatched, name='exportMilliBillingUnmatched'),
     path('kassirs_billing_names', kassirs_billing_names, name='kassirs_billing_names'),
 
@@ -438,6 +441,7 @@ urlpatterns = [
     path('MBonceDogoworNachAdmin', MBonceDogoworNachAdmin, name='MBonceDogoworNachAdmin'),
     path('adminMessage', adminMessage, name='adminMessage'),
     path('VneshniePlatejiAddAdmin', VneshniePlatejiAddAdmin, name='VneshniePlatejiAddAdmin'),
+    path('VneshniePlatejiAddAdmin2', VneshniePlatejiAddAdmin2, name='VneshniePlatejiAddAdmin2'),
     path('VneshniePlatejiNachAdmin', VneshniePlatejiNachAdmin, name='VneshniePlatejiNachAdmin'),
   
 
