@@ -54,6 +54,8 @@
               <li><a class="dropdown-item {% if VneshniePlatejiAddAdmin %} myActiveLinkLight {% endif %}" href="{% url 'VneshniePlatejiAddAdmin' %}">Внешние платежи add откат</a></li>
               <li><a class="dropdown-item {% if VneshniePlatejiAddAdmin2 %} myActiveLinkLight {% endif %}" href="{% url 'VneshniePlatejiAddAdmin2' %}">Внешние платежи add v2 откат</a></li>
               <li><a class="dropdown-item {% if VneshniePlatejiNachAdmin %} myActiveLinkLight {% endif %}" href="{% url 'VneshniePlatejiNachAdmin' %}">Внешние платежи nach откат</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item {% if adminReports %} myActiveLinkLight {% endif %}" href="{% url 'adminReports' %}">Отчёты</a></li>
             </ul>
           </li> 
           {% endif %}

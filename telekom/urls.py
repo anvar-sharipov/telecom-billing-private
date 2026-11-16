@@ -221,6 +221,7 @@ from telekom.views2.admin_pages.adminMessage import adminMessage
 from telekom.views2.admin_pages.VneshniePlatejiAddAdmin import VneshniePlatejiAddAdmin
 from telekom.views2.admin_pages.VneshniePlatejiAddAdmin2 import VneshniePlatejiAddAdmin2
 from telekom.views2.admin_pages.VneshniePlatejiNachAdmin import VneshniePlatejiNachAdmin
+from telekom.views2.admin_pages.adminReports import adminReports
 
 
 
@@ -443,6 +444,7 @@ urlpatterns = [
     path('VneshniePlatejiAddAdmin', VneshniePlatejiAddAdmin, name='VneshniePlatejiAddAdmin'),
     path('VneshniePlatejiAddAdmin2', VneshniePlatejiAddAdmin2, name='VneshniePlatejiAddAdmin2'),
     path('VneshniePlatejiNachAdmin', VneshniePlatejiNachAdmin, name='VneshniePlatejiNachAdmin'),
+    path('adminReports', adminReports, name='adminReports'),
   
 
 
