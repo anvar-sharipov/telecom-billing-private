@@ -6,29 +6,43 @@
 
 ТОЛЬКО ЧТЕНИЕ: ничего в базе не меняет.
 
-Внешние платежи = PlatejiWhichAddKassirsEveryDay с pay_category из VNESHNIE_CATEGORIES:
-  - 'Внешние плптежи'  — так (с опечаткой) категория приходила из lanbilling (2024 — 18.07.2026)
-  - 'Внешние Платежи'  — так её пишет импорт milli billing (vneshniePlatejiAdd / nachMilliBillingPay2)
+Внешние платежи = PlatejiWhichAddKassirsEveryDay, где касса (manager) — организация, а не кассир-человек:
+  - касса из VNESHNIE_MANAGERS (явный список, категория платежа НЕ важна — например 'TM POST Dealers'
+    в lanbilling шёл с категорией 'Default');
+  - ИЛИ категория 'Внешние Платежи' — её ставит импорт milli billing (vneshniePlatejiAdd /
+    nachMilliBillingPay2), чтобы новая касса milli billing попала в отчёт, даже если её нет в списке.
+Платежи кассиров-людей (ФИО или логины dashoguzNN и т.п.) НЕ берутся, даже если в lanbilling у них
+по ошибке стоит категория 'Внешние плптежи'.
 Период фильтруется по дате платежа (поле date).
 """
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import FileResponse
-from django.db.models import Count, Sum, Min, Max
+from django.db.models import Count, Sum, Min, Max, Q
 
 from telekom.models import PlatejiWhichAddKassirsEveryDay
 
 from datetime import datetime, date
 import tempfile
-import xlsxwriter
 
 import logging
 logger = logging.getLogger(__name__)
 
 TEMPLATE = 'telekom/admin_pages/adminReports.html'
 
-VNESHNIE_CATEGORIES = ['Внешние плптежи', 'Внешние Платежи']
+# Кассы-организации (не люди). lanbilling: до 18-20.07.2026, milli billing: с 20.07.2026.
+VNESHNIE_MANAGERS = [
+    # lanbilling
+    'Tolleg APP TMCELL', 'TM POST Dealers', 'Turkmen Pochta', 'E-government', 'Saray Tolegy', 'Dostluk Bank',
+    # milli billing
+    'Toleg', 'Turkmenpost diller', 'Capar', 'eGov', 'Saray',
+]
+MILLI_BILLING_VNESHNIE_CATEGORY = 'Внешние Платежи'
+
+
+def _vneshnie_base():
+    return PlatejiWhichAddKassirsEveryDay.objects.filter(Q(manager__in=VNESHNIE_MANAGERS) | Q(pay_category=MILLI_BILLING_VNESHNIE_CATEGORY))
 
 # Лимит строк на одном листе Excel — 1 048 576. Берём с запасом (2 строки шапки),
 # при превышении строки продолжаются на следующем листе.
@@ -98,7 +112,7 @@ def _read_params(qd):
 
 
 def _build_queryset(p):
-    qs = PlatejiWhichAddKassirsEveryDay.objects.filter(pay_category__in=VNESHNIE_CATEGORIES)
+    qs = _vneshnie_base()
     if not p['all_time']:
         if p['date_from']:
             qs = qs.filter(date__gte=p['date_from'])
@@ -143,6 +157,11 @@ def _ul_fl(v):
 
 
 def _export_xlsx(request, p):
+    # Импорт здесь, а не вверху файла: если xlsxwriter не установлен, падает только
+    # выгрузка (с понятной ошибкой на странице), а не весь сайт при загрузке urls.py.
+    import xlsxwriter
+    import xlsxwriter.utility
+
     qs = _build_queryset(p).order_by(*_ordering(p))
     fields = [f for f, _, _ in COLUMNS]
 
@@ -276,7 +295,7 @@ def adminReports(request):
                 logger.error(f'adminReports: ошибка выгрузки внешних платежей: {e}')
                 messages.error(request, f'Ошибка при формировании Excel: {e}')
 
-    base = PlatejiWhichAddKassirsEveryDay.objects.filter(pay_category__in=VNESHNIE_CATEGORIES)
+    base = _vneshnie_base()
 
     # Списки для фильтров
     context['manager_list'] = list(base.values('manager').annotate(c=Count('id')).order_by('manager'))

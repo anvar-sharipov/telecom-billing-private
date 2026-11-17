@@ -174,8 +174,10 @@ toggleDates();
             </div>
             <div class="modal-body">
                 <p>Страница только читает данные из базы и ничего не меняет. Доступ только у admin1.</p>
-                <p><strong>Внешние платежи</strong> — все платежи с категорией "Внешние плптежи" (так их отдавал lanbilling)
-                и "Внешние Платежи" (так их пишет импорт milli billing). Период фильтруется по <strong>дате платежа</strong>.</p>
+                <p><strong>Внешние платежи</strong> — все платежи, где касса — организация, а не кассир-человек:
+                lanbilling — Tolleg APP TMCELL, TM POST Dealers, Turkmen Pochta, E-government, Saray Tolegy, Dostluk Bank;
+                milli billing — Toleg, Turkmenpost diller, Capar, eGov, Saray (и любая новая касса, которую импорт milli billing
+                пометит как "Внешние Платежи"). Категория платежа в lanbilling не важна. Период фильтруется по <strong>дате платежа</strong>.</p>
                 <p><strong>Как пользоваться:</strong> выберите период (или "За всё время"), при необходимости кассы / этрапы /
                 услуги / статус начисления и сортировку. "Показать итог" — посчитать сколько строк и какая сумма попадёт
                 в файл, "Скачать Excel" — скачать файл.</p>
